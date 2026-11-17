@@ -104,6 +104,7 @@ def main():
     added = failed = 0
     s = requests.Session()
     warm(s)
+    budget = int(os.environ.get("MIRROR_MAX_FILES", "250"))  # spread big backlogs over several runs
     for aid, (case, d, kind) in want.items():
         name = asset_name(case, d)
         if aid in mirror and mirror[aid]["asset"] in existing:
@@ -119,7 +120,10 @@ def main():
                     try:
                         # The portal keeps a file ready on the server that answered the metadata call; ask again and
                         # re-download from the start if a chunk lands on a different server.
-                        meta = s.get(API + "energov/attachments/metadata/", headers={**HDR, "FileID": aid}, timeout=60).json()["Result"]
+                        mj = s.get(API + "energov/attachments/metadata/", headers={**HDR, "FileID": aid}, timeout=60).json()
+                        meta = mj.get("Result")
+                        if not meta:
+                            raise RuntimeError("portal did not return the file: " + str(mj.get("ErrorMessage") or "no details"))
                         size = int(meta["FileSize"])
                         if size > MAX_BYTES:
                             break
@@ -138,7 +142,7 @@ def main():
                     except Exception:
                         if attempt == 5:
                             raise
-                        time.sleep(1.5 * (attempt + 1))
+                        time.sleep(5 * (attempt + 1))  # back off: the portal throttles bursts of downloads
                         if attempt in (2, 4):
                             warm(s)
                 if size and size > MAX_BYTES:
@@ -148,6 +152,10 @@ def main():
             mirror[aid] = {"asset": name, "size": size, "case": case, "kind": kind}
             existing.add(name)
             added += 1
+            time.sleep(0.6)
+            if added >= budget:
+                print(f"reached {budget} new files this run; the rest follow on the next runs")
+                break
             print(f"mirrored {case} {kind}: {d['name']} ({size/1e6:.1f} MB)")
         except Exception as e:
             failed += 1
