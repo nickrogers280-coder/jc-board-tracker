@@ -20,6 +20,19 @@
 .pin.faded i { opacity: .55; box-shadow: 0 0 0 1px var(--c); }
 .pin.approved i { box-shadow: 0 0 0 1.5px var(--c), 0 0 0 4px var(--ok), 0 2px 6px rgba(0,0,0,.6); }
 .legend i.okring { background: none; border: 2px solid var(--ok); }
+.stages { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; margin: 2px 0 4px; }
+.stages li { list-style: none; font-size: 11px; color: var(--ink-3); border-top: 3px solid var(--line); padding-top: 5px; line-height: 1.25; }
+.stages li.done { border-color: var(--ok); color: var(--ink-2); }
+.stages li.now { border-color: var(--pin); color: var(--ink); font-weight: 600; }
+.stages li time { display: block; font-family: var(--font-data); font-size: 10.5px; color: var(--ink-3); font-weight: 400; }
+.stages.stop li.now { border-color: var(--pin-closed); }
+.hist-head { margin: 18px 0 0; padding-top: 14px; border-top: 1px dashed var(--line); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+.sales { width: 100%; border-collapse: collapse; font-size: 12px; }
+.sales th { text-align: left; font-weight: 500; color: var(--ink-3); font-size: 11px; padding: 4px 6px; border-bottom: 1px solid var(--line); }
+.sales td { padding: 5px 6px; border-bottom: 1px solid var(--line); vertical-align: top; overflow-wrap: anywhere; }
+.sales td.n { font-family: var(--font-data); white-space: nowrap; }
+.sales tr.mort td { color: var(--ink-3); }
+.sales-wrap { max-height: 320px; overflow: auto; border: 1px solid var(--line); border-radius: 8px; }
 .docs { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; max-height: 260px; overflow-y: auto; border: 1px solid var(--line); border-radius: 8px; }
 .docs li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 10px; padding: 7px 10px; border-bottom: 1px solid var(--line); font-size: 12.5px; }
 .docs li:last-child { border-bottom: 0; }
@@ -444,7 +457,7 @@
   function renderFoot() {
     const located = DATA.cases.filter((p) => p.lat != null).length;
     const named = DATA.cases.filter((p) => p.applicant).length;
-    const ndocs = DATA.cases.reduce((s, p) => s + (p.docs || []).length, 0);
+    const ndocs = DATA.cases.reduce((s, p) => s + (p.n_docs != null ? p.n_docs : (p.docs || []).length), 0);
     $("#foot").innerHTML = `Last change ${new Date(DATA.generated_at).toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })} · checks the city portal and new board agendas every 6 hours<br>${DATA.cases.length} cases · ${ndocs.toLocaleString()} documents · ${located} mapped · ${named} with applicant named` +
       `<br>Sources: Jersey City permit portal (2018 on), Planning &amp; Zoning Board agendas 2016 on (JC Open Data), NJ MOD-IV tax data (NJOGIS). Units, stories and affordable counts are read from each application's description. Verify before relying on figures.`;
   }
@@ -502,6 +515,47 @@
 
   function copyBtn(text) { return `<button class="copy" data-copy="${esc(text)}" aria-label="Copy ${esc(text)}">Copy</button>`; }
 
+  const STEPS = [["filed", "Filed"], ["review", "Staff review"], ["scheduled", "Scheduled"], ["heard", "Heard"], ["approved", "Approved"]];
+  function stagesHtml(p) {
+    if (!p.stage) return "";
+    const when = {}; (p.stage_history || []).forEach(([st, d]) => { if (!when[st]) when[st] = d; });
+    const stop = ["denied", "withdrawn"].includes(p.stage);
+    const at = stop ? -1 : STEPS.findIndex((x) => x[0] === p.stage);
+    const items = STEPS.map(([k, l], i) => {
+      const cls = i < at ? "done" : i === at ? "now" : "";
+      const d = k === "filed" ? p.applied : k === "scheduled" && p.next_hearing ? p.next_hearing : k === "approved" && p.approved_on ? p.approved_on : when[k];
+      return `<li class="${cls}">${l}${d && (i <= at || k === "scheduled") ? `<time>${fmtDate(d)}</time>` : ""}</li>`;
+    });
+    if (stop) items[4] = `<li class="now">${p.stage === "denied" ? "Denied" : "Withdrawn"}${p.completed ? `<time>${fmtDate(p.completed)}</time>` : ""}</li>`;
+    return `<div class="sec"><h3>Where it is now · ${esc(p.stage_label)}</h3><ol class="stages${stop ? " stop" : ""}" style="padding:0;margin:0">${items.join("")}</ol>
+      ${p.next_hearing ? `<p class="note" style="margin:6px 0 0">Next hearing ${fmtDate(p.next_hearing)} · ${p.board === "zoning" ? "Zoning Board" : "Planning Board"}</p>` : ""}</div>`;
+  }
+
+  function salesHtml(p) {
+    const rows = p.sales || [];
+    if (!p.sales_checked && !rows.length) return `<div class="sec"><h3>Ownership &amp; sales</h3><p class="note">Not looked up yet. Deed records for each lot are pulled a few hundred lots per update, so this fills in within a few days.</p></div>`;
+    if (!rows.length) return `<div class="sec"><h3>Ownership &amp; sales</h3><p class="note">No deeds or mortgages found on these lots in the county index.</p></div>`;
+    const deeds = rows.filter((r) => /deed/i.test(r.type) && !/mortgage/i.test(r.type));
+    const priced = deeds.filter((r) => r.price > 100);
+    const fmtNames = (r) => (r.from || r.to ? `${esc(titleCase(r.from || "—"))} → ${esc(titleCase(r.to || "—"))}` : `<span class="note">names withheld in state file</span>`);
+    return `<div class="sec"><h3>Ownership &amp; sales · ${deeds.length} transfer${deeds.length === 1 ? "" : "s"}</h3>
+      <p class="note" style="margin:0 0 6px">${priced.length ? `Last priced sale ${money(priced[0].price)} · ${fmtDate(priced[0].date)}. ` : ""}Deeds and mortgages recorded with the Hudson County Register; prices from the NJ state sales file (2020 on).${nLots(p) > 1 ? ` Covers all ${nLots(p)} lots.` : ""}</p>
+      <div class="sales-wrap"><table class="sales"><thead><tr><th>Recorded</th><th>Document</th><th>From → to</th><th>Price</th></tr></thead><tbody>
+      ${rows.map((r) => `<tr class="${/mortgage/i.test(r.type) ? "mort" : ""}"><td class="n">${fmtDate(r.date)}</td><td>${esc(r.type)}${r.bookpage ? `<div class="note mono">Bk/Pg ${esc(r.bookpage)}</div>` : ""}${nLots(p) > 1 && r.pin ? `<div class="note">Lot ${esc(r.pin.split("_").slice(2).join("."))}</div>` : ""}</td><td>${fmtNames(r)}</td><td class="n">${r.price != null ? money(r.price) : "—"}${r.price != null && r.usable === false ? `<div class="note" title="State code: this price may not reflect market value">non-market${r.nu ? " (" + esc(r.nu) + ")" : ""}</div>` : ""}${r.n_lots > 1 ? `<div class="note">${r.n_lots}-lot deed</div>` : ""}</td></tr>`).join("")}
+      </tbody></table></div></div>`;
+  }
+
+  const shardCache = {};
+  async function ensureDetail(p) {
+    if (p._full || p.shard == null || p.docs) { p._full = true; return; }
+    try {
+      shardCache[p.shard] = shardCache[p.shard] || fetch(`data/detail/${p.shard}.json`).then((r) => r.json());
+      const d = (await shardCache[p.shard])[p.id] || {};
+      Object.assign(p, { docs: d.docs || [], priors: d.priors || p.priors, sales: d.sales || [] });
+      p._full = true;
+    } catch { delete shardCache[p.shard]; }
+  }
+
   function renderDetail(p) {
     const t = TYPE[p.product] || TYPE.other;
     const ll = p.lat != null ? `${p.lat},${p.lon}` : encodeURIComponent(`${p.address}, Jersey City, NJ`);
@@ -527,13 +581,14 @@
       <div class="d-body">
         ${up && parseDay(up) >= NOW - 864e5 ? `<div class="alerts-box"><div><b>On the ${p.board === "zoning" ? "Zoning" : "Planning"} Board agenda ${fmtDate(up)}</b></div>${p.agenda_last ? `<small>${esc(p.agenda_last)}</small>` : ""}</div>` : ""}
         ${statusKey(p) === "approved" ? `<div class="reo-box" style="--pin-reo:var(--ok)"><b>Approved${p.approved_on ? " " + fmtDate(p.approved_on) : ""}</b><div>${esc(p.type)}${p.approval_expires ? " · approval expires " + fmtDate(p.approval_expires) : ""}</div></div>` : ""}
+        ${stagesHtml(p)}
         <div class="basis">${p.product_basis && p.product_basis !== "this application" ? `Type: <b>${esc(t.label)}</b>, from ${esc(p.product_basis)}${(p.priors || []).some((q) => q.id === p.product_basis) ? " (the approval this " + (p.kind === "ext" ? "extends" : "amends") + ")" : " (the project on this lot)"}` : ""}${(p.existing || []).length ? `${p.product_basis && p.product_basis !== "this application" ? " · " : ""}Existing lot: <b>${esc(existText(p))}</b>` : ""}${p.tracked_because && p.tracked_because !== "filed" ? ` · <span style="color:var(--pin-possible)">${esc(TRACKED[p.tracked_because] || "")}</span>` : ""}</div>
         <div class="figs">${figs.map(([k, v]) => `<div class="fig"><span>${k}</span><b>${esc(v)}</b></div>`).join("")}</div>
         ${p.inherited_from ? `<p class="note" style="margin:-8px 0 0">Project size from the earlier approval ${esc(p.inherited_from)}, which this ${p.kind === "ext" ? "extends" : "amends"}.</p>` : ""}
         ${affPct != null ? `<div class="meter"><div><b>${affPct}%</b> of units affordable (${p.affordable} of ${n0(p.units)})</div><div class="bar"><i style="width:${Math.min(affPct, 100)}%;--fill:var(--ok)"></i></div></div>` : ""}
         <div class="sec"><h3>What's proposed</h3><p class="desc">${esc(p.desc || "No description filed.")}</p>
           ${p.retail_sf || (p.parking != null && figs[2][0] !== "Parking") ? `<p class="note" style="margin:8px 0 0">${[p.retail_sf ? n0(p.retail_sf) + " SF retail/commercial" : "", p.parking != null && figs[2][0] !== "Parking" ? n0(p.parking) + " parking spaces" : ""].filter(Boolean).join(" · ")}</p>` : ""}</div>
-        ${priorsHtml(p)}
+        ${p._full ? docsHtml(p) : `<div class="sec"><h3>Documents</h3><p class="note">Loading…</p></div>`}
         <div class="sec"><h3>Application</h3><dl class="kv">
           <dt>Case</dt><dd><span class="mono">${esc(p.id)}</span>${copyBtn(p.id)}</dd>
           <dt>Type</dt><dd>${esc(p.type)}</dd>
@@ -547,6 +602,9 @@
           <dt>Attorney</dt><dd>${p.attorney ? esc(p.attorney) : "—"}</dd>
           <dt>Tax bill to</dt><dd>${p.owner_mail ? esc(titleCase(p.owner_mail)) + (sameMail.length ? `<div class="note">Same mailing address on ${sameMail.length} other ${sameMail.length === 1 ? "case" : "cases"}</div>` : "") : "—"}</dd>
         </dl></div>
+        <div class="sec"><h3>Timeline</h3><ol class="timeline">${hist.map((h) => `<li><span>${esc(h[0])}</span><time>${fmtDate(h[1])}</time></li>`).join("")}</ol></div>
+        <div class="hist-head">Property history</div>
+        ${p._full ? priorsHtml(p) + salesHtml(p) : `<p class="note">Loading…</p>`}
         ${p.prop_class || p.net_value ? `<div class="sec"><h3>Tax record</h3><dl class="kv">
           ${(p.existing || []).length ? `<dt>Existing use</dt><dd>${esc(existText(p))}${nLots(p) > 1 ? ` <span class="note">(across ${nLots(p)} lots)</span>` : ""}<div class="note">Current tax class: what's there now, not what's proposed</div></dd>` : p.class_label ? `<dt>Existing use</dt><dd>${esc(p.prop_class)} · ${esc(p.class_label)}</dd>` : ""}
           ${p.prop_loc ? `<dt>Tax address</dt><dd>${esc(titleCase(p.prop_loc))}</dd>` : ""}
@@ -558,8 +616,6 @@
           ${p.last_sale_price ? `<dt>Last sale</dt><dd>${money(p.last_sale_price)}${p.last_sale_date ? " · " + fmtDate(p.last_sale_date) : ""}</dd>` : ""}
           ${p.units && (p.lots_acre || p.calc_acre) ? `<dt>Density</dt><dd>${Math.round(p.units / (p.lots_acre || p.calc_acre))} units / acre</dd>` : ""}
         </dl></div>` : ""}
-        ${docsHtml(p)}
-        <div class="sec"><h3>Timeline</h3><ol class="timeline">${hist.map((h) => `<li><span>${esc(h[0])}</span><time>${fmtDate(h[1])}</time></li>`).join("")}</ol></div>
         ${related.length || sameMail.length ? `<div class="sec"><h3>Related cases</h3><div class="related">${[...related, ...sameMail].slice(0, 8).map((x) => `<button data-id="${x.id}"><span class="mono">${x.id}</span> · ${esc(x.kind_label)} · ${esc(titleCase(x.address))}${related.includes(x) ? "" : ' <span class="note">(same owner address)</span>'}</button>`).join("")}</div></div>` : ""}
         <div class="links">
           <a href="${PORTAL + esc(p.case_id)}?tab=attachments" target="_blank" rel="noopener">City portal &amp; plans</a>
@@ -583,6 +639,7 @@
     selected = id;
     [prev, id].forEach((pid) => { const m = markers.get(pid); if (m) m.setIcon(pinIcon(m._p)); });
     renderDetail(p);
+    if (!p._full) ensureDetail(p).then(() => { if (selected === p.id) { const y = $("#detail").scrollTop; renderDetail(p); $("#detail").scrollTop = y; } });
     $("#detail").hidden = false;
     $("#detail").scrollTop = 0;
     if (window.matchMedia("(max-width: 760px)").matches) $("#side").classList.add("collapsed");

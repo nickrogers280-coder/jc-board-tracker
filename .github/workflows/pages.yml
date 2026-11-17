@@ -98,6 +98,7 @@ jobs:
           if [ -f kushner.html ]; then cp kushner.html _site/kushner.html; fi
           if [ -f data/portfolio.json ]; then cp data/portfolio.json _site/data/portfolio.json; fi
           if [ -f data/boundaries.json ]; then cp data/boundaries.json _site/data/boundaries.json; fi
+          if [ -d data/detail ]; then cp -r data/detail _site/data/detail; fi
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

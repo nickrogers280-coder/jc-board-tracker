@@ -560,6 +560,35 @@ for r in out:
     r["counts_units"] = bool(r["kind"] == "new" and r["units"] and r["status_group"] not in ("closed", "denied"))
     r["mail_group"] = len(by_mail.get((r["owner_mail"] or "").upper(), ())) if r["owner_mail"] else 0
 
+# Split: the map loads a light summary of every case; documents, earlier approvals and sales load per case when it's
+# opened, from data/detail/<shard>.json (64 shards keyed by case number).
+N_SHARDS = 64
+
+
+def shard_of(case_id):
+    return sum(map(ord, case_id)) % N_SHARDS
+
+
+shards = defaultdict(dict)
+full = [dict(r) for r in out]  # keeps everything, for the single-file version
+for r in out:
+    shards[shard_of(r["id"])][r["id"]] = {"docs": r.pop("docs", []), "priors": r.get("priors") or [], "sales": r.pop("sales", [])}
+    d = shards[shard_of(r["id"])][r["id"]]
+    r["n_docs"], r["n_cur_docs"], r["n_sales"] = len(d["docs"]), sum(1 for x in d["docs"] if x.get("current")), len(d["sales"])
+    r["n_transfers"] = sum(1 for x in d["sales"] if "deed" in (x.get("type") or "").lower() and "mortgage" not in (x.get("type") or "").lower())
+    r["priors"] = [{"id": q.get("id"), "applicant": q.get("applicant")} for q in d["priors"]]
+    r["shard"] = shard_of(r["id"])
+ddir = ROOT / "data/detail"
+ddir.mkdir(parents=True, exist_ok=True)
+for f in ddir.glob("*.json"):
+    if int(f.stem) not in shards:
+        f.unlink()
+for k, v in shards.items():
+    blob_ = json.dumps(v, separators=(",", ":"), sort_keys=True)
+    f = ddir / f"{k}.json"
+    if not f.exists() or f.read_text(encoding="utf-8") != blob_:
+        f.write_text(blob_, encoding="utf-8")
+
 dest = ROOT / "data/map.json"
 generated = cases_raw.get("pulled") or datetime.utcnow().isoformat() + "Z"
 if dest.exists():
@@ -646,7 +675,7 @@ if (ROOT / "src/portfolio.html").exists():
                                        + (ROOT / "src/portfolio.html").read_text(encoding="utf-8"), encoding="utf-8")
 # Standalone single file: same page with the data embedded, for opening from disk or uploading anywhere.
 page = (ROOT / "index.html").read_text(encoding="utf-8")
-blob = json.dumps(data, separators=(",", ":")).replace("</", "<\\/")
+blob = json.dumps({**data, "cases": full}, separators=(",", ":")).replace("</", "<\\/")
 marker = '<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>'
 _bp = ROOT / "data/boundaries.json"
 bblob = (f'<script id="jc-bounds" type="application/json">{_bp.read_text(encoding="utf-8").replace("</", "<\\/")}</script>\n') if _bp.exists() else ""
