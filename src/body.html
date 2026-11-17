@@ -147,7 +147,8 @@
     const up = (p.hearings || []).map((h) => h[0]).filter((d) => parseDay(d) >= NOW - 864e5).sort()[0];
     return up || null;
   };
-  const placeLine = (p) => [p.ward ? "Ward " + p.ward : "", p.block ? `Block ${p.block} · Lot ${p.lot}` : ""].filter(Boolean).join(" · ");
+  const nLots = (p) => (p.parcel_pins || []).length;
+  const placeLine = (p) => [p.ward ? "Ward " + p.ward : "", p.lots_label || (p.block ? `Block ${p.block} · Lot ${p.lot}` : "")].filter(Boolean).join(" · ");
   const productLine = (p) => {
     const bits = [];
     if (p.units) bits.push(n0(p.units) + " units");
@@ -316,7 +317,7 @@
     return `<button class="item" data-id="${p.id}" aria-current="${selected === p.id}">
       ${top}
       <div class="addr">${esc(titleCase(p.address) || p.id)}</div>
-      <div class="meta"><span class="tag" style="--t:${t.c}">${esc(boardShort(p))}</span> ${esc(p.kind_label)} · ${esc(placeLine(p) || "No parcel")}</div>
+      <div class="meta"><span class="tag" style="--t:${t.c}">${esc(boardShort(p))}</span>${nLots(p) > 1 ? ` <span class="tag" style="--t:var(--parcel)">${nLots(p)} lots</span>` : ""} ${esc(p.kind_label)} · ${esc(placeLine(p) || "No parcel")}</div>
       ${productLine(p) || p.applicant ? `<div class="change">${esc(productLine(p))}${productLine(p) && p.applicant ? " · " : ""}${p.applicant ? esc(p.applicant) : ""}</div>` : ""}
     </button>`;
   }
@@ -458,11 +459,12 @@
           ${p.class_label ? `<dt>Class</dt><dd>${esc(p.prop_class)} · ${esc(p.class_label)}</dd>` : ""}
           ${p.prop_loc ? `<dt>Tax address</dt><dd>${esc(titleCase(p.prop_loc))}</dd>` : ""}
           ${p.net_value ? `<dt>Assessed</dt><dd>${money(p.net_value)}<div class="note">Land ${short$(p.land_val)} · Improvements ${short$(p.imprvt_val)}</div></dd>` : ""}
-          ${p.calc_acre ? `<dt>Lot size</dt><dd>${(+p.calc_acre).toFixed(2)} acres · ${n0(Math.round(p.calc_acre * 43560))} SF</dd>` : ""}
+          ${nLots(p) > 1 ? `<dt>Assemblage</dt><dd><b>${nLots(p)} lots</b> · ${esc(p.lots_label)}${p.lots_acre ? `<div>${(+p.lots_acre).toFixed(2)} acres · ${n0(Math.round(p.lots_acre * 43560))} SF combined</div>` : ""}${p.lots_net ? `<div class="note">Assessed ${short$(p.lots_net)} across all lots</div>` : ""}</dd>` : ""}
+          ${p.calc_acre ? `<dt>${nLots(p) > 1 ? "Main lot" : "Lot size"}</dt><dd>${(+p.calc_acre).toFixed(2)} acres · ${n0(Math.round(p.calc_acre * 43560))} SF</dd>` : ""}
           ${p.bldg_desc ? `<dt>Building</dt><dd class="mono">${esc(p.bldg_desc)}</dd>` : ""}
           ${p.yr_constr ? `<dt>Year built</dt><dd>${esc(p.yr_constr)}</dd>` : ""}
           ${p.last_sale_price ? `<dt>Last sale</dt><dd>${money(p.last_sale_price)}${p.last_sale_date ? " · " + fmtDate(p.last_sale_date) : ""}</dd>` : ""}
-          ${p.units && p.calc_acre ? `<dt>Density</dt><dd>${Math.round(p.units / p.calc_acre)} units / acre</dd>` : ""}
+          ${p.units && (p.lots_acre || p.calc_acre) ? `<dt>Density</dt><dd>${Math.round(p.units / (p.lots_acre || p.calc_acre))} units / acre</dd>` : ""}
         </dl></div>` : ""}
         ${docsHtml(p)}
         <div class="sec"><h3>Timeline</h3><ol class="timeline">${hist.map((h) => `<li><span>${esc(h[0])}</span><time>${fmtDate(h[1])}</time></li>`).join("")}</ol></div>
@@ -505,17 +507,23 @@
   }
 
   async function drawParcel(p) {
-    if (!p.pams_pin) return;
+    const pins = (p.parcel_pins && p.parcel_pins.length ? p.parcel_pins : [p.pams_pin]).filter(Boolean);
+    if (!pins.length) return;
     const want = p.id;
     try {
-      const local = DATA.parcels && DATA.parcels[p.pams_pin];
-      const gj = local ? { type: "FeatureCollection", features: [local] } : await (await fetch(PARCELS + "?" + new URLSearchParams({ where: `PAMS_PIN='${String(p.pams_pin).replace(/'/g, "''")}'`, outFields: "PAMS_PIN,PCLBLOCK,PCLLOT", returnGeometry: "true", outSR: "4326", f: "geojson" }))).json();
+      const local = DATA.parcels ? pins.map((x) => DATA.parcels[x]).filter(Boolean) : [];
+      const gj = local.length ? { type: "FeatureCollection", features: local } : await (await fetch(PARCELS + "?" + new URLSearchParams({ where: `PAMS_PIN IN (${pins.map((x) => `'${String(x).replace(/'/g, "''")}'`).join(",")})`, outFields: "PAMS_PIN,PCLBLOCK,PCLLOT", returnGeometry: "true", outSR: "4326", f: "geojson" }))).json();
       if (selected !== want || !gj.features?.length) return;
       if (outline) outline.remove();
+      const many = gj.features.length > 1;
       outline = L.geoJSON(gj, {
-        style: { color: "#ffe066", weight: 2.5, fillColor: "#ffe066", fillOpacity: 0.12, dashArray: "6 4" }, interactive: false,
-        onEachFeature: (f, layer) => { const pr = f.properties || {}; if (pr.PCLLOT) layer.bindTooltip(`Block ${pr.PCLBLOCK} · Lot ${pr.PCLLOT}`, { permanent: true, direction: "center", className: "lot-label" }); },
+        style: { color: "#ffe066", weight: 2.5, fillColor: "#ffe066", fillOpacity: many ? 0.18 : 0.12, dashArray: "6 4" }, interactive: false,
+        onEachFeature: (f, layer) => { const pr = f.properties || {}; if (pr.PCLLOT) layer.bindTooltip(many ? `Lot ${pr.PCLLOT}` : `Block ${pr.PCLBLOCK} · Lot ${pr.PCLLOT}`, { permanent: gj.features.length <= 12, direction: "center", className: "lot-label" }); },
       }).addTo(map);
+      if (many) {
+        const mobile = window.matchMedia("(max-width: 760px)").matches;
+        map.fitBounds(outline.getBounds(), { paddingTopLeft: mobile ? [20, 20] : [40, 40], paddingBottomRight: mobile ? [20, map.getSize().y * 0.5] : [420, 40], maxZoom: 19 });
+      }
     } catch { /* outline is a nice-to-have */ }
   }
 

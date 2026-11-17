@@ -261,6 +261,24 @@ for c in cases_raw["cases"]:
         rec["last_sale_date"] = datetime.utcfromtimestamp(dd / 1000).strftime("%Y-%m-%d")
     elif isinstance(dd, str) and dd:
         rec["last_sale_date"] = dd[:10]
+    # All lots in the application (assemblages): pin at their combined center, totals across lots.
+    lots = [l for l in (c.get("lots") or []) if l.get("pin")]
+    if not lots and pin and p:
+        lots = [{"pin": pin, "lat": p.get("lat"), "lon": p.get("lon"), "acre": p.get("CALC_ACRE"), "net": p.get("NET_VALUE")}]
+    rec["parcel_pins"] = [l["pin"] for l in lots]
+    if len(lots) > 1:
+        pts = [(l["lat"], l["lon"]) for l in lots if l.get("lat")]
+        if pts:
+            rec["lat"] = round(sum(x for x, _ in pts) / len(pts), 6)
+            rec["lon"] = round(sum(y for _, y in pts) / len(pts), 6)
+            rec["geo_source"] = "parcel"
+        by_block = defaultdict(list)
+        for l in lots:
+            _, blk_, lot_ = l["pin"].split("_", 2)
+            by_block[blk_].append(lot_)
+        rec["lots_label"] = "; ".join(f"Block {k} · Lot{'s' if len(v) > 1 else ''} {', '.join(v)}" for k, v in by_block.items())
+        rec["lots_acre"] = round(sum(float(l.get("acre") or 0) for l in lots), 3) or None
+        rec["lots_net"] = sum(int(l.get("net") or 0) for l in lots) or None
     rec["product"] = product_of(c, f, kind)
     out.append(rec)
     if mail:

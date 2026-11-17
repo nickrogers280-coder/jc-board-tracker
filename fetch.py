@@ -88,6 +88,46 @@ def plan_detail(case_id):
     return j.get("Result") or {}
 
 
+def location_pins(case_id):
+    """Every parcel the portal lists on the case's Locations tab."""
+    body = {"PageNumber": 1, "PageSize": 100, "SortField": None, "IsSortedInAscendingOrder": True, "ModuleId": 2, "EntityId": case_id}
+    j = post(API + "address/locationData", json=body).json()
+    pins = []
+    for x in j.get("Result") or []:
+        for k in ("Parcel", "Address"):
+            pn = (x.get(k) or {}).get("ParcelNumber")
+            if pn and pn not in pins:
+                pins.append(pn)
+    return pins
+
+
+LOT = r"\d{1,4}(?:\.\d{1,3})?"
+LOTS = rf"{LOT}(?:\s*(?:,|&|and|,\s*and)\s*{LOT})*"
+BLOCK = r"\d{3,5}(?:\.\d{1,3})?"
+
+
+def text_pins(text, main_pin):
+    """Lots named in a description or agenda: 'Block 18202, Lots 11, 12, 13, and 14', 'Lots 62, 63 and 64 Block 19301', 'lots 35 and 36'."""
+    if not text:
+        return []
+    t = re.sub(r"\s+", " ", text)
+    main_block = main_pin.split("_")[1] if main_pin and main_pin.count("_") >= 2 else None
+    found = []
+    def add(block, lots):
+        for lot in re.findall(LOT, lots):
+            pin = f"0906_{block}_{lot}"
+            if pin not in found:
+                found.append(pin)
+    for m in re.finditer(rf"Block[:\s]*({BLOCK})[,;\s]*(?:and\s+)?Lots?[:\s]*({LOTS})(?![\d-])", t, re.I):
+        add(m.group(1), m.group(2))
+    for m in re.finditer(rf"Lots?[:\s]*({LOTS})[,\s]*(?:on|in|of)?\s*Block[:\s]*({BLOCK})", t, re.I):
+        add(m.group(2), m.group(1))
+    if main_block and not found:
+        for m in re.finditer(rf"\blots\s+({LOTS})", t, re.I):
+            add(main_block, m.group(1))
+    return found
+
+
 def attachments(case_id):
     j = get(API + f"entity/attachments/search/entityattachments/{case_id}/2/true").json()
     res = j.get("Result") or {}
@@ -234,6 +274,10 @@ def main():
             print("detail failed", x["CaseNumber"], e, file=sys.stderr)
             d = {}
         try:
+            loc = location_pins(cid)
+        except Exception:
+            loc = (prev.get(x["CaseNumber"]) or {}).get("loc_pins", [])
+        try:
             docs = attachments(cid)
         except Exception as e:
             print("attachments failed", x["CaseNumber"], e, file=sys.stderr)
@@ -244,7 +288,7 @@ def main():
             "completed": x.get("CompleteDate"), "ward": d.get("DistrictName"), "planner": d.get("AssignedTo"),
             "address": x.get("AddressDisplay"), "project": d.get("ProjectName"),
             "pin": d.get("MainParcelNumber") or x.get("MainParcel"), "desc": d.get("Description") or x.get("Description"),
-            "approvalExpires": d.get("ApprovalExpireDate"), "docs": docs,
+            "approvalExpires": d.get("ApprovalExpireDate"), "docs": docs, "loc_pins": loc,
         })
         if i % 25 == 0:
             print(f"  details {i}/{len(rows)}")
@@ -269,6 +313,25 @@ def main():
     # Agendas
     ag, agenda_ids = parse_agendas(cache)
     cache_path.write_text(json.dumps(cache))
+
+    # Every lot in each application: portal locations + lots named in the description/agenda + the tax
+    # record's "additional lots". Only lots that exist on the state parcel map are kept.
+    lot_cache = {}
+    for c in cases:
+        main = c["pin"] or ""
+        cand = [main] + (c.get("loc_pins") or [])
+        cand += text_pins(c.get("desc"), main) + text_pins((ag.get(c["id"]) or {}).get("bl", "") and "Block " + ag[c["id"]]["bl"], main)
+        add = ((c.get("parcel") or {}).get("ADD_LOTS1") or "").strip()
+        if add and main.count("_") >= 2:
+            cand += [f"0906_{main.split('_')[1]}_{l}" for l in re.findall(LOT, add)]
+        c["cand_pins"] = [p for i, p in enumerate(cand) if p and p not in cand[:i]]
+    need = {p for c in cases for p in c["cand_pins"]} - set(known) - set(fresh)
+    more = parcels(sorted(need)) if need else {}
+    allp = {**known, **fresh, **more}
+    for c in cases:
+        c["lots"] = [{"pin": p, "lat": allp[p].get("lat"), "lon": allp[p].get("lon"), "acre": allp[p].get("CALC_ACRE"),
+                      "net": allp[p].get("NET_VALUE"), "cls": allp[p].get("PROP_CLASS"), "loc": allp[p].get("PROP_LOC")}
+                     for p in c["cand_pins"] if p in allp]
 
     # Status history: the date each status was first seen. Seeds from the portal's completion date.
     hist_path = ROOT / "data/history.json"
