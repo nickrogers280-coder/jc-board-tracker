@@ -515,6 +515,12 @@ for r in out:
     if not h or h[-1][0] != r["stage"]:
         h.append([r["stage"], _today])
     r["stage_history"] = h
+    # Old cases the portal never closed out: open status, filed 2+ years ago, no hearing in the past year or ahead.
+    last_hearing = max([x[0] for x in r["hearings"] if x[0]] or [""])
+    two_years = (datetime.now(timezone.utc).date().replace(year=datetime.now(timezone.utc).date().year - 2)).isoformat()
+    one_year = (datetime.now(timezone.utc).date().replace(year=datetime.now(timezone.utc).date().year - 1)).isoformat()
+    r["stale"] = bool(r["stage"] in ("filed", "review", "heard", "scheduled") and (r["applied"] or "9") < two_years
+                      and not r.get("next_hearing") and last_hearing < one_year)
 _sp.write_text(json.dumps(stage_hist, indent=0, sort_keys=True), encoding="utf-8")
 
 # ------------------------------------------------------------------ sales history

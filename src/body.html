@@ -205,7 +205,7 @@
     if (state.kind && p.kind !== state.kind) return false;
     if (state.ward && p.ward !== state.ward) return false;
     if (state.size && !((p.units || 0) >= state.size)) return false;
-    if (state.window === "active") { const d = parseDay(p.applied); if (!["pending", "heard"].includes(statusKey(p)) && !(d && d >= +NOW - 365 * 864e5)) return false; }
+    if (state.window === "active") { const d = parseDay(p.applied); if (p.stale || (!["pending", "heard"].includes(statusKey(p)) && !(d && d >= +NOW - 365 * 864e5))) return false; }
     else if (typeof state.window === "string" && /^y\d{4}$/.test(state.window)) { if (!String(p.applied || "").startsWith(state.window.slice(1))) return false; }
     else if (state.window) { const d = parseDay(p.applied); if (!d || d < +NOW - state.window * 864e5) return false; }
     if (state.exist && !(p.existing || []).some((c) => (state.exist === "15" ? /^15/.test(c) : c === state.exist))) return false;
@@ -531,6 +531,7 @@
       return `<li class="${cls}">${l}${d && (i <= at || k === "scheduled") ? `<time>${fmtDate(d)}</time>` : ""}</li>`;
     });
     if (stop) items[4] = `<li class="now">${p.stage === "denied" ? "Denied" : "Withdrawn"}${p.completed ? `<time>${fmtDate(p.completed)}</time>` : ""}</li>`;
+    if (p.stale) return `<div class="sec"><h3>Where it is now · No activity in over a year</h3><p class="note" style="margin:0">The city portal still lists this case as "${esc(p.status)}", but it was filed ${fmtDate(p.applied)} and hasn't been on a board agenda in over a year. It was most likely decided or dropped without the portal being updated; check the resolution in the documents or with the Division of City Planning.</p></div>`;
     return `<div class="sec"><h3>Where it is now · ${esc(p.stage_label)}</h3><ol class="stages${stop ? " stop" : ""}" style="padding:0;margin:0">${items.join("")}</ol>
       ${p.next_hearing ? `<p class="note" style="margin:6px 0 0">Next hearing ${fmtDate(p.next_hearing)} · ${p.board === "zoning" ? "Zoning Board" : "Planning Board"}</p>` : ""}</div>`;
   }
