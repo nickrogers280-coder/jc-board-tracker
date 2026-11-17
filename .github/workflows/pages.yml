@@ -67,7 +67,7 @@ jobs:
         run: |
           git config user.name "Claude"
           git config user.email "noreply@anthropic.com"
-          git add data/ index.html kushner.html
+          git add data/ index.html kushner.html developers.html
           if git diff --cached --quiet; then
             echo "No changes."
             echo "changed=false" >> "$GITHUB_OUTPUT"
@@ -96,6 +96,7 @@ jobs:
           cp index.html _site/index.html
           cp data/map.json _site/data/map.json
           if [ -f kushner.html ]; then cp kushner.html _site/kushner.html; fi
+          if [ -f developers.html ]; then cp developers.html _site/developers.html; fi
           if [ -f data/portfolio.json ]; then cp data/portfolio.json _site/data/portfolio.json; fi
           if [ -f data/boundaries.json ]; then cp data/boundaries.json _site/data/boundaries.json; fi
           if [ -d data/detail ]; then cp -r data/detail _site/data/detail; fi

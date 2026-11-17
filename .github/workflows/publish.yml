@@ -29,6 +29,7 @@ jobs:
           cp index.html _site/index.html
           cp data/map.json _site/data/map.json
           if [ -f kushner.html ]; then cp kushner.html _site/kushner.html; fi
+          if [ -f developers.html ]; then cp developers.html _site/developers.html; fi
           if [ -f data/portfolio.json ]; then cp data/portfolio.json _site/data/portfolio.json; fi
           if [ -f data/boundaries.json ]; then cp data/boundaries.json _site/data/boundaries.json; fi
           if [ -d data/detail ]; then cp -r data/detail _site/data/detail; fi

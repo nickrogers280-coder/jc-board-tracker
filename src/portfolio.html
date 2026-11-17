@@ -2,15 +2,19 @@
 :root { --kc: #e3b34c; --kre: #4fc3b6; }
 .co-pin { position: relative; display: grid; place-items: center; transform: translate(-50%, -50%); min-width: 34px; height: 22px; padding: 0 6px; border-radius: 5px; background: var(--c); color: #0b1016; font: 700 11px var(--font-head); letter-spacing: .04em; border: 2px solid #0b1016; box-shadow: 0 0 0 1.5px var(--c), 0 3px 8px rgba(0,0,0,.6); white-space: nowrap; }
 .co-pin::after { content: ""; position: absolute; left: 50%; bottom: -7px; margin-left: -5px; border: 5px solid transparent; border-top-color: var(--c); border-bottom: 0; }
-.co-pin.kc { --c: var(--kc); } .co-pin.kre { --c: var(--kre); }
+.co-pin.multi { background: linear-gradient(90deg, var(--c) 50%, var(--c2) 50%); }
 .co-pin.proposed { background: #0b1016; color: var(--c); }
 .co-pin.sel { transform: translate(-50%, -50%) scale(1.25); z-index: 1; }
-.co-tag.kc { --t: var(--kc); } .co-tag.kre { --t: var(--kre); }
-.co-sum { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 12px 14px; border-bottom: 1px solid var(--line); }
-.co-sum div { border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; }
-.co-sum b { display: block; font: 600 18px var(--font-data); }
-.co-sum span { font-size: 11.5px; color: var(--ink-2); }
-.co-sum .kc b { color: var(--kc); } .co-sum .kre b { color: var(--kre); }
+.co-sum { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+.co-sum button { text-align: left; background: none; border: 1px solid var(--line); border-radius: 8px; padding: 6px 9px; cursor: pointer; color: var(--ink); min-width: 0; }
+.co-sum button[aria-pressed="false"] { opacity: .4; }
+.co-sum button:hover { border-color: var(--c); }
+.co-sum b { display: flex; align-items: baseline; gap: 6px; font: 600 16px var(--font-data); color: var(--c); }
+.co-sum b small { font: 500 11px var(--font-body); color: var(--ink-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.co-sum span { display: block; font-size: 11px; color: var(--ink-3); }
+.co-sum .all { grid-column: 1 / -1; font-size: 11.5px; color: var(--ink-2); padding: 4px 9px; }
+.roles { display: grid; gap: 4px; font-size: 12.5px; }
+.roles div { display: flex; gap: 8px; align-items: baseline; }
 .co-note { padding: 10px 14px; font-size: 12px; color: var(--ink-3); border-bottom: 1px solid var(--line); line-height: 1.5; }
 .grp { padding: 10px 14px 4px; font: 600 11px var(--font-head); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
 .case { border: 1px solid var(--line); border-radius: 8px; padding: 10px; margin-bottom: 10px; }
@@ -48,7 +52,7 @@
 <body>
 <div class="app">
   <header class="topbar">
-    <div class="brand"><h1>Kushner &amp; KRE in Jersey City</h1><span class="sub">Buildings, approvals, documents and deed history</span></div>
+    <div class="brand"><h1>Jersey City Developers</h1><span class="sub">Who built what: buildings, approvals, documents and deed history</span></div>
     <div class="stats" id="stats"></div>
     <div class="layer-toggle" role="group" aria-label="Map style">
       <button id="lyr-sat" aria-pressed="true">Satellite</button>
@@ -65,14 +69,18 @@
       <div class="foot" id="foot"></div>
     </aside>
     <div id="map" aria-label="Satellite map of Jersey City"></div>
-    <div class="legend"><div><i style="--c:var(--kc)"></i>Kushner Companies</div><div><i style="--c:var(--kre)"></i>KRE Group</div><div><i class="hollow"></i>Proposed / under construction</div></div>
+    <div class="legend" id="legend"></div>
     <section class="detail" id="detail" hidden aria-live="polite"></section>
   </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
 <script>
 (() => {
-  const CO = { kc: { label: "Kushner Companies", short: "KC" }, kre: { label: "KRE Group", short: "KRE" } };
+  let CO = { kc: { label: "Kushner Companies", short: "KC", color: "#e3b34c" }, kre: { label: "KRE Group", short: "KRE", color: "#4fc3b6" } };
+  const active = new Set();
+  const devsOf = (b) => (b.developers && b.developers.length ? b.developers : [{ key: b.company, role: "Developer" }]).filter((d) => CO[d.key]);
+  const shown = (b) => devsOf(b).some((d) => active.has(d.key));
+  const tagHtml = (k) => `<span class="tag" style="--t:${CO[k].color}">${esc(CO[k].short)}</span>`;
   const PORTAL = "https://jerseycitynj-energovpub.tylerhost.net/apps/selfservice/JerseyCityNJProd#/plan/";
   const $ = (s) => document.querySelector(s);
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -126,21 +134,23 @@
   }
 
   function pinIcon(b) {
-    return L.divIcon({ className: "", html: `<span class="co-pin ${b.company}${isProposed(b) ? " proposed" : ""}${selected === b.id ? " sel" : ""}">${CO[b.company].short}</span>`, iconSize: [0, 0] });
+    const d = devsOf(b), c1 = CO[d[0].key].color, c2 = d[1] ? CO[d[1].key].color : null;
+    return L.divIcon({ className: "", html: `<span class="co-pin${c2 && !isProposed(b) ? " multi" : ""}${isProposed(b) ? " proposed" : ""}${selected === b.id ? " sel" : ""}" style="--c:${c1};--c2:${c2 || c1}">${esc(CO[d[0].key].short)}${d.length > 1 ? "+" : ""}</span>`, iconSize: [0, 0] });
   }
 
   function renderDetail(b) {
-    const co = CO[b.company];
     const figs = [["Units", b.units ? n0(b.units) : "—"], ["Stories", b.stories || "—"], ["Completed", b.completed || "—"]];
     $("#detail").innerHTML = `
       <div class="d-head">
         <button class="x" id="d-close" aria-label="Close">×</button>
         <h2>${esc(b.name)}</h2>
         <div class="where">${esc(b.addresses.join(" · "))}</div>
-        <div class="tags"><span class="tag co-tag ${b.company}">${esc(co.label)}</span><span class="tag" style="--t:${isProposed(b) ? "var(--pin)" : "var(--ok)"}">${esc(b.status || "")}</span>${b.partners.length ? `<span class="tag" style="--t:var(--ink-2)">With ${esc(b.partners.join(", "))}</span>` : ""}</div>
+        <div class="tags">${devsOf(b).map((d) => `<span class="tag" style="--t:${CO[d.key].color}">${esc(CO[d.key].label)}</span>`).join("")}<span class="tag" style="--t:${isProposed(b) ? "var(--pin)" : "var(--ok)"}">${esc(b.status || "")}</span></div>
       </div>
       <div class="d-body">
         <div class="figs">${figs.map(([k, v]) => `<div class="fig"><span>${k}</span><b>${esc(v)}</b></div>`).join("")}</div>
+        <div class="sec"><h3>Who's involved</h3><div class="roles">${devsOf(b).map((d) => `<div>${tagHtml(d.key)}<span><b>${esc(CO[d.key].label)}</b> · ${esc(d.role || "Developer")}</span></div>`).join("")}${(b.partners || []).map((p) => `<div><span class="tag" style="--t:var(--ink-2)">With</span><span>${esc(p)}</span></div>`).join("")}</div>
+          ${devsOf(b).some((d) => CO[d.key].note) ? `<p class="note" style="margin:6px 0 0">${devsOf(b).filter((d) => CO[d.key].note).map((d) => esc(CO[d.key].note)).join(" ")}</p>` : ""}</div>
         <div class="sec"><h3>About</h3><p class="desc">${esc(b.summary || "")}</p></div>
         <div class="sec"><h3>Board applications · ${b.cases.length}</h3>${b.cases.length ? `<p class="note" style="margin:0 0 8px">Newest first. Current version of each document first; older uploads under each list.</p>${b.cases.map(caseHtml).join("")}` : `<p class="note">No Planning or Zoning Board case found online for these lots. Approvals before the city's online portal (about 2016) are on paper at the Division of City Planning.</p>`}</div>
         <div class="sec"><h3>Ownership &amp; sales</h3>${salesHtml(b)}</div>
@@ -156,7 +166,7 @@
           ${b.lat != null ? `<a href="https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${b.lat},${b.lon}" target="_blank" rel="noopener">Street View</a>` : ""}
         </div>
       </div>`;
-    $("#d-close").onclick = () => { selected = null; $("#detail").hidden = true; redraw(); renderList(); if (outlines) { outlines.remove(); outlines = null; } };
+    $("#d-close").onclick = () => { selected = null; $("#detail").hidden = true; redraw(); renderList(); if (outlines) { outlines.remove(); outlines = null; } try { history.replaceState(null, "", location.pathname); } catch {} };
   }
 
   async function drawLots(b) {
@@ -166,7 +176,7 @@
       const url = "https://services2.arcgis.com/XVOqAjTOJ5P6ngMu/arcgis/rest/services/Parcels_Composite_NJ_WM/FeatureServer/0/query?" + new URLSearchParams({ where: `PAMS_PIN IN (${b.pins.map((x) => `'${x}'`).join(",")})`, outFields: "PAMS_PIN", returnGeometry: "true", outSR: "4326", f: "geojson" });
       const gj = await (await fetch(url)).json();
       if (selected !== b.id) return;
-      outlines = L.geoJSON(gj, { style: { color: b.company === "kc" ? "#e3b34c" : "#4fc3b6", weight: 2, fillOpacity: 0.15 } }).addTo(map);
+      outlines = L.geoJSON(gj, { style: { color: CO[devsOf(b)[0].key].color, weight: 2, fillOpacity: 0.15 } }).addTo(map);
     } catch {}
   }
 
@@ -187,27 +197,45 @@
     try { history.replaceState(null, "", "#" + id); } catch {}
   }
 
-  function redraw() { markers.forEach((m, id) => m.setIcon(pinIcon(m._b))); }
+  function redraw() {
+    markers.forEach((m) => { m.setIcon(pinIcon(m._b)); const on = shown(m._b) || selected === m._b.id; if (on && !map.hasLayer(m)) m.addTo(map); if (!on && map.hasLayer(m)) m.remove(); });
+  }
 
   function renderList() {
-    const groups = ["kc", "kre"].map((k) => [k, DATA.buildings.filter((b) => b.company === k)]);
-    $("#list").innerHTML = groups.map(([k, list]) => `<div class="grp">${esc(CO[k].label)} · ${list.length}</div>` + list.map((b) => `
-      <button class="item" data-id="${b.id}" aria-current="${selected === b.id}">
-        <div class="top"><span class="tag co-tag ${k}">${CO[k].short}</span><span class="addr">${esc(b.name)}</span><span class="when">${esc(b.completed || b.status || "")}</span></div>
-        <div class="meta">${esc(b.addresses[0])}${b.partners.length ? " · with " + esc(b.partners.join(", ")) : ""}</div>
+    const keys = Object.keys(CO).filter((k) => active.has(k));
+    $("#list").innerHTML = keys.map((k) => {
+      const list = DATA.buildings.filter((b) => devsOf(b).some((d) => d.key === k));
+      if (!list.length) return "";
+      return `<div class="grp" style="color:${CO[k].color}">${esc(CO[k].label)} · ${list.length}</div>` + list.map((b) => {
+        const me = devsOf(b).find((d) => d.key === k);
+        return `<button class="item" data-id="${b.id}" aria-current="${selected === b.id}">
+        <div class="top">${devsOf(b).map((d) => tagHtml(d.key)).join("")}<span class="addr">${esc(b.name)}</span><span class="when">${esc(b.completed || b.status || "")}</span></div>
+        <div class="meta">${esc(b.addresses[0])}${me && me.role && me.role !== "Developer" ? " · " + esc(me.role) : ""}</div>
         <div class="change">${[b.units ? n0(b.units) + " units" : "", b.stories ? b.stories + " stories" : "", b.cases.length ? b.cases.length + " board case" + (b.cases.length === 1 ? "" : "s") : "", isProposed(b) ? b.status : ""].filter(Boolean).join(" · ")}</div>
-      </button>`).join("")).join("");
+      </button>`; }).join("");
+    }).join("") || `<p class="note" style="padding:14px">Pick a developer above.</p>`;
     $("#list").querySelectorAll(".item").forEach((el) => (el.onclick = () => select(el.dataset.id, true)));
   }
 
   function renderSummary() {
-    const sum = (k) => { const l = DATA.buildings.filter((b) => b.company === k); return { n: l.length, u: l.reduce((s, b) => s + (b.units || 0), 0) }; };
-    const kc = sum("kc"), kre = sum("kre");
-    $("#co-sum").innerHTML = `<div class="kc"><b>${kc.n}</b><span>Kushner Companies · ${n0(kc.u)} units known</span></div><div class="kre"><b>${kre.n}</b><span>KRE Group · ${n0(kre.u)} units known</span></div>`;
+    const stat = (k) => { const l = DATA.buildings.filter((b) => devsOf(b).some((d) => d.key === k)); return { n: l.length, u: l.reduce((s, b) => s + (b.units || 0), 0) }; };
+    const keys = Object.keys(CO);
+    $("#co-sum").innerHTML = keys.map((k) => { const st = stat(k); return `<button data-k="${k}" aria-pressed="${active.has(k)}" style="--c:${CO[k].color}"><b>${st.n}<small>${esc(CO[k].label)}</small></b><span>${st.u ? n0(st.u) + " units known" : "&nbsp;"}</span></button>`; }).join("") +
+      `<button class="all" data-k="*">${active.size === keys.length ? "Showing all · click a developer to see only theirs" : "Show all developers"}</button>`;
+    $("#co-sum").querySelectorAll("button").forEach((btn) => (btn.onclick = () => {
+      const k = btn.dataset.k;
+      if (k === "*") keys.forEach((x) => active.add(x));
+      else if (active.size === keys.length) { active.clear(); active.add(k); }
+      else if (active.has(k)) { active.delete(k); if (!active.size) keys.forEach((x) => active.add(x)); }
+      else active.add(k);
+      renderSummary(); renderList(); redraw();
+    }));
     $("#co-note").textContent = DATA.note || "";
-    const ndocs = DATA.buildings.reduce((s, b) => s + b.cases.reduce((t, c) => t + (c.docs || []).length, 0), 0);
-    $("#stats").innerHTML = `<div class="stat"><b>${DATA.buildings.length}</b><span>Buildings</span></div><div class="stat"><b>${n0(kc.u + kre.u)}</b><span>Units</span></div><div class="stat"><b>${DATA.buildings.reduce((s, b) => s + b.cases.length, 0)}</b><span>Board cases</span></div><div class="stat"><b>${n0(ndocs)}</b><span>Documents</span></div>`;
-    $("#foot").innerHTML = `Updated ${new Date(DATA.generated_at).toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })} with the board tracker, every 6 hours.<br>Sources: developer and press sources listed on each building; Jersey City permit portal and Open Data archive (board cases and files); Hudson County Register (deeds); NJ Division of Taxation (sale prices, MOD-IV). Unit and story counts are as reported publicly.`;
+    const vis = DATA.buildings.filter(shown);
+    const ndocs = vis.reduce((s, b) => s + b.cases.reduce((t, c) => t + (c.docs || []).length, 0), 0);
+    $("#stats").innerHTML = `<div class="stat"><b>${vis.length}</b><span>Buildings</span></div><div class="stat"><b>${n0(vis.reduce((s, b) => s + (b.units || 0), 0))}</b><span>Units</span></div><div class="stat"><b>${vis.reduce((s, b) => s + b.cases.length, 0)}</b><span>Board cases</span></div><div class="stat"><b>${n0(ndocs)}</b><span>Documents</span></div>`;
+    $("#legend").innerHTML = keys.map((k) => `<div><i style="--c:${CO[k].color}"></i>${esc(CO[k].label)}</div>`).join("") + `<div><i class="hollow"></i>Proposed / under construction</div><div><i style="background:linear-gradient(90deg,#e3b34c 50%,#ff7a59 50%)"></i>Two or more companies</div>`;
+    $("#foot").innerHTML = `Updated ${new Date(DATA.generated_at).toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })} with the board tracker, every 6 hours.<br>Pins sit on each building's tax parcel (NJ MOD-IV). Roles and figures come from the developer and press sources listed on each building; board cases and files from the Jersey City permit portal; deeds from the Hudson County Register; sale prices from the NJ Division of Taxation.`;
   }
 
   function initMap() {
@@ -233,6 +261,8 @@
   async function start() {
     try { DATA = await (await fetch("data/portfolio.json", { cache: "no-store" })).json(); }
     catch { $("#list").innerHTML = `<p class="note" style="padding:14px">Building data hasn't been published yet. It's built with the next tracker update.</p>`; return; }
+    if (DATA.developers && DATA.developers.length) CO = Object.fromEntries(DATA.developers.map((d) => [d.key, d]));
+    Object.keys(CO).forEach((k) => active.add(k));
     initMap(); renderSummary(); renderList();
     const h = decodeURIComponent(location.hash.slice(1));
     if (h) select(h, false);

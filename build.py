@@ -656,6 +656,7 @@ if _pf.exists():
             by_block[bk].append(lt)
         buildings.append({
             "id": bld["id"], "name": bld["name"], "company": bld["company"], "partners": bld.get("partners") or [],
+            "developers": bld.get("developers") or [{"key": bld["company"], "role": "Developer"}],
             "status": bld.get("status"), "completed": bld.get("completed"), "units": bld.get("units"), "stories": bld.get("stories"),
             "summary": bld.get("summary"), "sources": bld.get("sources") or [], "addresses": bld.get("addresses") or [],
             "lat": bld.get("lat") or (lots[0].get("lat") if lots else None), "lon": bld.get("lon") or (lots[0].get("lon") if lots else None),
@@ -664,15 +665,16 @@ if _pf.exists():
             "net_value": sum(int(l.get("NET_VALUE") or 0) for l in lots) or None, "acres": round(sum(float(l.get("CALC_ACRE") or 0) for l in lots), 3) or None,
             "cases": cases, "sales": sales_for(pins),
         })
-    port = {"generated_at": generated, "title": pf_cfg.get("title"), "note": pf_cfg.get("note"), "buildings": buildings}
+    port = {"generated_at": generated, "title": pf_cfg.get("title"), "note": pf_cfg.get("note"), "developers": pf_cfg.get("developers") or [], "buildings": buildings}
     (ROOT / "data/portfolio.json").write_text(json.dumps(port, separators=(",", ":")), encoding="utf-8")
     print(f"portfolio: {len(buildings)} buildings, {sum(len(x['cases']) for x in buildings)} cases, {sum(len(c['docs']) for x in buildings for c in x['cases'])} documents")
 
 # Assemble the page: shared stylesheet from the Distress Map (src/head.html) + tracker markup/script.
 (ROOT / "index.html").write_text((ROOT / "src/head.html").read_text(encoding="utf-8") + (ROOT / "src/body.html").read_text(encoding="utf-8"), encoding="utf-8")
 if (ROOT / "src/portfolio.html").exists():
-    (ROOT / "kushner.html").write_text((ROOT / "src/head.html").read_text(encoding="utf-8").replace("<title>JC Board Tracker</title>", "<title>Kushner & KRE in Jersey City</title>")
-                                       + (ROOT / "src/portfolio.html").read_text(encoding="utf-8"), encoding="utf-8")
+    _dev = (ROOT / "src/head.html").read_text(encoding="utf-8").replace("<title>JC Board Tracker</title>", "<title>Jersey City Developers</title>") + (ROOT / "src/portfolio.html").read_text(encoding="utf-8")
+    for _n in ("developers.html", "kushner.html"):  # kushner.html kept so links already sent keep working
+        (ROOT / _n).write_text(_dev, encoding="utf-8")
 # Standalone single file: same page with the data embedded, for opening from disk or uploading anywhere.
 page = (ROOT / "index.html").read_text(encoding="utf-8")
 blob = json.dumps({**data, "cases": full}, separators=(",", ":")).replace("</", "<\\/")

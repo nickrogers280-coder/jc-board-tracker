@@ -87,7 +87,17 @@ def main():
             if lots and "lat" not in b:
                 rec["lat"], rec["lon"] = lots[0]["lat"], lots[0]["lon"]
         for addr in b["addresses"]:
-            g = None if b.get("pins") else F.geocode(addr + ", Jersey City, NJ")
+            if not b.get("pins"):
+                # Tax parcel by its street address first; the geocoder only when the tax rolls don't have the address.
+                try:
+                    pa = F.parcel_by_address(addr)
+                except Exception:
+                    pa = None
+                if pa:
+                    if pa["PAMS_PIN"] not in pins:
+                        pins.append(pa["PAMS_PIN"]); lots.append(pa)
+                    rec.setdefault("lat", pa["lat"]); rec.setdefault("lon", pa["lon"])
+            g = None if (b.get("pins") or pins) else F.geocode(addr + ", Jersey City, NJ")
             if g and g["score"] >= 85:
                 rec.setdefault("lat", g["lat"]); rec.setdefault("lon", g["lon"])
                 for a in parcel_at(g["lat"], g["lon"]):

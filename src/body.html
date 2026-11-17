@@ -73,6 +73,9 @@
 .filter-note { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--ink-2); }
 .filter-note button { background: none; border: 1px solid var(--line); border-radius: 999px; padding: 2px 8px; font-size: 11px; color: var(--ink-2); cursor: pointer; }
 .row select { flex-basis: 90px; }
+.dev-link { color: var(--ink-2); font-size: 12px; text-decoration: none; border: 1px solid var(--line); border-radius: 6px; padding: 5px 10px; white-space: nowrap; }
+.dev-link:hover { color: var(--ink); border-color: var(--pin); }
+@media (max-width: 760px) { .dev-link { display: none; } }
 @media (max-width: 760px) { .legend { display: none; } }
 </style>
 </head>
@@ -85,6 +88,7 @@
       <button id="lyr-sat" aria-pressed="true">Satellite</button>
       <button id="lyr-street" aria-pressed="false">Streets</button>
     </div>
+    <a class="dev-link" href="developers.html">Developers map →</a>
     <button class="panel-btn" id="panel-btn" aria-controls="side">List</button>
   </header>
   <div class="body">

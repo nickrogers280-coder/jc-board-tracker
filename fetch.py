@@ -270,6 +270,81 @@ def parcels(pins):
     return found
 
 
+SUFFIX = {"STREET": "ST", "ST": "ST", "AVENUE": "AVE", "AVE": "AVE", "AV": "AVE", "BOULEVARD": "BLVD", "BLVD": "BLVD", "DRIVE": "DR", "DR": "DR",
+          "PLACE": "PL", "PL": "PL", "ROAD": "RD", "RD": "RD", "COURT": "CT", "CT": "CT", "TERRACE": "TER", "TER": "TER", "PLAZA": "PLZ", "PLZ": "PLZ",
+          "SQUARE": "SQ", "SQ": "SQ", "LANE": "LN", "LN": "LN", "PARKWAY": "PKWY", "PKWY": "PKWY", "HIGHWAY": "HWY", "HWY": "HWY", "WAY": "WAY"}
+DIRS = {"NORTH": "N", "SOUTH": "S", "EAST": "E", "WEST": "W"}
+
+
+def parse_street(address):
+    """'235 Grand Street, Jersey City NJ 07302' -> ('235', 'GRAND', 'ST')."""
+    a = re.split(r",|\bjersey city\b", (address or "").upper(), flags=re.I)[0]
+    a = re.sub(r"[.#]", " ", re.sub(r"UNIT:?.*$", "", a)).split()
+    if len(a) < 2 or not re.match(r"^\d+[A-Z]?(-\d+[A-Z]?)?$", a[0]):
+        return None
+    num, rest = a[0].split("-")[0], a[1:]
+    sfx = SUFFIX.get(rest[-1]) if rest else None
+    if sfx:
+        rest = rest[:-1]
+    rest = [DIRS.get(w, w) for w in rest]
+    return (num, " ".join(rest), sfx) if rest else None
+
+
+# Street names as the tax rolls spell them.
+STREET_ALIAS = {"CHRISTOPHER COLUMBUS": ["COLUMBUS"], "JOHN F KENNEDY": ["KENNEDY", "KENEDY", "JFK"], "KENNEDY": ["KENEDY", "JFK"],
+                "MARTIN LUTHER KING": ["MLK", "M L KING", "MARTIN L KING"], "MARTIN LUTHER KING JR": ["MLK", "M L KING", "MARTIN L KING"],
+                "JOURNAL SQUARE": ["JOURNAL"], "SAINT PAULS": ["ST PAULS"], "MONTGOMERY": ["MONTGOMERY"], "NEWARK": ["NEWARK"],
+                "COMMUNIPAW": ["COMMUNIPAW"], "HUDSON": ["HUDSON"]}
+
+
+ORDINAL = ["", "FIRST", "SECOND", "THIRD", "FOURTH", "FIFTH", "SIXTH", "SEVENTH", "EIGHTH", "NINTH", "TENTH", "ELEVENTH", "TWELFTH",
+           "THIRTEENTH", "FOURTEENTH", "FIFTEENTH", "SIXTEENTH", "SEVENTEENTH", "EIGHTEENTH", "NINETEENTH", "TWENTIETH"]
+
+
+def parcel_by_address(address):
+    ps = parse_street(address)
+    if not ps:
+        return None
+    num, street, sfx = ps
+    if street == "JOURNAL SQUARE" and sfx in ("PLZ", None):
+        street, sfx = "JOURNAL", "SQ"
+    names = [street] + [n for n in STREET_ALIAS.get(street, []) if n != street]
+    m = re.fullmatch(r"(\d{1,2})(ST|ND|RD|TH)", street)
+    if m and 0 < int(m.group(1)) < len(ORDINAL):
+        names.append(ORDINAL[int(m.group(1))])  # tax rolls spell some numbered streets out: 310 TENTH ST
+    for name in names:
+        hit = _parcel_by(num, name, sfx)
+        if hit:
+            return hit
+    return None
+
+
+def _parcel_by(num, street, sfx):
+    """Tax parcel whose MOD-IV property location matches the street address (house number, street name and, when
+    given, street type: Park Ave never matches Park St). Base lots beat condo units; ties go to the higher assessment."""
+    st = street.replace("'", "''")
+    where = (f"PAMS_PIN LIKE '0906[_]%' AND (PROP_LOC LIKE '{num} {st}%' OR PROP_LOC LIKE '{num}-% {st}%')")
+    r = requests.post(PARCELS, data={"where": where, "outFields": PFIELDS, "returnGeometry": "false", "returnCentroid": "true", "outSR": "4326", "f": "json"}, timeout=90)
+    best = []
+    for f in r.json().get("features", []):
+        a = f["attributes"]
+        loc = re.sub(r"[.,]", " ", (a.get("PROP_LOC") or "").upper()).split()
+        m = re.match(r"^[\d\-A-Z]*?\s*(.*)$", " ".join(loc))
+        words = [DIRS.get(w, w) for w in loc[1:]]
+        lsfx = SUFFIX.get(words[-1]) if words else None
+        lname = " ".join(words[:-1] if lsfx else words)
+        lname = re.sub(r"\s*\(.*$", "", lname)
+        if lname != street or (sfx and lsfx and sfx != lsfx):
+            continue
+        c = f.get("centroid") or {}
+        a["lat"], a["lon"] = c.get("y"), c.get("x")
+        best.append(a)
+    if not best:
+        return None
+    best.sort(key=lambda a: ("_C" in a["PAMS_PIN"], a.get("PROP_CLASS") == "15F", -(a.get("NET_VALUE") or 0)))
+    return best[0]
+
+
 def geocode(address):
     a = re.sub(r"Unit:.*?(?=Jersey City)", "", address or "").strip()
     if not a or not re.search(r"\d", a):
@@ -483,6 +558,17 @@ def main():
     for c in cases:
         c["parcel"] = known.get(c["pin"]) or fresh.get(c["pin"])
         old = prev.get(c["id"]) or {}
+        if not c["parcel"]:
+            # Parcel number missing or not on the state map: find the tax parcel by its street address.
+            if old.get("parcel_via") == "address" and old.get("address") == c["address"]:
+                c["parcel"], c["pin"], c["parcel_via"] = old.get("parcel"), old.get("pin"), "address"
+            else:
+                try:
+                    pa = parcel_by_address(c["address"])
+                except Exception:
+                    pa = None
+                if pa:
+                    c["pin_portal"], c["pin"], c["parcel"], c["parcel_via"] = c["pin"], pa["PAMS_PIN"], pa, "address"
         if c["parcel"]:
             c["geo"] = None
         elif old.get("geo") and old.get("address") == c["address"]:
