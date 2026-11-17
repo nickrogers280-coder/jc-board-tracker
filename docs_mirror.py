@@ -87,6 +87,7 @@ def main():
            "--notes", "Current version of each document filed on tracked Jersey City Planning/Zoning Board cases. Updated automatically.")
     assets = json.loads(gh("release", "view", TAG, "-R", REPO, "--json", "assets").stdout).get("assets") or []
     existing = {x["name"] for x in assets}
+    sizes = {x["name"]: x.get("size") for x in assets}
 
     want = {}
     for c in cases:
@@ -106,6 +107,9 @@ def main():
     for aid, (case, d, kind) in want.items():
         name = asset_name(case, d)
         if aid in mirror and mirror[aid]["asset"] in existing:
+            continue
+        if name in existing:  # already on the release (e.g. a run whose record didn't get saved): just record it
+            mirror[aid] = {"asset": name, "size": sizes.get(name) or 0, "case": case, "kind": kind}
             continue
         try:
             size = None

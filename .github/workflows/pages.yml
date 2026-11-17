@@ -64,6 +64,7 @@ jobs:
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
             git commit -m "data: update $(date -u +%Y-%m-%d\ %H:%M) UTC"
+            git pull --rebase -X theirs origin main || git pull --rebase origin main
             git push
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
