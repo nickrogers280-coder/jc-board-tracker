@@ -206,6 +206,8 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
 .docs li:last-child { border-bottom: 0; }
 .docs .fn { overflow-wrap: anywhere; }
 .docs .fn a { color: var(--ink); text-decoration: none; border-bottom: 1px dotted var(--ink-3); }
+.ward-tag { position: absolute; transform: translate(-50%, -50%); white-space: nowrap; padding: 2px 7px; border-radius: 3px; background: rgba(18,26,35,.82); border: 1px solid var(--line); color: var(--ink-2); font: 600 11px var(--font-head); letter-spacing: .06em; text-transform: uppercase; pointer-events: none; }
+.ward-tag.on { color: #1a1505; background: var(--parcel); border-color: var(--parcel); }
 .prior { border-left: 2px solid var(--line); padding-left: 10px; }
 .docs .fn a:hover { color: var(--pin); border-color: var(--pin); }
 .docs .dt { font-family: var(--font-data); font-size: 11px; color: var(--ink-3); white-space: nowrap; }
@@ -325,6 +327,7 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
   const titleCase = (s) => String(s || "").toLowerCase().replace(/\b([a-z])/g, (m) => m.toUpperCase()).replace(/\b(Llc|Lp|Llp|Pllc|Pc|Inc|Nj|Ny|Us|Usa|Jfk|Mlk|Ii|Iii|Rdp)\b/g, (m) => m.toUpperCase()).replace(/\b(\d+)(St|Nd|Rd|Th)\b/g, (m, a, b) => a + b.toLowerCase());
   const MONTHS = { january: 1, february: 2, march: 3, april: 4, may: 5, june: 6, july: 7, august: 8, september: 9, october: 10, november: 11, december: 12 };
 
+  let BOUNDS = null, cityLayer = null, maskLayer = null, wardLayer = null, wardLabels = null;
   let DATA, NOW, LAST_VISIT, map, layers, markers = new Map(), selected = null, outline = null, tab = "activity", ptab = "applicant";
   const state = { q: "", board: "", kind: "", ward: "", window: "", size: 0, statuses: new Set(["pending", "heard", "approved"]), types: new Set(TYPES.map((t) => t.key)) };
 
@@ -403,6 +406,37 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
     if (store.get("jcbt:layer") === "streets") setLayer("streets");
   }
 
+  // ---------------------------------------------------------------- city & ward lines
+  const ringsOf = (g) => (g.type === "Polygon" ? [g.coordinates] : g.coordinates);
+  function drawCity() {
+    if (!BOUNDS || !BOUNDS.city) return;
+    map.createPane("bounds"); map.getPane("bounds").style.zIndex = 390; map.getPane("bounds").style.pointerEvents = "none";
+    // Dim everything outside the city so the eye stays inside the limits.
+    const world = [[-90, -180], [-90, 180], [90, 180], [90, -180]];
+    const holes = BOUNDS.city.features.flatMap((f) => ringsOf(f.geometry).map((p) => p[0].map(([x, y]) => [y, x])));
+    maskLayer = L.polygon([world, ...holes], { pane: "bounds", stroke: false, fillColor: "#0b1016", fillOpacity: 0.45, interactive: false }).addTo(map);
+    cityLayer = L.geoJSON(BOUNDS.city, { pane: "bounds", interactive: false, style: { color: "#e7edf3", weight: 2.5, opacity: 0.9, fill: false } }).addTo(map);
+  }
+  function drawWard(letter) {
+    if (wardLayer) { wardLayer.remove(); wardLayer = null; }
+    if (wardLabels) { wardLabels.remove(); wardLabels = null; }
+    if (!BOUNDS || !BOUNDS.wards) return;
+    const feats = BOUNDS.wards.features;
+    if (!letter) return;
+    wardLayer = L.layerGroup().addTo(map);
+    // Other wards: thin lines for context. Selected ward: bold outline, light fill, dim the rest of the city.
+    L.geoJSON({ type: "FeatureCollection", features: feats.filter((f) => f.properties.ward !== letter) }, { pane: "bounds", interactive: false,
+      style: { color: "#a3b1bf", weight: 1, opacity: 0.6, dashArray: "4 4", fillColor: "#0b1016", fillOpacity: 0.35 } }).addTo(wardLayer);
+    const sel = L.geoJSON({ type: "FeatureCollection", features: feats.filter((f) => f.properties.ward === letter) }, { pane: "bounds", interactive: false,
+      style: { color: "#ffe066", weight: 3, opacity: 1, fillColor: "#ffe066", fillOpacity: 0.06 } }).addTo(wardLayer);
+    wardLabels = L.layerGroup(feats.map((f) => {
+      const c = L.geoJSON(f).getBounds().getCenter();
+      return L.marker(c, { interactive: false, icon: L.divIcon({ className: "", html: `<span class="ward-tag${f.properties.ward === letter ? " on" : ""}">Ward ${esc(f.properties.ward)}</span>`, iconSize: [0, 0] }) });
+    })).addTo(map);
+    const mobile = window.matchMedia("(max-width: 760px)").matches;
+    map.fitBounds(sel.getBounds(), { paddingTopLeft: [40, 40], paddingBottomRight: mobile ? [20, map.getSize().y * 0.4] : [selected ? 420 : 40, 40], maxZoom: 16 });
+  }
+
   function pinIcon(p) {
     const t = TYPE[p.product] || TYPE.other;
     const u = p.units || 0;
@@ -431,7 +465,7 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
   function renderLegend() {
     const seen = new Set(DATA.cases.map((p) => p.product));
     $("#legend").innerHTML = TYPES.filter((t) => seen.has(t.key) && t.key !== "other").map((t) => `<div><i style="--c:${t.c}"></i>${esc(t.label)}</div>`).join("") +
-      `<div><i style="--c:var(--ink-2)"></i>Planning Board</div><div><i class="dia"></i>Zoning Board</div><div><i class="okring"></i>Approved</div><div><i class="ring"></i>Filed in last 14 days</div><div style="color:var(--ink-3)">Bigger pin = more units</div>`;
+      `<div><i style="--c:var(--ink-2)"></i>Planning Board</div><div><i class="dia"></i>Zoning Board</div><div><i class="okring"></i>Approved</div><div><i class="ring"></i>Filed in last 14 days</div><div style="color:var(--ink-3)">Bigger pin = more units</div>${BOUNDS ? `<div style="color:var(--ink-3)">Pick a ward to outline it</div>` : ""}`;
   }
 
   // ---------------------------------------------------------------- sidebar
@@ -461,7 +495,7 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
     $("#ward").insertAdjacentHTML("beforeend", wards.map((w) => `<option value="${esc(w)}">Ward ${esc(w)}</option>`).join(""));
     $("#board").onchange = (e) => { state.board = e.target.value; refresh(); };
     $("#kind").onchange = (e) => { state.kind = e.target.value; refresh(); };
-    $("#ward").onchange = (e) => { state.ward = e.target.value; refresh(); };
+    $("#ward").onchange = (e) => { state.ward = e.target.value; refresh(); drawWard(state.ward); if (!state.ward) fitCity(); };
     $("#window").onchange = (e) => { state.window = +e.target.value || ""; refresh(); };
     $("#size").onchange = (e) => { state.size = +e.target.value || 0; refresh(); };
     let t; $("#q").oninput = (e) => { clearTimeout(t); t = setTimeout(() => { state.q = e.target.value.trim().toLowerCase(); refresh(); }, 120); };
@@ -763,15 +797,25 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
     setTimeout(() => t.remove(), 6000);
   }
 
+  function fitCity() {
+    const b = cityLayer ? cityLayer.getBounds() : null;
+    if (b) map.fitBounds(b, { padding: [30, 30] });
+    else { const pts = DATA.cases.filter((p) => p.lat != null).map((p) => [p.lat, p.lon]); if (pts.length) map.fitBounds(pts, { padding: [40, 40], maxZoom: 14 }); }
+  }
+
   async function start() {
     const emb = document.getElementById("jc-data");
     DATA = emb ? JSON.parse(emb.textContent) : await (await fetch("data/map.json", { cache: "no-store" })).json();
     NOW = new Date(DATA.generated_at);
     LAST_VISIT = store.get("jcbt:lastVisit");
+    try {
+      const embB = document.getElementById("jc-bounds");
+      BOUNDS = embB ? JSON.parse(embB.textContent) : await (await fetch("data/boundaries.json", { cache: "no-store" })).json();
+    } catch { BOUNDS = null; }
     initMap();
+    drawCity();
     renderStats(); renderFilters(); renderLegend(); renderFoot(); refresh();
-    const pts = DATA.cases.filter((p) => p.lat != null).map((p) => [p.lat, p.lon]);
-    if (pts.length) map.fitBounds(pts, { paddingTopLeft: [40, 40], paddingBottomRight: [40, 40], maxZoom: 14 });
+    fitCity();
     const fresh = LAST_VISIT ? DATA.cases.filter((p) => p.applied > LAST_VISIT.slice(0, 10)).length : 0;
     if (fresh) toast(`<b>${fresh} new application${fresh === 1 ? "" : "s"}</b> since your last visit`);
     store.set("jcbt:lastVisit", DATA.generated_at);

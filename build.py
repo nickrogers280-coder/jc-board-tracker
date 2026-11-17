@@ -427,7 +427,9 @@ print("units (new site plans, live)", sum(r["units"] for r in out if r["counts_u
 page = (ROOT / "index.html").read_text(encoding="utf-8")
 blob = json.dumps(data, separators=(",", ":")).replace("</", "<\\/")
 marker = '<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>'
-(ROOT / "jc-board-tracker.html").write_text(page.replace(marker, f'<script id="jc-data" type="application/json">{blob}</script>\n' + marker, 1), encoding="utf-8")
+_bp = ROOT / "data/boundaries.json"
+bblob = (f'<script id="jc-bounds" type="application/json">{_bp.read_text(encoding="utf-8").replace("</", "<\\/")}</script>\n') if _bp.exists() else ""
+(ROOT / "jc-board-tracker.html").write_text(page.replace(marker, f'<script id="jc-data" type="application/json">{blob}</script>\n' + bblob + marker, 1), encoding="utf-8")
 # Artifact variant: claude.ai wraps the page in its own document skeleton.
 stand = (ROOT / "jc-board-tracker.html").read_text(encoding="utf-8")
 art = re.sub(r"^<!doctype html>\s*<html[^>]*>\s*<head>\s*", "", stand, flags=re.I)

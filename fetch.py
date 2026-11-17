@@ -325,8 +325,50 @@ def parse_agendas(seen_cache):
 
 
 # ------------------------------------------------------------------ main
+CITY_GIS = "https://services2.arcgis.com/UXbywc7dSkfgdPp4/arcgis/rest/services/"
+
+
+def refresh_boundaries():
+    """City limits and ward lines from Jersey City Planning's own zoning-map layers. Refreshed monthly."""
+    path = ROOT / "data/boundaries.json"
+    if path.exists():
+        try:
+            old = json.loads(path.read_text())
+            if old.get("pulled", "") >= TODAY.fromordinal(TODAY.toordinal() - 30).isoformat():
+                return
+        except Exception:
+            pass
+
+    def layer(name):
+        r = requests.get(CITY_GIS + f"{name}/FeatureServer/0/query", params={"where": "1=1", "outFields": "*", "returnGeometry": "true",
+                         "outSR": "4326", "geometryPrecision": "6", "f": "geojson"}, timeout=120)
+        r.raise_for_status()
+        return r.json()["features"]
+
+    try:
+        city, wards = layer("Municipal_Boundary"), layer("Wards")
+    except Exception as e:
+        print("boundary refresh failed; keeping the last copy:", e, file=sys.stderr)
+        return
+    if not city or len(wards) < 6:
+        print("boundary refresh returned too little; keeping the last copy", file=sys.stderr)
+        return
+    out = {
+        "source": "Jersey City Division of City Planning, Interactive Zoning Map (Municipal Boundary, Wards)",
+        "pulled": TODAY.isoformat(),
+        "city": {"type": "FeatureCollection", "features": [{"type": "Feature", "properties": {"name": "Jersey City"}, "geometry": f["geometry"]} for f in city]},
+        "wards": {"type": "FeatureCollection", "features": sorted(
+            [{"type": "Feature", "properties": {"ward": re.sub(r"(?i)^ward\s*", "", str(f["properties"].get("NAME") or "")).strip()}, "geometry": f["geometry"]} for f in wards],
+            key=lambda f: f["properties"]["ward"])},
+    }
+    path.write_text(json.dumps(out, separators=(",", ":")))
+    print("boundaries refreshed")
+
+
 def main():
     (ROOT / "raw").mkdir(exist_ok=True)
+    (ROOT / "data").mkdir(exist_ok=True)
+    refresh_boundaries()
     (ROOT / "data").mkdir(exist_ok=True)
     cache_path = ROOT / "raw/agenda_text_cache.json"
     cache = json.loads(cache_path.read_text()) if cache_path.exists() else {}

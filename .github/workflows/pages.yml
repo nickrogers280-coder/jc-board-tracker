@@ -86,6 +86,7 @@ jobs:
           mkdir -p _site/data
           cp index.html _site/index.html
           cp data/map.json _site/data/map.json
+          if [ -f data/boundaries.json ]; then cp data/boundaries.json _site/data/boundaries.json; fi
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
