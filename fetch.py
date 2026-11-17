@@ -143,6 +143,86 @@ def attachments(case_id):
     return docs
 
 
+# ------------------------------------------------------------------ earlier approvals (extensions / amendments)
+REF = re.compile(r"(?<![A-Za-z0-9])(?:Case\s*(?:No\.?|Number|#)?\s*)?([PZ])?\s?-?\s?(20\d{2}|\d{2})\s?-\s?(\d{2,4})(?![\d-])", re.I)
+
+
+def prior_refs(text, own_id):
+    """Case numbers an application cites: 'P21-013', 'P2024-0187', 'Case No. 22-057', 'Z20-102'."""
+    refs = []
+    for m in REF.finditer(text or ""):
+        letter, yr, num = (m.group(1) or "").upper(), m.group(2), m.group(3)
+        ctx = text[max(0, m.start() - 12):m.start()].lower()
+        if not letter and "case" not in (text[max(0, m.start() - 12):m.end()].lower()):
+            continue  # bare "22-057" only counts when it's called a case
+        letter = letter or own_id[0]
+        if len(yr) == 4:
+            if not 2000 <= int(yr) <= TODAY.year:
+                continue
+            ref = f"{letter}{yr}-{int(num):04d}"
+        else:
+            if int(yr) > TODAY.year % 100:
+                continue
+            ref = f"{letter}{yr}-{int(num):03d}"
+        if ref != own_id and ref not in refs and "res" not in ctx:
+            refs.append(ref)
+    return refs
+
+
+_CRIT = None
+
+
+def find_case(ref):
+    global _CRIT
+    _CRIT = _CRIT or get(API + "search/criteria").json()["Result"]
+    b = json.loads(json.dumps(_CRIT))
+    b.update(Keyword=ref, ExactMatch=True, SearchModule=1, FilterModule=3, PageNumber=1, PageSize=20, SortBy="PlanNumber.keyword", SortAscending=True)
+    b["PlanCriteria"].update(PlanTypeId="none", PlanStatusId="none", SortBy="PlanNumber.keyword")
+    res = (post(API + "search/search", json=b).json().get("Result") or {}).get("EntityResults") or []
+    return next((x for x in res if (x.get("CaseNumber") or "").upper() == ref.upper()), None)
+
+
+def odp_case(ref):
+    """Pre-portal applications are archived on Jersey City Open Data, one dataset per case, with plans attached."""
+    q = requests.get("https://data.jerseycitynj.gov/api/explore/v2.1/catalog/datasets",
+                     params={"where": f'search("{ref.lower()}")', "limit": 10, "select": "dataset_id,title"}, timeout=60)
+    tok = ref.lower()
+    hit = next((d for d in q.json().get("results", []) if re.search(rf"(?<![a-z0-9]){re.escape(tok)}(?![0-9])", d["dataset_id"])), None)
+    if not hit:
+        return None
+    meta = get(ODP + hit["dataset_id"] + "/").json()
+    desc = re.sub(r"<[^>]+>", " ", str((meta.get("metas") or {}).get("description") or ""))
+    desc = re.sub(r"\s+", " ", desc).strip()
+    docs = [{"name": a.get("title") or a.get("id"), "url": ODP + f"{hit['dataset_id']}/attachments/{a['id']}/"} for a in meta.get("attachments") or []]
+    return {"dataset": hit["dataset_id"], "title": hit["title"], "desc": desc, "docs": docs}
+
+
+def load_prior(ref, cache):
+    c = cache.get(ref)
+    if c and c.get("checked", "") >= (TODAY.fromordinal(TODAY.toordinal() - 14)).isoformat():
+        return c
+    rec = {"id": ref, "checked": TODAY.isoformat()}
+    x = find_case(ref)
+    if x:
+        d = plan_detail(x["CaseId"])
+        rec.update(caseId=x["CaseId"], type=x.get("CaseType"), status=x.get("CaseStatus"), applied=(x.get("ApplyDate") or "")[:10],
+                   address=x.get("AddressDisplay"), desc=d.get("Description") or x.get("Description") or "", pin=d.get("MainParcelNumber"))
+        try:
+            rec["docs"] = attachments(x["CaseId"])
+        except Exception:
+            rec["docs"] = (c or {}).get("docs", [])
+    try:
+        o = odp_case(ref)
+    except Exception:
+        o = (c or {}).get("odp")
+    if o:
+        rec["odp"] = o
+    if not x and not o:
+        rec["missing"] = True
+    cache[ref] = rec
+    return rec
+
+
 # ------------------------------------------------------------------ parcels / geocode
 PFIELDS = "PAMS_PIN,PCLBLOCK,PCLLOT,PROP_CLASS,PROP_LOC,OWNER_NAME,ST_ADDRESS,CITY_STATE,ZIP_CODE,LAND_VAL,IMPRVT_VAL,NET_VALUE,CALC_ACRE,BLDG_DESC,LAND_DESC,DEED_DATE,SALE_PRICE,YR_CONSTR,ADD_LOTS1"
 
@@ -332,6 +412,35 @@ def main():
         c["lots"] = [{"pin": p, "lat": allp[p].get("lat"), "lon": allp[p].get("lon"), "acre": allp[p].get("CALC_ACRE"),
                       "net": allp[p].get("NET_VALUE"), "cls": allp[p].get("PROP_CLASS"), "loc": allp[p].get("PROP_LOC")}
                      for p in c["cand_pins"] if p in allp]
+
+    # Earlier approvals each case builds on (extensions, amendments, re-filings), followed up to two steps back.
+    pcache_path = ROOT / "raw/prior_cache.json"
+    pcache = json.loads(pcache_path.read_text()) if pcache_path.exists() else {}
+    own = {c["id"] for c in cases}
+    for c in cases:
+        chain, queue, seen = [], prior_refs(c.get("desc"), c["id"]), set()
+        depth = 0
+        while queue and depth < 2 and len(chain) < 4:
+            nxt = []
+            for ref in queue:
+                if ref in seen or ref in own:
+                    continue
+                seen.add(ref)
+                try:
+                    p = load_prior(ref, pcache)
+                except Exception as e:
+                    print("prior lookup failed", ref, e, file=sys.stderr)
+                    continue
+                if p.get("missing"):
+                    continue
+                chain.append(ref)
+                nxt += prior_refs((p.get("desc") or "") + " " + ((p.get("odp") or {}).get("desc") or ""), ref)
+            queue, depth = nxt, depth + 1
+        c["prior_ids"] = chain
+    pcache_path.write_text(json.dumps(pcache))
+    used = {r for c in cases for r in c["prior_ids"]}
+    (ROOT / "raw/priors.json").write_text(json.dumps({r: pcache[r] for r in used if r in pcache}))
+    print(f"earlier approvals linked: {len(used)} cases across {sum(1 for c in cases if c['prior_ids'])} applications")
 
     # Status history: the date each status was first seen. Seeds from the portal's completion date.
     hist_path = ROOT / "data/history.json"

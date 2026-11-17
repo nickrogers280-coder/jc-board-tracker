@@ -18,6 +18,8 @@ agendas = _raw("jc_agendas.json", "jc_agendas_2026.json")
 _mp = ROOT / "data/mirror.json"
 mirror = json.loads(_mp.read_text(encoding="utf-8")) if _mp.exists() else {}
 RELEASE = "https://github.com/nickrogers280-coder/jc-board-tracker/releases/download/documents/"
+_pp = ROOT / "raw/priors.json"
+priors_raw = json.loads(_pp.read_text(encoding="utf-8")) if _pp.exists() else {}
 _hp = ROOT / "data/history.json"
 history = json.loads(_hp.read_text(encoding="utf-8")) if _hp.exists() else {}
 
@@ -187,6 +189,33 @@ def desc_applicant(d):
     return m.group(1).strip(" ,") if m else ""
 
 
+def doc_out(d):
+    o = {"name": d.get("name", ""), "note": d.get("note", ""), "added": d.get("added", "")}
+    if d.get("id") in mirror:
+        o.update(url=RELEASE + mirror[d["id"]]["asset"], size=mirror[d["id"]]["size"], current=True)
+    elif d.get("url"):
+        o.update(url=d["url"], current=True)
+    return o
+
+
+def build_prior(p):
+    odp = p.get("odp") or {}
+    text = " ".join(x for x in [p.get("desc") or "", odp.get("desc") or ""] if x)
+    figs = parse_desc(text)
+    grab = lambda pat: (re.search(pat, odp.get("desc") or "") or [None, ""])[1].strip(" ,")
+    kind_, label_ = kind_of(p.get("type") or "") if p.get("type") else ("", "")
+    docs = [doc_out(d) for d in (p.get("docs") or [])] + [doc_out(d) for d in odp.get("docs") or []]
+    return {
+        "id": p["id"], "case_id": p.get("caseId"), "type": p.get("type") or (odp.get("title") or "").split(" - ")[0],
+        "status": p.get("status") or "", "applied": p.get("applied") or "",
+        "address": re.sub(r"\s+Jersey City NJ\s*\d{5}$", "", p.get("address") or "", flags=re.I).strip() or re.sub(r"^.*?\b[PZ]\d{2,4}-\d{2,4}\s*", "", odp.get("title") or ""),
+        "desc": re.sub(r"\s+", " ", p.get("desc") or "").strip() or odp.get("desc", "")[:1200],
+        "applicant": grab(r"Applicant:\s*(.+?)\s+(?:Attorney|Review Planner|Block|Zone|Ward|Description):"),
+        "attorney": grab(r"Attorney:\s*(.+?)\s+(?:Review Planner|Block|Zone|Ward|Description|Applicant):"),
+        "odp": odp.get("dataset"), **figs, "docs": docs,
+    }
+
+
 out = []
 by_mail = defaultdict(set)
 for c in cases_raw["cases"]:
@@ -285,6 +314,7 @@ for c in cases_raw["cases"]:
         rec["lots_acre"] = round(sum(float(l.get("acre") or 0) for l in lots), 3) or None
         rec["lots_net"] = sum(int(l.get("net") or 0) for l in lots) or None
     rec["product"] = product_of(c, f, kind)
+    rec["priors"] = [build_prior(priors_raw[r]) for r in (c.get("prior_ids") or []) if r in priors_raw]
     out.append(rec)
     if mail:
         by_mail[mail.upper()].add(rec["id"])
@@ -337,6 +367,22 @@ for r in out:
         hit = [h for h in r["status_history"] if status_group(h[0]) == "approved"]
         r["approved_on"] = next((h[1] for h in hit if h[1]), None) or r["completed"]
     r["status_changed_on"] = r["status_history"][-1][1] if r["status_history"] and len(r["status_history"][-1]) == 2 else None
+
+# Extensions and amendments inherit what's being built from the approval they extend.
+for r in out:
+    src = next((p for p in r.get("priors") or [] if p.get("units") or p.get("stories")), None)
+    if not src:
+        continue
+    for k in ("units", "stories", "affordable", "parking", "retail_sf", "hotel_rooms"):
+        if not r.get(k) and src.get(k):
+            r[k] = src[k]
+            r.setdefault("inherited", []).append(k)
+    if r.get("inherited"):
+        r["inherited_from"] = src["id"]
+    if r["product"] in ("mods", "other"):
+        pd = product_of({"desc": src.get("desc", "")}, {k: src.get(k) for k in ("units",)}, "new")
+        if pd not in ("other",):
+            r["product"] = pd
 
 # Units counted toward the headline only once per site: new site plans that are still alive.
 for r in out:

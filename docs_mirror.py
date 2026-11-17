@@ -93,6 +93,12 @@ def main():
         for kind, d in current_versions(c.get("docs") or []).items():
             if d.get("id"):
                 want[d["id"]] = (c["id"], d, kind)
+    # Earlier approvals that tracked cases extend or amend: their current documents too.
+    ppath = ROOT / "raw/priors.json"
+    for ref, p in (json.loads(ppath.read_text()) if ppath.exists() else {}).items():
+        for kind, d in current_versions(p.get("docs") or []).items():
+            if d.get("id") and d["id"] not in want:
+                want[d["id"]] = (ref, d, kind)
 
     added = failed = 0
     s = requests.Session()

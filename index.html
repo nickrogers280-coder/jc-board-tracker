@@ -206,6 +206,7 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
 .docs li:last-child { border-bottom: 0; }
 .docs .fn { overflow-wrap: anywhere; }
 .docs .fn a { color: var(--ink); text-decoration: none; border-bottom: 1px dotted var(--ink-3); }
+.prior { border-left: 2px solid var(--line); padding-left: 10px; }
 .docs .fn a:hover { color: var(--pin); border-color: var(--pin); }
 .docs .dt { font-family: var(--font-data); font-size: 11px; color: var(--ink-3); white-space: nowrap; }
 .docs .nt { grid-column: 1 / -1; font-size: 11.5px; color: var(--ink-3); }
@@ -356,7 +357,7 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
     if (state.size && !((p.units || 0) >= state.size)) return false;
     if (state.window) { const d = parseDay(p.applied); if (!d || d < +NOW - state.window * 864e5) return false; }
     if (state.q) {
-      const hay = [p.id, p.address, p.prop_loc, p.applicant, p.attorney, p.owner_mail, p.zone, p.planner, p.block && "block " + p.block, p.kind_label, p.type, p.desc].join(" ").toLowerCase();
+      const hay = [p.id, (p.priors || []).map((q) => q.id + " " + (q.applicant || "")).join(" "), p.address, p.prop_loc, p.applicant, p.attorney, p.owner_mail, p.zone, p.planner, p.block && "block " + p.block, p.kind_label, p.type, p.desc].join(" ").toLowerCase();
       if (!state.q.split(/\s+/).every((w) => hay.includes(w))) return false;
     }
     return true;
@@ -505,6 +506,7 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
       ${top}
       <div class="addr">${esc(titleCase(p.address) || p.id)}</div>
       <div class="meta"><span class="tag" style="--t:${t.c}">${esc(boardShort(p))}</span>${nLots(p) > 1 ? ` <span class="tag" style="--t:var(--parcel)">${nLots(p)} lots</span>` : ""} ${esc(p.kind_label)} · ${esc(placeLine(p) || "No parcel")}</div>
+      ${p.priors && p.priors.length && (p.kind === "ext" || p.kind === "amend") ? `<div class="meta" style="color:var(--ink-3)">${p.kind === "ext" ? "Extends" : "Amends"} ${esc(p.priors.map((q) => q.id).join(", "))}</div>` : ""}
       ${productLine(p) || p.applicant ? `<div class="change">${esc(productLine(p))}${productLine(p) && p.applicant ? " · " : ""}${p.applicant ? esc(p.applicant) : ""}</div>` : ""}
     </button>`;
   }
@@ -584,7 +586,7 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
   function docRow(d, link) {
     const k = docKind(d);
     const name = `${k ? `<span class="doc-kind${k.key ? " key" : ""}">${esc(k.label)}</span>` : ""}${esc(d.name)}`;
-    return `<li><span class="fn">${d.url ? `<a href="${esc(d.url)}" target="_blank" rel="noopener">${name}</a>` : name}</span><span class="dt">${d.size ? mb(d.size) + " · " : ""}${fmtShort(d.added)}</span>${d.note ? `<span class="nt">${esc(d.note)}</span>` : ""}</li>`;
+    return `<li><span class="fn">${d.url ? `<a href="${esc(d.url)}" target="_blank" rel="noopener">${name}</a>` : name}</span><span class="dt">${[d.size ? mb(d.size) : "", d.added ? fmtShort(d.added) : ""].filter(Boolean).join(" · ")}</span>${d.note ? `<span class="nt">${esc(d.note)}</span>` : ""}</li>`;
   }
   function docsHtml(p) {
     const docs = p.docs || [];
@@ -597,6 +599,32 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
     const rest = old.length ? `<details style="margin-top:6px"><summary>Earlier versions and other uploads (${old.length})</summary><ul class="docs" style="margin-top:6px">${old.map((d) => docRow(d, link)).join("")}</ul></details>` : "";
     return `<div class="sec"><h3>Documents · ${cur.length ? cur.length + " current" : docs.length}</h3>${head}${rest}
       <p class="note" style="margin:6px 0 0">${cur.length ? "Click a file to download the current version. " : ""}<a href="${link}" target="_blank" rel="noopener">All files on the city portal</a></p></div>`;
+  }
+
+  function priorsHtml(p) {
+    const ps = (p.priors || []).slice().sort((a, b) => (a.applied || "9").localeCompare(b.applied || "9"));
+    if (!ps.length) return "";
+    return ps.map((q, i) => {
+      const docs = (q.docs || []).slice().sort((a, b) => (b.current ? 1 : 0) - (a.current ? 1 : 0) || (docKind(b)?.key ? 1 : 0) - (docKind(a)?.key ? 1 : 0));
+      const shown = docs.slice(0, 8), more = docs.slice(8);
+      const fig = productLine(q);
+      const links = [q.case_id ? `<a href="${PORTAL}${esc(q.case_id)}?tab=attachments" target="_blank" rel="noopener">City portal</a>` : "",
+        q.odp ? `<a href="https://data.jerseycitynj.gov/explore/dataset/${esc(q.odp)}/information/" target="_blank" rel="noopener">Open Data archive</a>` : ""].filter(Boolean).join(" · ");
+      return `<div class="sec prior"><h3>${i === 0 ? "Original approval" : "Related filing"} · ${esc(q.id)}</h3>
+        <dl class="kv">
+          <dt>Case</dt><dd><span class="mono">${esc(q.id)}</span>${q.type ? " · " + esc(q.type) : ""}</dd>
+          ${q.status ? `<dt>Status</dt><dd>${esc(q.status)}</dd>` : ""}
+          ${q.applied ? `<dt>Filed</dt><dd>${fmtDate(q.applied)}</dd>` : ""}
+          ${q.address ? `<dt>Address</dt><dd>${esc(titleCase(q.address))}</dd>` : ""}
+          ${fig ? `<dt>Project</dt><dd><b>${esc(fig)}</b></dd>` : ""}
+          ${q.applicant ? `<dt>Applicant</dt><dd>${esc(q.applicant)}</dd>` : ""}
+          ${q.attorney ? `<dt>Attorney</dt><dd>${esc(q.attorney)}</dd>` : ""}
+        </dl>
+        ${q.desc ? `<details style="margin-top:6px"><summary>What was approved</summary><p>${esc(q.desc)}</p></details>` : ""}
+        ${docs.length ? `<ul class="docs" style="margin-top:8px">${shown.map((d) => docRow(d)).join("")}</ul>${more.length ? `<details style="margin-top:6px"><summary>${more.length} more files</summary><ul class="docs" style="margin-top:6px">${more.map((d) => docRow(d)).join("")}</ul></details>` : ""}` : `<p class="note">No documents posted online for this case.</p>`}
+        ${links ? `<p class="note" style="margin:6px 0 0">${links}</p>` : ""}
+      </div>`;
+    }).join("");
   }
 
   function copyBtn(text) { return `<button class="copy" data-copy="${esc(text)}" aria-label="Copy ${esc(text)}">Copy</button>`; }
@@ -612,7 +640,8 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
     (p.status_history || []).forEach((h) => { if (h[1]) hist.push([`Status: ${h[0]}`, h[1]]); });
     if (p.completed && !(p.status_history || []).some((h) => h[1] === p.completed)) hist.push([p.status, p.completed]);
     hist.sort((a, b) => b[1].localeCompare(a[1]));
-    const figs = [["Units", p.units ? n0(p.units) : "—"], ["Stories", p.stories || "—"],
+    const inh = (k) => ((p.inherited || []).includes(k) ? ` <span class="note">· ${esc(p.inherited_from)}</span>` : "");
+    const figs = [["Units" + inh("units"), p.units ? n0(p.units) : "—"], ["Stories" + inh("stories"), p.stories || "—"],
       p.hotel_rooms ? ["Hotel rooms", p.hotel_rooms] : p.affordable ? ["Affordable", p.affordable] : ["Parking", p.parking != null ? n0(p.parking) : "—"]];
     const affPct = p.units && p.affordable ? Math.round((100 * p.affordable) / p.units) : null;
     $("#detail").innerHTML = `
@@ -626,9 +655,11 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
         ${up && parseDay(up) >= NOW - 864e5 ? `<div class="alerts-box"><div><b>On the ${p.board === "zoning" ? "Zoning" : "Planning"} Board agenda ${fmtDate(up)}</b></div>${p.agenda_last ? `<small>${esc(p.agenda_last)}</small>` : ""}</div>` : ""}
         ${statusKey(p) === "approved" ? `<div class="reo-box" style="--pin-reo:var(--ok)"><b>Approved${p.approved_on ? " " + fmtDate(p.approved_on) : ""}</b><div>${esc(p.type)}${p.approval_expires ? " · approval expires " + fmtDate(p.approval_expires) : ""}</div></div>` : ""}
         <div class="figs">${figs.map(([k, v]) => `<div class="fig"><span>${k}</span><b>${esc(v)}</b></div>`).join("")}</div>
+        ${p.inherited_from ? `<p class="note" style="margin:-8px 0 0">Project size from the earlier approval ${esc(p.inherited_from)}, which this ${p.kind === "ext" ? "extends" : "amends"}.</p>` : ""}
         ${affPct != null ? `<div class="meter"><div><b>${affPct}%</b> of units affordable (${p.affordable} of ${n0(p.units)})</div><div class="bar"><i style="width:${Math.min(affPct, 100)}%;--fill:var(--ok)"></i></div></div>` : ""}
         <div class="sec"><h3>What's proposed</h3><p class="desc">${esc(p.desc || "No description filed.")}</p>
           ${p.retail_sf || (p.parking != null && figs[2][0] !== "Parking") ? `<p class="note" style="margin:8px 0 0">${[p.retail_sf ? n0(p.retail_sf) + " SF retail/commercial" : "", p.parking != null && figs[2][0] !== "Parking" ? n0(p.parking) + " parking spaces" : ""].filter(Boolean).join(" · ")}</p>` : ""}</div>
+        ${priorsHtml(p)}
         <div class="sec"><h3>Application</h3><dl class="kv">
           <dt>Case</dt><dd><span class="mono">${esc(p.id)}</span>${copyBtn(p.id)}</dd>
           <dt>Type</dt><dd>${esc(p.type)}</dd>
