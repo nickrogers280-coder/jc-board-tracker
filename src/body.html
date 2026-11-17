@@ -1,0 +1,514 @@
+/* ---- JC Board Tracker additions (same system as the Distress Map) ---- */
+:root {
+  --p-multi: #47c7ec;    /* multifamily / mixed-use */
+  --p-small: #9bd86b;    /* 1-4 unit residential, subdivisions */
+  --p-comm: #f0a63a;     /* commercial, hotel, institutional */
+  --p-ind: #c58cff;      /* industrial, storage, logistics */
+  --p-plan: #ff8f6b;     /* redevelopment plans, rezonings */
+  --p-other: #8794a3;    /* signage, telecom, other */
+}
+.pin.multi { --c: var(--p-multi); } .pin.small { --c: var(--p-small); } .pin.comm { --c: var(--p-comm); }
+.pin.ind { --c: var(--p-ind); } .pin.plan { --c: var(--p-plan); } .pin.other { --c: var(--p-other); }
+.pin.zba i { border-radius: 3px; transform: rotate(45deg) scale(.9); }
+.pin.zba.selected i { transform: rotate(45deg) scale(1.25); }
+.pin.faded i { opacity: .55; box-shadow: 0 0 0 1px var(--c); }
+.pin.big { width: 22px; height: 22px; } .pin.huge { width: 30px; height: 30px; }
+.pin b { position: absolute; inset: 0; display: grid; place-items: center; font: 600 10px var(--font-data); color: #0b1016; pointer-events: none; }
+.pin.huge b { font-size: 11px; }
+.pin.zba b { transform: none; }
+.chip.shape i { border-radius: 2px; transform: rotate(45deg) scale(.85); }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; margin: 10px 14px 4px; }
+.seg button { background: none; border: 0; padding: 5px 10px; font-size: 12px; color: var(--ink-2); cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--panel-2); color: var(--ink); }
+.player { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 10px; width: 100%; text-align: left; background: none; border: 0; border-bottom: 1px solid var(--line); padding: 10px 14px; cursor: pointer; }
+.player:hover { background: var(--panel-2); }
+.player .nm { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.player .ct { font-family: var(--font-data); font-size: 13px; text-align: right; }
+.player .meta { grid-column: 1 / -1; font-size: 12px; color: var(--ink-2); display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.mix { display: inline-flex; height: 6px; width: 80px; border-radius: 3px; overflow: hidden; background: var(--panel-2); }
+.mix i { display: block; height: 100%; }
+.legend { position: absolute; left: 372px; bottom: 22px; z-index: 800; background: rgba(18,26,35,.9); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; font-size: 11.5px; color: var(--ink-2); display: grid; gap: 4px; }
+.legend div { display: flex; align-items: center; gap: 7px; }
+.legend i { width: 9px; height: 9px; border-radius: 50%; background: var(--c); display: inline-block; }
+.legend i.dia { border-radius: 2px; transform: rotate(45deg) scale(.85); background: none; border: 1.5px solid var(--ink-2); }
+.legend i.ring { background: none; border: 1.5px solid var(--alert); }
+.desc { font-size: 13px; line-height: 1.55; color: var(--ink); margin: 0; }
+.related { display: grid; gap: 6px; }
+.related button { text-align: left; background: var(--panel-2); border: 1px solid var(--line); border-radius: 6px; padding: 7px 9px; font-size: 12.5px; cursor: pointer; }
+.related button:hover { border-color: var(--pin); }
+.filter-note { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--ink-2); }
+.filter-note button { background: none; border: 1px solid var(--line); border-radius: 999px; padding: 2px 8px; font-size: 11px; color: var(--ink-2); cursor: pointer; }
+.row select { flex-basis: 90px; }
+@media (max-width: 760px) { .legend { display: none; } }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand"><h1>JC Board Tracker</h1><span class="sub">Jersey City Planning &amp; Zoning Board applications filed since Jan 1, 2026</span></div>
+    <div class="stats" id="stats"></div>
+    <div class="layer-toggle" role="group" aria-label="Map style">
+      <button id="lyr-sat" aria-pressed="true">Satellite</button>
+      <button id="lyr-street" aria-pressed="false">Streets</button>
+    </div>
+    <button class="panel-btn" id="panel-btn" aria-controls="side">List</button>
+  </header>
+  <div class="body">
+    <aside class="side" id="side">
+      <div class="filters">
+        <input class="search" id="q" type="search" placeholder="Search address, applicant, attorney, case #, block" aria-label="Search">
+        <div class="chips" id="type-chips" aria-label="Product type"></div>
+        <div class="row">
+          <select id="board" aria-label="Board"><option value="">Both boards</option><option value="planning">Planning Board</option><option value="zoning">Zoning Board</option></select>
+          <select id="kind" aria-label="Application type"><option value="">All application types</option></select>
+        </div>
+        <div class="row">
+          <select id="ward" aria-label="Ward"><option value="">All wards</option></select>
+          <select id="window" aria-label="Filed">
+            <option value="">All dates</option>
+            <option value="30">Last 30 days</option>
+            <option value="90">Last 90 days</option>
+          </select>
+          <select id="size" aria-label="Project size"><option value="">Any size</option><option value="5">5+ units</option><option value="50">50+ units</option><option value="150">150+ units</option></select>
+        </div>
+        <div class="chips" id="status-chips" aria-label="Status"></div>
+        <div class="filter-note" id="filter-note" hidden></div>
+      </div>
+      <div class="tabs" role="tablist">
+        <button role="tab" id="tab-activity" aria-selected="true">Activity<span class="count" id="n-activity"></span></button>
+        <button role="tab" id="tab-apps" aria-selected="false">Applications<span class="count" id="n-apps"></span></button>
+        <button role="tab" id="tab-players" aria-selected="false">Players<span class="count" id="n-players"></span></button>
+      </div>
+      <div class="list" id="list" role="tabpanel"></div>
+      <div class="foot" id="foot"></div>
+    </aside>
+    <div id="map" aria-label="Satellite map of Jersey City"></div>
+    <div class="legend" id="legend"></div>
+    <section class="detail" id="detail" hidden aria-live="polite"></section>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+<script>
+(() => {
+  const PARCELS = "https://services2.arcgis.com/XVOqAjTOJ5P6ngMu/ArcGIS/rest/services/Parcels_Composite_NJ_WM/FeatureServer/0/query";
+  const PORTAL = "https://jerseycitynj-energovpub.tylerhost.net/apps/selfservice/JerseyCityNJProd#/plan/";
+  const TYPES = [
+    { key: "multifamily", cls: "multi", label: "Multifamily", c: "var(--p-multi)" },
+    { key: "smallres", cls: "small", label: "1-4 units", c: "var(--p-small)" },
+    { key: "commercial", cls: "comm", label: "Commercial", c: "var(--p-comm)" },
+    { key: "industrial", cls: "ind", label: "Industrial", c: "var(--p-ind)" },
+    { key: "plan", cls: "plan", label: "Plans", c: "var(--p-plan)" },
+    { key: "mods", cls: "other", label: "Prior approvals", c: "var(--p-other)" },
+    { key: "telecom", cls: "other", label: "Signage / telecom", c: "var(--p-other)" },
+    { key: "other", cls: "other", label: "Other", c: "var(--p-other)" },
+  ];
+  const TYPE = Object.fromEntries(TYPES.map((t) => [t.key, t]));
+  const KINDS = [["new", "New site plans"], ["amend", "Amendments"], ["ext", "Extensions"], ["subdiv", "Subdivisions"], ["variance", "Variances (no site plan)"], ["appeal", "Appeals / interpretations"], ["sign", "Signage"], ["plan", "Plans & rezonings"], ["other", "Other"]];
+  const STATUSES = [
+    { key: "pending", label: "Pending", c: "var(--pin)" },
+    { key: "heard", label: "Heard / approved", c: "var(--ok)" },
+    { key: "closed", label: "Denied / withdrawn", c: "var(--pin-closed)" },
+  ];
+  const statusKey = (p) => (p.status_group === "approved" || p.status_group === "heard" ? "heard" : p.status_group === "pending" ? "pending" : "closed");
+  const $ = (s) => document.querySelector(s);
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const store = { get(k) { try { return localStorage.getItem(k); } catch { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch {} } };
+  const money = (v) => (v == null || v === "" ? "—" : "$" + Math.round(+v).toLocaleString("en-US"));
+  const short$ = (v) => { if (v == null || v === "") return "—"; v = +v; return v >= 1e6 ? "$" + (v / 1e6).toFixed(v >= 1e7 ? 1 : 2) + "M" : v >= 1e3 ? "$" + Math.round(v / 1e3) + "K" : "$" + v; };
+  const n0 = (v) => (v == null ? "—" : (+v).toLocaleString("en-US"));
+  const parseDay = (s) => (s ? new Date(String(s).slice(0, 10) + "T12:00:00") : null);
+  const fmtDate = (s) => { const d = parseDay(s); return d && !isNaN(d) ? d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "—"; };
+  const fmtShort = (s) => { const d = parseDay(s); return d && !isNaN(d) ? d.toLocaleDateString("en-US", { month: "short", day: "numeric" }) : "—"; };
+  const titleCase = (s) => String(s || "").toLowerCase().replace(/\b([a-z])/g, (m) => m.toUpperCase()).replace(/\b(Llc|Lp|Llp|Pllc|Pc|Inc|Nj|Ny|Us|Usa|Jfk|Mlk|Ii|Iii|Rdp)\b/g, (m) => m.toUpperCase()).replace(/\b(\d+)(St|Nd|Rd|Th)\b/g, (m, a, b) => a + b.toLowerCase());
+  const MONTHS = { january: 1, february: 2, march: 3, april: 4, may: 5, june: 6, july: 7, august: 8, september: 9, october: 10, november: 11, december: 12 };
+
+  let DATA, NOW, LAST_VISIT, map, layers, markers = new Map(), selected = null, outline = null, tab = "activity", ptab = "applicant";
+  const state = { q: "", board: "", kind: "", ward: "", window: "", size: 0, statuses: new Set(["pending", "heard"]), types: new Set(TYPES.map((t) => t.key)) };
+
+  const isNew = (p) => (NOW - parseDay(p.applied)) / 864e5 <= 14;
+  const nextHearing = (p) => {
+    const m = String(p.agenda_last || "").match(/\bTO\s+([A-Z]+)\s+(\d{1,2}),?\s+(\d{4})/i);
+    if (m && MONTHS[m[1].toLowerCase()]) return `${m[3]}-${String(MONTHS[m[1].toLowerCase()]).padStart(2, "0")}-${m[2].padStart(2, "0")}`;
+    const up = (p.hearings || []).map((h) => h[0]).filter((d) => parseDay(d) >= NOW - 864e5).sort()[0];
+    return up || null;
+  };
+  const placeLine = (p) => [p.ward ? "Ward " + p.ward : "", p.block ? `Block ${p.block} · Lot ${p.lot}` : ""].filter(Boolean).join(" · ");
+  const productLine = (p) => {
+    const bits = [];
+    if (p.units) bits.push(n0(p.units) + " units");
+    if (p.stories) bits.push(p.stories + (p.stories === 1 ? " story" : " stories"));
+    if (p.affordable) bits.push(p.affordable + " affordable");
+    if (p.hotel_rooms) bits.push(p.hotel_rooms + " hotel rooms");
+    if (p.retail_sf) bits.push(n0(p.retail_sf) + " SF retail");
+    return bits.join(" · ");
+  };
+  const boardShort = (p) => (p.board === "zoning" ? "ZBA" : "PB");
+
+  function visible(p) {
+    if (!state.statuses.has(statusKey(p))) return false;
+    if (!state.types.has(p.product)) return false;
+    if (state.board && p.board !== state.board) return false;
+    if (state.kind && p.kind !== state.kind) return false;
+    if (state.ward && p.ward !== state.ward) return false;
+    if (state.size && !((p.units || 0) >= state.size)) return false;
+    if (state.window) { const d = parseDay(p.applied); if (!d || d < +NOW - state.window * 864e5) return false; }
+    if (state.q) {
+      const hay = [p.id, p.address, p.prop_loc, p.applicant, p.attorney, p.owner_mail, p.zone, p.planner, p.block && "block " + p.block, p.kind_label, p.type, p.desc].join(" ").toLowerCase();
+      if (!state.q.split(/\s+/).every((w) => hay.includes(w))) return false;
+    }
+    return true;
+  }
+
+  // ---------------------------------------------------------------- map
+  function initMap() {
+    map = L.map("map", { zoomControl: true, maxZoom: 20 }).setView([40.7178, -74.0631], 13);
+    const sat = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", { maxNativeZoom: 19, maxZoom: 20, attribution: "Imagery © Esri, Maxar, Earthstar Geographics" });
+    const roads = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}", { maxNativeZoom: 19, maxZoom: 20, opacity: 0.85 });
+    const labels = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}", { maxNativeZoom: 19, maxZoom: 20 });
+    const street = L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", { subdomains: "abcd", maxZoom: 20, attribution: "© OpenStreetMap contributors © CARTO" });
+    layers = { satellite: L.layerGroup([sat, roads, labels]), streets: street };
+    const emb = document.getElementById("jc-img");
+    if (emb) {
+      // claude.ai artifact: outside tiles are blocked, so imagery and street lines are built into the page.
+      const I = JSON.parse(emb.textContent);
+      const bounds = [[I.bbox[1], I.bbox[0]], [I.bbox[3], I.bbox[2]]];
+      const satImg = L.imageOverlay(I.sat, bounds, { attribution: "Imagery © Esri, Maxar, Earthstar Geographics" });
+      const roadImg = I.roads ? L.imageOverlay(I.roads, bounds, { opacity: 0.9 }) : null;
+      layers = { satellite: L.layerGroup([satImg, roadImg].filter(Boolean)), streets: L.layerGroup([roadImg].filter(Boolean)) };
+      map.setMaxBounds(L.latLngBounds(bounds).pad(0.15));
+      map.setMinZoom(12);
+    }
+    layers.satellite.addTo(map);
+    // Where outside map tiles are blocked (e.g. a claude.ai artifact), say so once instead of showing a blank map silently.
+    let warned = false;
+    sat.on("tileerror", () => {
+      if (warned || document.getElementById("jc-img")) return;
+      warned = true;
+      $(".body").insertAdjacentHTML("beforeend", `<div class="sample-banner"><b>Map imagery off</b>This view can't load satellite tiles. Open the downloaded jc-board-tracker.html for imagery and parcel outlines.</div>`);
+    });
+    const flags = () => $("#map").classList.toggle("show-flags", map.getZoom() >= 15);
+    map.on("zoomend", flags); flags();
+    const setLayer = (name) => {
+      Object.entries(layers).forEach(([k, l]) => (k === name ? l.addTo(map) : map.removeLayer(l)));
+      $("#lyr-sat").setAttribute("aria-pressed", name === "satellite");
+      $("#lyr-street").setAttribute("aria-pressed", name === "streets");
+      store.set("jcbt:layer", name);
+    };
+    $("#lyr-sat").onclick = () => setLayer("satellite");
+    $("#lyr-street").onclick = () => setLayer("streets");
+    if (store.get("jcbt:layer") === "streets") setLayer("streets");
+  }
+
+  function pinIcon(p) {
+    const t = TYPE[p.product] || TYPE.other;
+    const u = p.units || 0;
+    const size = u >= 150 ? "huge" : u >= 50 ? "big" : "";
+    const px = u >= 150 ? 30 : u >= 50 ? 22 : 16;
+    const fresh = isNew(p) && statusKey(p) !== "closed";
+    const cls = ["pin", t.cls, size, p.board === "zoning" ? "zba" : "", fresh ? "alert" : "", statusKey(p) === "closed" ? "faded" : "", selected === p.id ? "selected" : ""].join(" ");
+    const label = u >= 50 ? `<b>${u}</b>` : "";
+    const flag = fresh ? `<span class="flag">Filed ${fmtShort(p.applied)}</span>` : "";
+    return L.divIcon({ className: "", html: `<span class="${cls}"><i></i>${label}${flag}</span>`, iconSize: [px, px], iconAnchor: [px / 2, px / 2] });
+  }
+
+  function drawMarkers() {
+    markers.forEach((m) => m.remove());
+    markers.clear();
+    // Several cases can share one parcel; draw the most significant on top.
+    const rank = (p) => (p.units || 0) + (p.kind === "new" ? 1e4 : 0);
+    DATA.cases.filter((p) => p.lat != null && visible(p)).sort((a, b) => rank(a) - rank(b)).forEach((p) => {
+      const m = L.marker([p.lat, p.lon], { icon: pinIcon(p), zIndexOffset: (p.units || 0) + (isNew(p) ? 2000 : 0), keyboard: true, title: `${p.id} · ${titleCase(p.address)}` })
+        .on("click", () => select(p.id, false)).addTo(map);
+      m._p = p;
+      markers.set(p.id, m);
+    });
+  }
+
+  function renderLegend() {
+    const seen = new Set(DATA.cases.map((p) => p.product));
+    $("#legend").innerHTML = TYPES.filter((t) => seen.has(t.key) && t.key !== "other").map((t) => `<div><i style="--c:${t.c}"></i>${esc(t.label)}</div>`).join("") +
+      `<div><i style="--c:var(--ink-2)"></i>Planning Board</div><div><i class="dia"></i>Zoning Board</div><div><i class="ring"></i>Filed in last 14 days</div><div style="color:var(--ink-3)">Bigger pin = more units</div>`;
+  }
+
+  // ---------------------------------------------------------------- sidebar
+  function renderStats() {
+    const live = DATA.cases.filter((p) => statusKey(p) !== "closed");
+    const units = DATA.cases.filter((p) => p.counts_units).reduce((s, p) => s + p.units, 0);
+    const newSP = DATA.cases.filter((p) => p.counts_units).length;
+    const last30 = DATA.cases.filter((p) => (NOW - parseDay(p.applied)) / 864e5 <= 30).length;
+    const heard = DATA.cases.filter((p) => (p.hearings || []).some((h) => parseDay(h[0]) <= NOW)).length;
+    $("#stats").innerHTML = `
+      <div class="stat"><b>${live.length}</b><span>Active</span></div>
+      <div class="stat"><b style="color:var(--p-multi)">${n0(units)}</b><span>Units proposed</span></div>
+      <div class="stat"><b>${newSP}</b><span>New site plans</span></div>
+      <div class="stat hot"><b>${last30}</b><span>Filed · 30 days</span></div>
+      <div class="stat"><b>${heard}</b><span>Heard</span></div>`;
+  }
+
+  function renderFilters() {
+    const counts = {}; DATA.cases.forEach((p) => (counts[p.product] = (counts[p.product] || 0) + 1));
+    $("#type-chips").innerHTML = TYPES.filter((t) => counts[t.key]).map((t) => `<button class="chip" data-type="${t.key}" aria-pressed="${state.types.has(t.key)}" style="--c:${t.c}"><i></i>${t.label}</button>`).join("");
+    $("#type-chips").querySelectorAll(".chip").forEach((b) => (b.onclick = () => { const k = b.dataset.type; state.types.has(k) ? state.types.delete(k) : state.types.add(k); b.setAttribute("aria-pressed", state.types.has(k)); refresh(); }));
+    $("#status-chips").innerHTML = STATUSES.map((t) => `<button class="chip status" data-status="${t.key}" aria-pressed="${state.statuses.has(t.key)}" style="--c:${t.c}"><i></i>${t.label}</button>`).join("");
+    $("#status-chips").querySelectorAll(".chip").forEach((b) => (b.onclick = () => { const k = b.dataset.status; state.statuses.has(k) ? state.statuses.delete(k) : state.statuses.add(k); b.setAttribute("aria-pressed", state.statuses.has(k)); refresh(); }));
+    const kc = {}; DATA.cases.forEach((p) => (kc[p.kind] = (kc[p.kind] || 0) + 1));
+    $("#kind").insertAdjacentHTML("beforeend", KINDS.filter(([k]) => kc[k]).map(([k, l]) => `<option value="${k}">${l} (${kc[k]})</option>`).join(""));
+    const wards = [...new Set(DATA.cases.map((p) => p.ward).filter(Boolean))].sort();
+    $("#ward").insertAdjacentHTML("beforeend", wards.map((w) => `<option value="${esc(w)}">Ward ${esc(w)}</option>`).join(""));
+    $("#board").onchange = (e) => { state.board = e.target.value; refresh(); };
+    $("#kind").onchange = (e) => { state.kind = e.target.value; refresh(); };
+    $("#ward").onchange = (e) => { state.ward = e.target.value; refresh(); };
+    $("#window").onchange = (e) => { state.window = +e.target.value || ""; refresh(); };
+    $("#size").onchange = (e) => { state.size = +e.target.value || 0; refresh(); };
+    let t; $("#q").oninput = (e) => { clearTimeout(t); t = setTimeout(() => { state.q = e.target.value.trim().toLowerCase(); refresh(); }, 120); };
+    const setTab = (name) => {
+      tab = name;
+      ["activity", "apps", "players"].forEach((k) => $("#tab-" + k).setAttribute("aria-selected", k === name));
+      renderList();
+    };
+    $("#tab-activity").onclick = () => setTab("activity");
+    $("#tab-apps").onclick = () => setTab("apps");
+    $("#tab-players").onclick = () => setTab("players");
+    $("#panel-btn").onclick = () => $("#side").classList.toggle("collapsed");
+  }
+
+  function setSearch(text) {
+    $("#q").value = text; state.q = text.toLowerCase();
+    tab = "apps"; ["activity", "apps", "players"].forEach((k) => $("#tab-" + k).setAttribute("aria-selected", k === "apps"));
+    refresh();
+    const pts = DATA.cases.filter((p) => p.lat != null && visible(p)).map((p) => [p.lat, p.lon]);
+    if (pts.length) map.fitBounds(pts, { padding: [60, 60], maxZoom: 16 });
+  }
+
+  function events() {
+    const ev = [];
+    DATA.cases.forEach((p) => {
+      if (!visible(p)) return;
+      const up = nextHearing(p);
+      if (up && parseDay(up) >= NOW - 864e5) ev.push({ p, d: up, kind: "upcoming" });
+      (p.hearings || []).forEach(([d, b]) => { if (parseDay(d) <= NOW && (NOW - parseDay(d)) / 864e5 <= 45) ev.push({ p, d, kind: "heard", board: b }); });
+      if ((NOW - parseDay(p.applied)) / 864e5 <= 45) ev.push({ p, d: p.applied, kind: "filed" });
+    });
+    const up = ev.filter((e) => e.kind === "upcoming").sort((a, b) => a.d.localeCompare(b.d));
+    const past = ev.filter((e) => e.kind !== "upcoming").sort((a, b) => b.d.localeCompare(a.d) || (b.p.units || 0) - (a.p.units || 0));
+    return [...up, ...past];
+  }
+
+  function itemHtml(p, top) {
+    const t = TYPE[p.product] || TYPE.other;
+    return `<button class="item" data-id="${p.id}" aria-current="${selected === p.id}">
+      ${top}
+      <div class="addr">${esc(titleCase(p.address) || p.id)}</div>
+      <div class="meta"><span class="tag" style="--t:${t.c}">${esc(boardShort(p))}</span> ${esc(p.kind_label)} · ${esc(placeLine(p) || "No parcel")}</div>
+      ${productLine(p) || p.applicant ? `<div class="change">${esc(productLine(p))}${productLine(p) && p.applicant ? " · " : ""}${p.applicant ? esc(p.applicant) : ""}</div>` : ""}
+    </button>`;
+  }
+
+  function players() {
+    const key = ptab === "applicant" ? (p) => p.applicant : ptab === "attorney" ? (p) => p.attorney : (p) => p.owner_mail;
+    const g = new Map();
+    DATA.cases.forEach((p) => {
+      if (!visible(p)) return;
+      const k = (key(p) || "").trim(); if (!k) return;
+      const id = k.toUpperCase().replace(/[.,]/g, "").replace(/\s+/g, " ");
+      const r = g.get(id) || { name: k, cases: [], units: 0, mix: {} };
+      r.cases.push(p); if (p.counts_units) r.units += p.units; r.mix[p.product] = (r.mix[p.product] || 0) + 1;
+      g.set(id, r);
+    });
+    return [...g.values()].filter((r) => ptab !== "owner" || r.cases.length > 1).sort((a, b) => b.cases.length - a.cases.length || b.units - a.units || a.name.localeCompare(b.name));
+  }
+
+  function renderList() {
+    const vis = DATA.cases.filter(visible);
+    const ev = events();
+    const pl = players();
+    $("#n-activity").textContent = ev.length;
+    $("#n-apps").textContent = vis.length;
+    $("#n-players").textContent = pl.length;
+    const fn = $("#filter-note");
+    if (state.q) { fn.hidden = false; fn.innerHTML = `Showing matches for “${esc(state.q)}” <button id="clear-q">Clear</button>`; $("#clear-q").onclick = () => { $("#q").value = ""; state.q = ""; refresh(); }; } else fn.hidden = true;
+    const list = $("#list");
+    if (tab === "activity") {
+      list.innerHTML = ev.length ? ev.map((e) => {
+        const tag = e.kind === "upcoming" ? `<span class="tag" style="--t:var(--pin-possible)">On agenda ${fmtShort(e.d)}</span>`
+          : e.kind === "heard" ? `<span class="tag" style="--t:var(--ok)">Heard · ${e.board === "Zoning Board" ? "ZBA" : "PB"}</span>`
+          : `<span class="tag" style="--t:var(--alert)">Filed</span>`;
+        const unseen = e.kind === "filed" && LAST_VISIT && e.p.applied > LAST_VISIT.slice(0, 10);
+        const when = e.kind === "upcoming" ? "Upcoming" : fmtShort(e.d);
+        return itemHtml(e.p, `<div class="top">${unseen ? '<span class="unseen" title="Filed since your last visit"></span>' : ""}${tag}<span class="when">${when}</span></div>`);
+      }).join("") : `<div class="empty">Nothing filed, heard or scheduled in the last 45 days for these filters.</div>`;
+    } else if (tab === "apps") {
+      const sorted = vis.slice().sort((a, b) => b.applied.localeCompare(a.applied) || b.id.localeCompare(a.id));
+      list.innerHTML = sorted.length ? sorted.map((p) => itemHtml(p, `<div class="top"><span class="mono" style="font-size:11.5px;color:var(--ink-2)">${p.id}</span><span class="tag" style="--t:${statusKey(p) === "heard" ? "var(--ok)" : statusKey(p) === "closed" ? "var(--pin-closed)" : "var(--pin)"}">${esc(p.status)}</span><span class="when">${fmtShort(p.applied)}</span></div>`)).join("")
+        : `<div class="empty">No applications match these filters.</div>`;
+    } else {
+      const label = { applicant: "applicant", attorney: "attorney", owner: "owner mailing address" }[ptab];
+      list.innerHTML = `<div class="seg" role="group" aria-label="Group players by">
+          <button data-p="applicant" aria-pressed="${ptab === "applicant"}">Applicants</button>
+          <button data-p="attorney" aria-pressed="${ptab === "attorney"}">Attorneys</button>
+          <button data-p="owner" aria-pressed="${ptab === "owner"}">Repeat owners</button></div>` +
+        (pl.length ? pl.map((r) => `<button class="player" data-name="${esc(r.name)}">
+            <span class="nm">${esc(ptab === "owner" ? titleCase(r.name) : r.name)}</span><span class="ct">${r.cases.length}</span>
+            <span class="meta"><span class="mix">${TYPES.filter((t) => r.mix[t.key]).map((t) => `<i style="background:${t.c};width:${(100 * r.mix[t.key]) / r.cases.length}%"></i>`).join("")}</span>${r.units ? `${n0(r.units)} new units` : ""}${r.units ? " · " : ""}${esc(r.cases.slice(0, 2).map((c) => titleCase(c.address)).join("; "))}${r.cases.length > 2 ? "…" : ""}</span>
+          </button>`).join("") : `<div class="empty">No ${label}s on record for these filters.</div>`) +
+        `<div class="empty" style="padding-top:12px">${ptab === "owner" ? "Owner names are withheld from the state's public tax data, so sites are grouped by the tax bill's mailing address. Two or more 2026 sites with the same address usually means one owner." : "Applicant and attorney names come from the board agendas, so they appear once a case is scheduled for a hearing."}</div>`;
+      list.querySelectorAll(".seg button").forEach((b) => (b.onclick = () => { ptab = b.dataset.p; renderList(); }));
+      list.querySelectorAll(".player").forEach((b) => (b.onclick = () => setSearch(b.dataset.name)));
+      return;
+    }
+    list.querySelectorAll(".item").forEach((b) => (b.onclick = () => select(b.dataset.id, true)));
+  }
+
+  function renderFoot() {
+    const located = DATA.cases.filter((p) => p.lat != null).length;
+    const named = DATA.cases.filter((p) => p.applicant).length;
+    $("#foot").innerHTML = `Data pulled ${new Date(DATA.generated_at).toLocaleString("en-US", { month: "short", day: "numeric", year: "numeric" })} · ${DATA.cases.length} cases (P2026, Z2026) · ${located} mapped · ${named} with applicant named` +
+      `<br>Sources: Jersey City permit portal, 2026 Planning &amp; Zoning Board agendas (JC Open Data), NJ MOD-IV tax data (NJOGIS). Units, stories and affordable counts are read from each application's description. Verify before relying on figures.`;
+  }
+
+  // ---------------------------------------------------------------- application file
+  function copyBtn(text) { return `<button class="copy" data-copy="${esc(text)}" aria-label="Copy ${esc(text)}">Copy</button>`; }
+
+  function renderDetail(p) {
+    const t = TYPE[p.product] || TYPE.other;
+    const ll = p.lat != null ? `${p.lat},${p.lon}` : encodeURIComponent(`${p.address}, Jersey City, NJ`);
+    const related = DATA.cases.filter((x) => x.id !== p.id && ((p.pams_pin && x.pams_pin === p.pams_pin) || (p.address && x.address === p.address)));
+    const sameMail = p.owner_mail ? DATA.cases.filter((x) => x.id !== p.id && x.owner_mail && x.owner_mail.toUpperCase() === p.owner_mail.toUpperCase() && !related.includes(x)) : [];
+    const up = nextHearing(p);
+    const hist = [...(p.hearings || []).map(([d, b]) => [`${parseDay(d) > NOW ? "Scheduled" : "On agenda"} · ${b}`, d]), ["Filed", p.applied]];
+    if (up && !(p.hearings || []).some((h) => h[0] === up)) hist.unshift([`Next hearing · ${p.board === "zoning" ? "Zoning Board" : "Planning Board"}`, up]);
+    if (p.completed) hist.unshift([p.status, p.completed]);
+    hist.sort((a, b) => b[1].localeCompare(a[1]));
+    const figs = [["Units", p.units ? n0(p.units) : "—"], ["Stories", p.stories || "—"],
+      p.hotel_rooms ? ["Hotel rooms", p.hotel_rooms] : p.affordable ? ["Affordable", p.affordable] : ["Parking", p.parking != null ? n0(p.parking) : "—"]];
+    const affPct = p.units && p.affordable ? Math.round((100 * p.affordable) / p.units) : null;
+    $("#detail").innerHTML = `
+      <div class="d-head">
+        <button class="x" id="d-close" aria-label="Close">×</button>
+        <h2>${esc(titleCase(p.address) || "Location not listed")}</h2>
+        <div class="where">${esc(placeLine(p))}${p.zone ? " · " + esc(p.zone) : ""}</div>
+        <div class="tags"><span class="tag" style="--t:${t.c}">${esc(t.label)}</span><span class="tag" style="--t:var(--ink-2)">${p.board === "zoning" ? "Zoning Board" : "Planning Board"} · ${esc(p.kind_label)}</span><span class="tag" style="--t:${statusKey(p) === "heard" ? "var(--ok)" : statusKey(p) === "closed" ? "var(--pin-closed)" : "var(--pin)"}">${esc(p.status)}</span></div>
+      </div>
+      <div class="d-body">
+        ${up && parseDay(up) >= NOW - 864e5 ? `<div class="alerts-box"><div><b>On the ${p.board === "zoning" ? "Zoning" : "Planning"} Board agenda ${fmtDate(up)}</b></div>${p.agenda_last ? `<small>${esc(p.agenda_last)}</small>` : ""}</div>` : ""}
+        <div class="figs">${figs.map(([k, v]) => `<div class="fig"><span>${k}</span><b>${esc(v)}</b></div>`).join("")}</div>
+        ${affPct != null ? `<div class="meter"><div><b>${affPct}%</b> of units affordable (${p.affordable} of ${n0(p.units)})</div><div class="bar"><i style="width:${Math.min(affPct, 100)}%;--fill:var(--ok)"></i></div></div>` : ""}
+        <div class="sec"><h3>What's proposed</h3><p class="desc">${esc(p.desc || "No description filed.")}</p>
+          ${p.retail_sf || (p.parking != null && figs[2][0] !== "Parking") ? `<p class="note" style="margin:8px 0 0">${[p.retail_sf ? n0(p.retail_sf) + " SF retail/commercial" : "", p.parking != null && figs[2][0] !== "Parking" ? n0(p.parking) + " parking spaces" : ""].filter(Boolean).join(" · ")}</p>` : ""}</div>
+        <div class="sec"><h3>Application</h3><dl class="kv">
+          <dt>Case</dt><dd><span class="mono">${esc(p.id)}</span>${copyBtn(p.id)}</dd>
+          <dt>Type</dt><dd>${esc(p.type)}</dd>
+          <dt>Status</dt><dd>${esc(p.status)}</dd>
+          <dt>Filed</dt><dd>${fmtDate(p.applied)}</dd>
+          ${p.planner ? `<dt>Review planner</dt><dd>${esc(p.planner)}</dd>` : ""}
+          ${p.expires ? `<dt>Expires</dt><dd>${fmtDate(p.expires)}</dd>` : ""}
+        </dl></div>
+        <div class="sec"><h3>Players</h3><dl class="kv">
+          <dt>Applicant</dt><dd>${p.applicant ? `<b>${esc(p.applicant)}</b>` : `<span class="note">Named once the case reaches an agenda</span>`}</dd>
+          <dt>Attorney</dt><dd>${p.attorney ? esc(p.attorney) : "—"}</dd>
+          <dt>Tax bill to</dt><dd>${p.owner_mail ? esc(titleCase(p.owner_mail)) + (sameMail.length ? `<div class="note">Same mailing address on ${sameMail.length} other 2026 ${sameMail.length === 1 ? "case" : "cases"}</div>` : "") : "—"}</dd>
+        </dl></div>
+        ${p.prop_class || p.net_value ? `<div class="sec"><h3>Tax record</h3><dl class="kv">
+          ${p.class_label ? `<dt>Class</dt><dd>${esc(p.prop_class)} · ${esc(p.class_label)}</dd>` : ""}
+          ${p.prop_loc ? `<dt>Tax address</dt><dd>${esc(titleCase(p.prop_loc))}</dd>` : ""}
+          ${p.net_value ? `<dt>Assessed</dt><dd>${money(p.net_value)}<div class="note">Land ${short$(p.land_val)} · Improvements ${short$(p.imprvt_val)}</div></dd>` : ""}
+          ${p.calc_acre ? `<dt>Lot size</dt><dd>${(+p.calc_acre).toFixed(2)} acres · ${n0(Math.round(p.calc_acre * 43560))} SF</dd>` : ""}
+          ${p.bldg_desc ? `<dt>Building</dt><dd class="mono">${esc(p.bldg_desc)}</dd>` : ""}
+          ${p.yr_constr ? `<dt>Year built</dt><dd>${esc(p.yr_constr)}</dd>` : ""}
+          ${p.last_sale_price ? `<dt>Last sale</dt><dd>${money(p.last_sale_price)}${p.last_sale_date ? " · " + fmtDate(p.last_sale_date) : ""}</dd>` : ""}
+          ${p.units && p.calc_acre ? `<dt>Density</dt><dd>${Math.round(p.units / p.calc_acre)} units / acre</dd>` : ""}
+        </dl></div>` : ""}
+        <div class="sec"><h3>Timeline</h3><ol class="timeline">${hist.map((h) => `<li><span>${esc(h[0])}</span><time>${fmtDate(h[1])}</time></li>`).join("")}</ol></div>
+        ${related.length || sameMail.length ? `<div class="sec"><h3>Related 2026 cases</h3><div class="related">${[...related, ...sameMail].slice(0, 8).map((x) => `<button data-id="${x.id}"><span class="mono">${x.id}</span> · ${esc(x.kind_label)} · ${esc(titleCase(x.address))}${related.includes(x) ? "" : ' <span class="note">(same owner address)</span>'}</button>`).join("")}</div></div>` : ""}
+        <div class="links">
+          <a href="${PORTAL + esc(p.case_id)}" target="_blank" rel="noopener">City portal &amp; plans</a>
+          <a href="https://www.google.com/maps/search/?api=1&query=${ll}" target="_blank" rel="noopener">Google Maps</a>
+          ${p.lat != null ? `<a href="https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${p.lat},${p.lon}" target="_blank" rel="noopener">Street View</a>` : ""}
+        </div>
+        ${p.lat == null ? `<p class="note">Not on the map: this case covers a plan area or citywide change rather than one parcel.</p>` : p.geo_source === "address" ? `<p class="note">Placed by street address; the parcel number on file didn't match the state tax map.</p>` : ""}
+      </div>`;
+    $("#d-close").onclick = closeDetail;
+    $("#detail").querySelectorAll(".copy").forEach((b) => (b.onclick = async () => {
+      try { await navigator.clipboard.writeText(b.dataset.copy); b.textContent = "Copied"; } catch { b.textContent = b.dataset.copy; }
+      setTimeout(() => (b.textContent = "Copy"), 1500);
+    }));
+    $("#detail").querySelectorAll(".related button").forEach((b) => (b.onclick = () => select(b.dataset.id, true)));
+  }
+
+  function select(id, fly) {
+    const p = DATA.cases.find((x) => x.id === id);
+    if (!p) return;
+    const prev = selected;
+    selected = id;
+    [prev, id].forEach((pid) => { const m = markers.get(pid); if (m) m.setIcon(pinIcon(m._p)); });
+    renderDetail(p);
+    $("#detail").hidden = false;
+    $("#detail").scrollTop = 0;
+    if (window.matchMedia("(max-width: 760px)").matches) $("#side").classList.add("collapsed");
+    renderList();
+    if (outline) { outline.remove(); outline = null; }
+    if (p.lat != null) {
+      const z = Math.max(map.getZoom(), 18);
+      const pt = map.project([p.lat, p.lon], z);
+      const offset = window.matchMedia("(max-width: 760px)").matches ? L.point(0, map.getSize().y * 0.25) : L.point(190, 0);
+      const target = map.unproject(pt.add(offset), z);
+      fly ? map.flyTo(target, z, { duration: 1.1 }) : map.setView(target, z);
+      drawParcel(p);
+    }
+  }
+
+  async function drawParcel(p) {
+    if (!p.pams_pin) return;
+    const want = p.id;
+    try {
+      const local = DATA.parcels && DATA.parcels[p.pams_pin];
+      const gj = local ? { type: "FeatureCollection", features: [local] } : await (await fetch(PARCELS + "?" + new URLSearchParams({ where: `PAMS_PIN='${String(p.pams_pin).replace(/'/g, "''")}'`, outFields: "PAMS_PIN,PCLBLOCK,PCLLOT", returnGeometry: "true", outSR: "4326", f: "geojson" }))).json();
+      if (selected !== want || !gj.features?.length) return;
+      if (outline) outline.remove();
+      outline = L.geoJSON(gj, {
+        style: { color: "#ffe066", weight: 2.5, fillColor: "#ffe066", fillOpacity: 0.12, dashArray: "6 4" }, interactive: false,
+        onEachFeature: (f, layer) => { const pr = f.properties || {}; if (pr.PCLLOT) layer.bindTooltip(`Block ${pr.PCLBLOCK} · Lot ${pr.PCLLOT}`, { permanent: true, direction: "center", className: "lot-label" }); },
+      }).addTo(map);
+    } catch { /* outline is a nice-to-have */ }
+  }
+
+  function closeDetail() {
+    const prev = selected;
+    selected = null;
+    $("#detail").hidden = true;
+    if (outline) { outline.remove(); outline = null; }
+    const m = markers.get(prev); if (m) m.setIcon(pinIcon(m._p));
+    renderList();
+  }
+
+  function refresh() { drawMarkers(); renderList(); }
+
+  function toast(msg) {
+    const t = document.createElement("div");
+    t.className = "toast"; t.innerHTML = msg;
+    $(".body").appendChild(t);
+    setTimeout(() => t.remove(), 6000);
+  }
+
+  async function start() {
+    const emb = document.getElementById("jc-data");
+    DATA = emb ? JSON.parse(emb.textContent) : await (await fetch("data/map.json", { cache: "no-store" })).json();
+    NOW = new Date(DATA.generated_at);
+    LAST_VISIT = store.get("jcbt:lastVisit");
+    initMap();
+    renderStats(); renderFilters(); renderLegend(); renderFoot(); refresh();
+    const pts = DATA.cases.filter((p) => p.lat != null).map((p) => [p.lat, p.lon]);
+    if (pts.length) map.fitBounds(pts, { paddingTopLeft: [40, 40], paddingBottomRight: [40, 40], maxZoom: 14 });
+    const fresh = LAST_VISIT ? DATA.cases.filter((p) => p.applied > LAST_VISIT.slice(0, 10)).length : 0;
+    if (fresh) toast(`<b>${fresh} new application${fresh === 1 ? "" : "s"}</b> since your last visit`);
+    store.set("jcbt:lastVisit", DATA.generated_at);
+    if (window.matchMedia("(max-width: 760px)").matches) $("#side").classList.add("collapsed");
+    const h = decodeURIComponent(location.hash.slice(1));
+    if (/^[PZ]2026-\d{4}$/.test(h)) select(h, false);
+  }
+  start();
+})();
+</script>
+</body>
+</html>
