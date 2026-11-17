@@ -135,28 +135,60 @@ def kind_of(ctype):
     return "other", t
 
 
-def product_of(c, f, kind):
-    d = (c.get("desc") or "").lower()
+# ------------------------------------------------------------------ what is being proposed
+# Pin categories describe the proposed project, never the lot's current use (that's shown separately).
+INTERIM = r"interim use|temporary|batching plant|surface parking|valet (?:surface )?parking lot|parking lot (?:with|for|to serve)|as a parking lot"
+INDUSTRIAL = r"warehouse|industrial|logistic|distribution (?:center|facility)|data center|self[- ]storage|manufactur|storage of building material|truck terminal"
+COMMERCIAL = r"\bhotel|retail|restaurant|\boffices?\b|commercial|car ?wash|tire|auto(?:mobile|motive)? (?:repair|service|body)|gas station|service station|fitness|\bgym\b|school|medical|daycare|day care|church|house of worship|golf|recreation|\bstore\b|dispensar|cannabis|museum|theat(?:er|re)|supermarket|grocery|bank\b|clinic"
+LARGE_RES = r"multi-?\s?family|mixed[- ]use|apartment|tower|residential (?:units|building|development|project)|dwelling units|amenit(?:y|ies)|senior housing|assisted living"
+SMALL_RES = r"single[- ]family|one[- ]family|two[- ]family|1-family|2-family|townhouse|accessory dwelling|addition to (?:the |an )?existing|fourth story|third floor|on my property|my (?:home|house)"
+SIGNS = r"\bsigns?\b|signage|banner|antenna|cell (?:tower|site)|telecom|wireless|supergraphic"
+MINOR = r"\bsigns?\b|signage|banner|antenna|cell (?:tower|site)|telecom|wireless|awning|fa[cç]ade|solar panel|electric meter|interior (?:layout|stair|changes)"
+
+
+def classify_text(desc, kind, units=None, stories=None, hotel=None):
+    """Category from one description alone; None when it doesn't say what's being built."""
+    d = (desc or "").lower()
     if kind == "plan":
         return "plan"
-    if kind == "sign" or re.search(r"\bantenna|cell (?:tower|site)|telecom|wireless|signage|\bsigns?\b", d) and not f["units"]:
-        return "telecom"
-    if re.search(r"warehouse|industrial|logistic|storage of building material|batching plant|self[- ]storage|distribution|manufactur", d) and not (f["units"] or 0) > 4:
+    if kind == "appeal" or re.match(r"\s*(?:request(?:ing)? (?:an? )?)?appeal", d):
+        return "appeal"
+    if kind == "sign":
+        return "minor"
+    if re.search(INTERIM, d) and not (units or 0) >= 5:
+        return "interim"
+    if units and units >= 5:
+        return "res"
+    if units and units < 5:
+        return "small"
+    if re.search(SIGNS, d):
+        return "minor"
+    if re.search(INDUSTRIAL, d):
         return "industrial"
-    if f["units"] and f["units"] >= 5:
-        return "multifamily"
-    if f["units"] and f["units"] < 5:
-        return "smallres"
-    if re.search(r"multi-?family|mixed[- ]use|residential building|apartments?", d):
-        return "multifamily"
-    if re.search(r"hotel|retail|restaurant|office|commercial|fitness|school|medical|daycare|church|parking (?:lot|garage)|valet|store|golf|recreation|pier|gym", d):
+    if re.search(SMALL_RES, d):
+        return "small"
+    if re.search(LARGE_RES, d) or (stories and stories >= 5 and re.search(r"residential|building", d)):
+        return "res" if (stories or 5) >= 5 or re.search(r"multi-?\s?family|apartment|tower|mixed[- ]use", d) else "small"
+    if re.search(r"residential", d):
+        return "small"
+    if hotel or re.search(COMMERCIAL, d):
         return "commercial"
-    if kind == "subdiv" or re.search(r"subdivi|single[- ]family|two[- ]family|one[- ]family|dwelling|driveway|addition to the existing", d):
-        return "smallres"
-    return "other"
+    if re.search(MINOR, d):
+        return "minor"
+    if kind == "subdiv" or re.search(r"subdivi|consolidat|lot line", d):
+        return "subdiv"
+    return None
 
 
-CLASS_PRODUCT = {"2": "smallres", "4C": "multifamily", "4A": "commercial", "4B": "industrial"}
+PROJECT = {"res", "small", "commercial", "industrial"}   # categories that describe a building project
+
+
+def block_of(pin):
+    return pin.split("_")[1] if pin and pin.count("_") >= 2 else None
+
+
+def blocks_in_text(t):
+    return set(re.findall(r"Block[:\s#]*(\d{3,5}(?:\.\d{1,3})?)", t or "", re.I))
 
 
 def status_group(s):
@@ -205,7 +237,9 @@ def build_prior(p):
     grab = lambda pat: (re.search(pat, odp.get("desc") or "") or [None, ""])[1].strip(" ,")
     kind_, label_ = kind_of(p.get("type") or "") if p.get("type") else ("", "")
     docs = [doc_out(d) for d in (p.get("docs") or [])] + [doc_out(d) for d in odp.get("docs") or []]
+    blocks = ({block_of(p.get("pin"))} - {None}) | blocks_in_text(text)
     return {
+        "blocks": sorted(blocks),
         "id": p["id"], "case_id": p.get("caseId"), "type": p.get("type") or (odp.get("title") or "").split(" - ")[0],
         "status": p.get("status") or "", "applied": p.get("applied") or "",
         "address": re.sub(r"\s+Jersey City NJ\s*\d{5}$", "", p.get("address") or "", flags=re.I).strip() or re.sub(r"^.*?\b[PZ]\d{2,4}-\d{2,4}\s*", "", odp.get("title") or ""),
@@ -279,6 +313,7 @@ for c in cases_raw["cases"]:
         "last_sale_price": p.get("SALE_PRICE") or None,
         "last_sale_date": None,
         "owner_mail": mail,
+        "tracked_because": c.get("tracked_because", "filed"),
         "approval_expires": (c.get("approvalExpires") or "")[:10] or None,
         "docs": [dict({"name": d.get("name", ""), "note": d.get("note", ""), "added": d.get("added", "")},
                       **({"url": RELEASE + mirror[d["id"]]["asset"], "size": mirror[d["id"]]["size"], "current": True} if d.get("id") in mirror else {}))
@@ -313,33 +348,82 @@ for c in cases_raw["cases"]:
         rec["lots_label"] = "; ".join(f"Block {k} · Lot{'s' if len(v) > 1 else ''} {', '.join(sorted(v, key=_lotkey))}" for k, v in by_block.items())
         rec["lots_acre"] = round(sum(float(l.get("acre") or 0) for l in lots), 3) or None
         rec["lots_net"] = sum(int(l.get("net") or 0) for l in lots) or None
-    rec["product"] = product_of(c, f, kind)
+    rec["own_cat"] = classify_text(c.get("desc"), kind, f["units"], f["stories"], f["hotel_rooms"])
+    lot_cls = [l.get("cls") for l in (c.get("lots") or []) if l.get("cls")] or ([p.get("PROP_CLASS")] if p.get("PROP_CLASS") else [])
+    rec["existing"] = sorted(set(lot_cls), key=lambda x: (len(x), x))
     rec["priors"] = [build_prior(priors_raw[r]) for r in (c.get("prior_ids") or []) if r in priors_raw]
     out.append(rec)
     if mail:
         by_mail[mail.upper()].add(rec["id"])
 
-# Fill in product type where the description doesn't say what's being built:
-# 1) borrow from another 2026 case on the same parcel, 2) amendments/extensions -> "changes to prior approvals",
-# 3) everything else -> the parcel's tax class.
-by_pin = defaultdict(list)
+# ------------------------------------------------------------------ resolve each case's category
+# 1. This application's own description.
+# 2. Extensions/amendments that don't say: the approval they extend or amend (only if it's on the same block).
+# 3. Still unknown: a real building project on the same lot (never an interim use, never a borrowed type).
+# 4. Otherwise: "Changes to an approved project" for amendments/extensions, "Other" for the rest.
+CASE_BLOCKS = {}
 for r in out:
-    if r["pams_pin"]:
-        by_pin[r["pams_pin"]].append(r)
+    CASE_BLOCKS[r["id"]] = {block_of(x) for x in (r.get("parcel_pins") or [r.get("pams_pin")])} - {None}
+
+
+def street_of(addr):
+    a = re.sub(r"(?i)\b(jersey city|nj|new jersey|\d{5})\b", " ", addr or "").lower()
+    a = re.sub(r"\b(st|street|ave|avenue|blvd|boulevard|dr|drive|pl|place|rd|road|pkwy|parkway|plz|plaza|ter|terrace|ct|court)\b\.?", " ", a)
+    m = re.search(r"\d+[a-z]?(?:\s*[-&]\s*\d+[a-z]?)*\s+([a-z][a-z .']+)", a)
+    return re.sub(r"\s+", " ", m.group(1)).strip() if m else None
+
+
+def matching_priors(r):
+    """Earlier approvals on this case's block; with no block on record, on the same street."""
+    mine = CASE_BLOCKS[r["id"]]
+    good = []
+    for q in r.get("priors") or []:
+        if mine and q.get("blocks"):
+            q["same_site"] = bool(mine & set(q["blocks"]))
+        else:
+            a, b_ = street_of(r.get("address")), street_of(q.get("address"))
+            q["same_site"] = not a or not b_ or a == b_ or a in b_ or b_ in a
+        if q["same_site"]:
+            good.append(q)
+    return good
+
+
+def strong(r):
+    """A category that stands on its own. For amendments/extensions, a passing mention of retail or a facade
+    doesn't say what the project is; the approval being amended does."""
+    c = r["product"]
+    if c in ("res", "small", "industrial", "interim", "plan", "appeal"):
+        return True
+    return c == "commercial" and r["kind"] not in ("amend", "ext")
+
+
 for r in out:
-    if r["product"] != "other":
+    r["product"], r["product_basis"] = r["own_cat"], ("this application" if r["own_cat"] else None)
+    same = matching_priors(r)
+    if not strong(r):
+        for q in same:
+            qc = classify_text(q.get("desc"), "new", q.get("units"), q.get("stories"), q.get("hotel_rooms"))
+            if qc in PROJECT | {"interim"}:
+                r["product"], r["product_basis"] = qc, q["id"]
+                break
+
+lenders = defaultdict(list)
+for r in out:
+    if r["product"] in PROJECT and (strong(r) or r["product_basis"] not in (None, "this application")) and r["kind"] in ("new", "amend", "variance", "ext"):
+        for pin in r.get("parcel_pins") or [r.get("pams_pin")]:
+            if pin:
+                lenders[pin].append(r)
+for r in out:
+    if strong(r) or (r["product_basis"] and r["product_basis"] != "this application"):
         continue
-    sib = [s for s in by_pin.get(r["pams_pin"], []) if s is not r and s["product"] not in ("other", "mods", "plan", "telecom")]
-    if sib:
-        best = max(sib, key=lambda s: s["units"] or 0)
-        r["product"] = best["product"]
-        r["product_from"] = best["id"]
-        if not r["units"] and best["units"]:
-            r["units_ref"] = best["units"]
-    elif r["kind"] in ("amend", "ext"):
-        r["product"] = "mods"
-    else:
-        r["product"] = CLASS_PRODUCT.get(r["prop_class"] or "", "other")
+    cands = [s for pin in (r.get("parcel_pins") or [r.get("pams_pin")]) if pin for s in lenders.get(pin, []) if s is not r]
+    if cands and r["kind"] in ("amend", "ext", "subdiv", "new", "variance", "other"):
+        best = max(cands, key=lambda s: (s["units"] or 0, s["applied"]))
+        r["product"], r["product_basis"] = best["product"], best["id"]
+        continue
+    if not r["product"]:
+        r["product"] = "minor" if r["kind"] in ("amend", "ext") else "other"
+        r["product_basis"] = None
 
 # One name per attorney: "Ben Wine" and "Benjamin T.F. Wine" are the same person.
 NICK = {"ben": "b", "benjamin": "b", "tom": "t", "thomas": "t", "jim": "j", "james": "j", "mike": "m", "michael": "m", "steve": "s", "stephen": "s", "steven": "s", "chuck": "c", "charles": "c"}
@@ -368,10 +452,10 @@ for r in out:
         r["approved_on"] = next((h[1] for h in hit if h[1]), None) or r["completed"]
     r["status_changed_on"] = r["status_history"][-1][1] if r["status_history"] and len(r["status_history"][-1]) == 2 else None
 
-# Extensions and amendments inherit what's being built from the approval they extend.
+# Extensions and amendments that don't give a size take it from the approval they extend (same site only).
 for r in out:
-    src = next((p for p in r.get("priors") or [] if p.get("units") or p.get("stories")), None)
-    if not src:
+    src = next((q for q in r.get("priors") or [] if q.get("same_site") and (q.get("units") or q.get("stories"))), None)
+    if not src or r["kind"] not in ("amend", "ext"):
         continue
     for k in ("units", "stories", "affordable", "parking", "retail_sf", "hotel_rooms"):
         if not r.get(k) and src.get(k):
@@ -379,10 +463,6 @@ for r in out:
             r.setdefault("inherited", []).append(k)
     if r.get("inherited"):
         r["inherited_from"] = src["id"]
-    if r["product"] in ("mods", "other"):
-        pd = product_of({"desc": src.get("desc", "")}, {k: src.get(k) for k in ("units",)}, "new")
-        if pd not in ("other",):
-            r["product"] = pd
 
 # Units counted toward the headline only once per site: new site plans that are still alive.
 for r in out:

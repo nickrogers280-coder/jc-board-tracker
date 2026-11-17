@@ -192,10 +192,16 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
   --p-comm: #f0a63a;     /* commercial, hotel, institutional */
   --p-ind: #c58cff;      /* industrial, storage, logistics */
   --p-plan: #ff8f6b;     /* redevelopment plans, rezonings */
-  --p-other: #8794a3;    /* signage, telecom, other */
+  --p-other: #8794a3;    /* minor changes, signage, other */
+  --p-interim: #ff7ab6;  /* parking lots and other interim / temporary uses */
+  --p-subdiv: #d9c58b;   /* subdivisions and lot changes */
+  --p-appeal: #b7c3cf;   /* appeals and interpretations */
 }
 .pin.multi { --c: var(--p-multi); } .pin.small { --c: var(--p-small); } .pin.comm { --c: var(--p-comm); }
 .pin.ind { --c: var(--p-ind); } .pin.plan { --c: var(--p-plan); } .pin.other { --c: var(--p-other); }
+.pin.interim { --c: var(--p-interim); } .pin.subdiv { --c: var(--p-subdiv); } .pin.appeal { --c: var(--p-appeal); }
+.exist { display: inline-block; padding: 0 5px; border-radius: 3px; border: 1px solid var(--line); color: var(--ink-3); font: 500 10.5px var(--font-data); white-space: nowrap; }
+.basis { font-size: 12px; color: var(--ink-3); }
 .pin.zba i { border-radius: 3px; transform: rotate(45deg) scale(.9); }
 .pin.zba.selected i { transform: rotate(45deg) scale(1.25); }
 .pin.faded i { opacity: .55; box-shadow: 0 0 0 1px var(--c); }
@@ -247,7 +253,7 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
 <body>
 <div class="app">
   <header class="topbar">
-    <div class="brand"><h1>JC Board Tracker</h1><span class="sub">Jersey City Planning &amp; Zoning Board applications filed since Jan 1, 2026</span></div>
+    <div class="brand"><h1>JC Board Tracker</h1><span class="sub">Jersey City Planning &amp; Zoning Board applications filed since Jan 1, 2026, plus earlier ones still in play</span></div>
     <div class="stats" id="stats"></div>
     <div class="layer-toggle" role="group" aria-label="Map style">
       <button id="lyr-sat" aria-pressed="true">Satellite</button>
@@ -268,9 +274,12 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
           <select id="ward" aria-label="Ward"><option value="">All wards</option></select>
           <select id="window" aria-label="Filed">
             <option value="">All dates</option>
+            <option value="2026">Filed in 2026</option>
+            <option value="older">Filed earlier, still active</option>
             <option value="30">Last 30 days</option>
             <option value="90">Last 90 days</option>
           </select>
+          <select id="exist" aria-label="Existing use"><option value="">Any existing use</option></select>
           <select id="size" aria-label="Project size"><option value="">Any size</option><option value="5">5+ units</option><option value="50">50+ units</option><option value="150">150+ units</option></select>
         </div>
         <div class="chips" id="status-chips" aria-label="Status"></div>
@@ -295,16 +304,25 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
 (() => {
   const PARCELS = "https://services2.arcgis.com/XVOqAjTOJ5P6ngMu/ArcGIS/rest/services/Parcels_Composite_NJ_WM/FeatureServer/0/query";
   const PORTAL = "https://jerseycitynj-energovpub.tylerhost.net/apps/selfservice/JerseyCityNJProd#/plan/";
+  // Pin color = what's being proposed. The lot's current use is shown separately ("Existing").
   const TYPES = [
-    { key: "multifamily", cls: "multi", label: "Multifamily", c: "var(--p-multi)" },
-    { key: "smallres", cls: "small", label: "1-4 units", c: "var(--p-small)" },
-    { key: "commercial", cls: "comm", label: "Commercial", c: "var(--p-comm)" },
+    { key: "res", cls: "multi", label: "Residential 5+ units", c: "var(--p-multi)" },
+    { key: "small", cls: "small", label: "Residential 1-4 units", c: "var(--p-small)" },
+    { key: "commercial", cls: "comm", label: "Commercial / hotel", c: "var(--p-comm)" },
     { key: "industrial", cls: "ind", label: "Industrial", c: "var(--p-ind)" },
-    { key: "plan", cls: "plan", label: "Plans", c: "var(--p-plan)" },
-    { key: "mods", cls: "other", label: "Prior approvals", c: "var(--p-other)" },
-    { key: "telecom", cls: "other", label: "Signage / telecom", c: "var(--p-other)" },
+    { key: "interim", cls: "interim", label: "Parking / interim use", c: "var(--p-interim)" },
+    { key: "subdiv", cls: "subdiv", label: "Subdivision", c: "var(--p-subdiv)" },
+    { key: "plan", cls: "plan", label: "Plans & rezonings", c: "var(--p-plan)" },
+    { key: "minor", cls: "other", label: "Minor changes", c: "var(--p-other)" },
+    { key: "appeal", cls: "appeal", label: "Appeals", c: "var(--p-appeal)" },
     { key: "other", cls: "other", label: "Other", c: "var(--p-other)" },
   ];
+  const EXIST = { "1": "Vacant land", "2": "Residential 1-4", "3A": "Farm", "3B": "Farm", "4A": "Commercial", "4B": "Industrial", "4C": "Apartments 5+",
+    "5A": "Railroad", "5B": "Railroad", "6A": "Utility", "15A": "Exempt", "15B": "Exempt", "15C": "Exempt (public)", "15D": "Exempt (church/charity)", "15E": "Exempt", "15F": "Exempt" };
+  const existLabel = (c) => EXIST[c] || c;
+  const existText = (p) => (p.existing || []).map((c) => `${c} ${existLabel(c)}`).join(" + ");
+  const basisText = (p) => !p.product_basis ? "" : p.product_basis === "this application" ? "from this application" : `from ${p.product_basis}`;
+  const TRACKED = { agenda: "Filed before 2026 · on a 2026 agenda", active: "Filed before 2026 · still under review", tracked: "Filed before 2026" };
   const TYPE = Object.fromEntries(TYPES.map((t) => [t.key, t]));
   const KINDS = [["new", "New site plans"], ["amend", "Amendments"], ["ext", "Extensions"], ["subdiv", "Subdivisions"], ["variance", "Variances (no site plan)"], ["appeal", "Appeals / interpretations"], ["sign", "Signage"], ["plan", "Plans & rezonings"], ["other", "Other"]];
   const STATUSES = [
@@ -329,7 +347,7 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
 
   let BOUNDS = null, cityLayer = null, maskLayer = null, wardLayer = null, wardLabels = null;
   let DATA, NOW, LAST_VISIT, map, layers, markers = new Map(), selected = null, outline = null, tab = "activity", ptab = "applicant";
-  const state = { q: "", board: "", kind: "", ward: "", window: "", size: 0, statuses: new Set(["pending", "heard", "approved"]), types: new Set(TYPES.map((t) => t.key)) };
+  const state = { exist: "", q: "", board: "", kind: "", ward: "", window: "", size: 0, statuses: new Set(["pending", "heard", "approved"]), types: new Set(TYPES.map((t) => t.key)) };
 
   const isNew = (p) => (NOW - parseDay(p.applied)) / 864e5 <= 14;
   const nextHearing = (p) => {
@@ -358,7 +376,10 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
     if (state.kind && p.kind !== state.kind) return false;
     if (state.ward && p.ward !== state.ward) return false;
     if (state.size && !((p.units || 0) >= state.size)) return false;
-    if (state.window) { const d = parseDay(p.applied); if (!d || d < +NOW - state.window * 864e5) return false; }
+    if (state.window === 2026) { if (p.tracked_because && p.tracked_because !== "filed") return false; }
+    else if (state.window === "older") { if (!p.tracked_because || p.tracked_because === "filed") return false; }
+    else if (state.window) { const d = parseDay(p.applied); if (!d || d < +NOW - state.window * 864e5) return false; }
+    if (state.exist && !(p.existing || []).some((c) => (state.exist === "15" ? /^15/.test(c) : c === state.exist))) return false;
     if (state.q) {
       const hay = [p.id, (p.priors || []).map((q) => q.id + " " + (q.applicant || "")).join(" "), p.address, p.prop_loc, p.applicant, p.attorney, p.owner_mail, p.zone, p.planner, p.block && "block " + p.block, p.kind_label, p.type, p.desc].join(" ").toLowerCase();
       if (!state.q.split(/\s+/).every((w) => hay.includes(w))) return false;
@@ -496,7 +517,10 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
     $("#board").onchange = (e) => { state.board = e.target.value; refresh(); };
     $("#kind").onchange = (e) => { state.kind = e.target.value; refresh(); };
     $("#ward").onchange = (e) => { state.ward = e.target.value; refresh(); drawWard(state.ward); if (!state.ward) fitCity(); };
-    $("#window").onchange = (e) => { state.window = +e.target.value || ""; refresh(); };
+    $("#window").onchange = (e) => { const v = e.target.value; state.window = v === "older" ? "older" : +v || ""; refresh(); };
+    const ex = {}; DATA.cases.forEach((p) => (p.existing || []).forEach((c) => { const k = /^15/.test(c) ? "15" : c; ex[k] = (ex[k] || 0) + 1; }));
+    $("#exist").insertAdjacentHTML("beforeend", Object.keys(ex).sort((a, b) => (a.length - b.length) || a.localeCompare(b)).map((k) => `<option value="${k}">Existing: ${k === "15" ? "Exempt" : esc(existLabel(k))} (${ex[k]})</option>`).join(""));
+    $("#exist").onchange = (e) => { state.exist = e.target.value; refresh(); };
     $("#size").onchange = (e) => { state.size = +e.target.value || 0; refresh(); };
     let t; $("#q").oninput = (e) => { clearTimeout(t); t = setTimeout(() => { state.q = e.target.value.trim().toLowerCase(); refresh(); }, 120); };
     const setTab = (name) => {
@@ -540,6 +564,7 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
       ${top}
       <div class="addr">${esc(titleCase(p.address) || p.id)}</div>
       <div class="meta"><span class="tag" style="--t:${t.c}">${esc(boardShort(p))}</span>${nLots(p) > 1 ? ` <span class="tag" style="--t:var(--parcel)">${nLots(p)} lots</span>` : ""} ${esc(p.kind_label)} · ${esc(placeLine(p) || "No parcel")}</div>
+      ${(p.existing || []).length || (p.tracked_because && p.tracked_because !== "filed") ? `<div class="meta">${(p.existing || []).length ? `<span class="exist" title="Current tax class of the lot">Existing: ${esc(existText(p))}</span>` : ""}${p.tracked_because && p.tracked_because !== "filed" ? ` <span class="exist" style="color:var(--pin-possible)">${esc(TRACKED[p.tracked_because] || "Filed earlier")}</span>` : ""}</div>` : ""}
       ${p.priors && p.priors.length && (p.kind === "ext" || p.kind === "amend") ? `<div class="meta" style="color:var(--ink-3)">${p.kind === "ext" ? "Extends" : "Amends"} ${esc(p.priors.map((q) => q.id).join(", "))}</div>` : ""}
       ${productLine(p) || p.applicant ? `<div class="change">${esc(productLine(p))}${productLine(p) && p.applicant ? " · " : ""}${p.applicant ? esc(p.applicant) : ""}</div>` : ""}
     </button>`;
@@ -644,7 +669,7 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
       const fig = productLine(q);
       const links = [q.case_id ? `<a href="${PORTAL}${esc(q.case_id)}?tab=attachments" target="_blank" rel="noopener">City portal</a>` : "",
         q.odp ? `<a href="https://data.jerseycitynj.gov/explore/dataset/${esc(q.odp)}/information/" target="_blank" rel="noopener">Open Data archive</a>` : ""].filter(Boolean).join(" · ");
-      return `<div class="sec prior"><h3>${i === 0 ? "Original approval" : "Related filing"} · ${esc(q.id)}</h3>
+      return `<div class="sec prior"><h3>${i === 0 ? "Original approval" : "Related filing"} · ${esc(q.id)}</h3>${q.same_site === false ? `<p class="note" style="margin:0 0 6px;color:var(--pin-possible)">Cited in this application, but the city's record for ${esc(q.id)} is at a different address. Not used for this project's size or type.</p>` : ""}
         <dl class="kv">
           <dt>Case</dt><dd><span class="mono">${esc(q.id)}</span>${q.type ? " · " + esc(q.type) : ""}</dd>
           ${q.status ? `<dt>Status</dt><dd>${esc(q.status)}</dd>` : ""}
@@ -683,11 +708,12 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
         <button class="x" id="d-close" aria-label="Close">×</button>
         <h2>${esc(titleCase(p.address) || "Location not listed")}</h2>
         <div class="where">${esc(placeLine(p))}${p.zone ? " · " + esc(p.zone) : ""}</div>
-        <div class="tags"><span class="tag" style="--t:${t.c}">${esc(t.label)}</span><span class="tag" style="--t:var(--ink-2)">${p.board === "zoning" ? "Zoning Board" : "Planning Board"} · ${esc(p.kind_label)}</span><span class="tag" style="--t:${statusColor(p)}">${esc(p.status)}</span></div>
+        <div class="tags"><span class="tag" style="--t:${t.c}" title="${esc(basisText(p))}">${esc(t.label)}</span><span class="tag" style="--t:var(--ink-2)">${p.board === "zoning" ? "Zoning Board" : "Planning Board"} · ${esc(p.kind_label)}</span><span class="tag" style="--t:${statusColor(p)}">${esc(p.status)}</span></div>
       </div>
       <div class="d-body">
         ${up && parseDay(up) >= NOW - 864e5 ? `<div class="alerts-box"><div><b>On the ${p.board === "zoning" ? "Zoning" : "Planning"} Board agenda ${fmtDate(up)}</b></div>${p.agenda_last ? `<small>${esc(p.agenda_last)}</small>` : ""}</div>` : ""}
         ${statusKey(p) === "approved" ? `<div class="reo-box" style="--pin-reo:var(--ok)"><b>Approved${p.approved_on ? " " + fmtDate(p.approved_on) : ""}</b><div>${esc(p.type)}${p.approval_expires ? " · approval expires " + fmtDate(p.approval_expires) : ""}</div></div>` : ""}
+        <div class="basis">${p.product_basis && p.product_basis !== "this application" ? `Type: <b>${esc(t.label)}</b>, from ${esc(p.product_basis)}${(p.priors || []).some((q) => q.id === p.product_basis) ? " (the approval this " + (p.kind === "ext" ? "extends" : "amends") + ")" : " (the project on this lot)"}` : ""}${(p.existing || []).length ? `${p.product_basis && p.product_basis !== "this application" ? " · " : ""}Existing lot: <b>${esc(existText(p))}</b>` : ""}${p.tracked_because && p.tracked_because !== "filed" ? ` · <span style="color:var(--pin-possible)">${esc(TRACKED[p.tracked_because] || "")}</span>` : ""}</div>
         <div class="figs">${figs.map(([k, v]) => `<div class="fig"><span>${k}</span><b>${esc(v)}</b></div>`).join("")}</div>
         ${p.inherited_from ? `<p class="note" style="margin:-8px 0 0">Project size from the earlier approval ${esc(p.inherited_from)}, which this ${p.kind === "ext" ? "extends" : "amends"}.</p>` : ""}
         ${affPct != null ? `<div class="meter"><div><b>${affPct}%</b> of units affordable (${p.affordable} of ${n0(p.units)})</div><div class="bar"><i style="width:${Math.min(affPct, 100)}%;--fill:var(--ok)"></i></div></div>` : ""}
@@ -708,7 +734,7 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
           <dt>Tax bill to</dt><dd>${p.owner_mail ? esc(titleCase(p.owner_mail)) + (sameMail.length ? `<div class="note">Same mailing address on ${sameMail.length} other 2026 ${sameMail.length === 1 ? "case" : "cases"}</div>` : "") : "—"}</dd>
         </dl></div>
         ${p.prop_class || p.net_value ? `<div class="sec"><h3>Tax record</h3><dl class="kv">
-          ${p.class_label ? `<dt>Class</dt><dd>${esc(p.prop_class)} · ${esc(p.class_label)}</dd>` : ""}
+          ${(p.existing || []).length ? `<dt>Existing use</dt><dd>${esc(existText(p))}${nLots(p) > 1 ? ` <span class="note">(across ${nLots(p)} lots)</span>` : ""}<div class="note">Current tax class: what's there now, not what's proposed</div></dd>` : p.class_label ? `<dt>Existing use</dt><dd>${esc(p.prop_class)} · ${esc(p.class_label)}</dd>` : ""}
           ${p.prop_loc ? `<dt>Tax address</dt><dd>${esc(titleCase(p.prop_loc))}</dd>` : ""}
           ${p.net_value ? `<dt>Assessed</dt><dd>${money(p.net_value)}<div class="note">Land ${short$(p.land_val)} · Improvements ${short$(p.imprvt_val)}</div></dd>` : ""}
           ${nLots(p) > 1 ? `<dt>Assemblage</dt><dd><b>${nLots(p)} lots</b> · ${esc(p.lots_label)}${p.lots_acre ? `<div>${(+p.lots_acre).toFixed(2)} acres · ${n0(Math.round(p.lots_acre * 43560))} SF combined</div>` : ""}${p.lots_net ? `<div class="note">Assessed ${short$(p.lots_net)} across all lots</div>` : ""}</dd>` : ""}

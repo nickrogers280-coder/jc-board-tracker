@@ -301,10 +301,11 @@ def parse_agendas(seen_cache):
                 t = re.sub(r"https?://\S+", "", text)
                 t = re.sub(r"\s+-\s+", "-", t)
                 for part in re.split(r"C\s?ase\s?:\s*", t)[1:]:
-                    m = re.match(r"([PZ])\s?(\d{4})\s?-\s?(\d{3,4})", part)
-                    if not m or int(m.group(2)) < FIRST_YEAR:
+                    m = re.match(r"([PZ])\s?(\d{4}|\d{2})\s?-\s?(\d{2,4})(?!\d)", part)
+                    if not m:
                         continue
-                    cn = f"{m.group(1)}{m.group(2)}-{int(m.group(3)):04d}"
+                    cn = (f"{m.group(1)}{m.group(2)}-{int(m.group(3)):04d}" if len(m.group(2)) == 4
+                          else f"{m.group(1)}{m.group(2)}-{int(m.group(3)):03d}")
                     rec = ag.setdefault(cn, {"dates": []})
                     rec["dates"].append(d + board)
 
@@ -322,6 +323,10 @@ def parse_agendas(seen_cache):
     for rec in ag.values():
         rec["dates"] = sorted(set(rec["dates"]))
     return ag, agenda_ids
+
+
+# Statuses that mean a case is decided or dead; an older case with any other status is still in play.
+CLOSED = {"approved", "complete", "denied", "withdrawn", "void", "closed", "expired", "approved, conditions pending"}
 
 
 # ------------------------------------------------------------------ main
@@ -373,19 +378,42 @@ def main():
     cache_path = ROOT / "raw/agenda_text_cache.json"
     cache = json.loads(cache_path.read_text()) if cache_path.exists() else {}
 
-    # Cases
-    rows = []
-    for y in YEARS:
-        for p in ("P", "Z"):
-            rows += search_cases(f"{p}{y}")
-    print(f"{len(rows)} cases in portal search")
-    if len(rows) < 50:
-        sys.exit("Portal returned too few cases; leaving the published data alone.")
-
     prev = {}
     prev_path = ROOT / "raw/jc_cases.json"
     if prev_path.exists():
         prev = {c["id"]: c for c in json.loads(prev_path.read_text())["cases"]}
+
+    # Agendas first: they decide which older cases are still in play.
+    ag, agenda_ids = parse_agendas(cache)
+    cache_path.write_text(json.dumps(cache))
+
+    # Cases: everything filed since Jan 1 of FIRST_YEAR; older filings still under review; any case on a
+    # tracked-year board agenda; and anything tracked before (so an older case stays when it gets approved).
+    rows, why = [], {}
+    for y in YEARS:
+        for p in ("P", "Z"):
+            for x in search_cases(f"{p}{y}"):
+                rows.append(x)
+                why[x["CaseNumber"]] = "filed"
+    print(f"{len(rows)} cases filed since {FIRST_YEAR}")
+    if len(rows) < 50:
+        sys.exit("Portal returned too few cases; leaving the published data alone.")
+    for p in ("P", "Z"):
+        for x in search_cases(f"{p}{FIRST_YEAR - 1}"):
+            open_ = (x.get("CaseStatus") or "").strip().lower() not in CLOSED
+            if (open_ or x["CaseNumber"] in prev or x["CaseNumber"] in ag) and x["CaseNumber"] not in why:
+                rows.append(x)
+                why[x["CaseNumber"]] = "agenda" if x["CaseNumber"] in ag else ("active" if open_ else "tracked")
+    extra = [c for c in list(ag) + list(prev) if c not in why]
+    for ref in sorted(set(extra)):
+        try:
+            x = find_case(ref)
+        except Exception:
+            x = None
+        if x:
+            rows.append(x)
+            why[x["CaseNumber"]] = "agenda" if ref in ag else "tracked"
+    print(f"{len(rows)} cases tracked ({sum(1 for v in why.values() if v != 'filed')} filed before {FIRST_YEAR})")
 
     cases = []
     for i, x in enumerate(rows):
@@ -411,6 +439,7 @@ def main():
             "address": x.get("AddressDisplay"), "project": d.get("ProjectName"),
             "pin": d.get("MainParcelNumber") or x.get("MainParcel"), "desc": d.get("Description") or x.get("Description"),
             "approvalExpires": d.get("ApprovalExpireDate"), "docs": docs, "loc_pins": loc,
+            "tracked_because": why.get(x["CaseNumber"], "filed"),
         })
         if i % 25 == 0:
             print(f"  details {i}/{len(rows)}")
@@ -431,10 +460,6 @@ def main():
                 c["geo"] = geocode(c["address"])
             except Exception:
                 c["geo"] = None
-
-    # Agendas
-    ag, agenda_ids = parse_agendas(cache)
-    cache_path.write_text(json.dumps(cache))
 
     # Every lot in each application: portal locations + lots named in the description/agenda + the tax
     # record's "additional lots". Only lots that exist on the state parcel map are kept.
