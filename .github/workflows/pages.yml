@@ -35,14 +35,35 @@ jobs:
         run: pip install -q requests pdfplumber
 
       # Last run's raw pull (parcel matches, geocodes, agenda text) so each run only fetches what's new.
-      - uses: actions/cache@v4
+      - uses: actions/cache/restore@v4
         with:
           path: raw
           key: raw-${{ github.run_id }}
           restore-keys: raw-
 
       - name: Pull cases, documents and agendas
+        timeout-minutes: 200
         run: python fetch.py
+
+      # Save the case pull right away, so a slow deed or document step can never cost it.
+      - name: Save the raw pull
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: raw
+          key: raw-${{ github.run_id }}-cases
+
+      - name: Build and commit the cases first
+        run: |
+          python build.py
+          git config user.name "Claude"
+          git config user.email "noreply@anthropic.com"
+          git add data/ index.html kushner.html developers.html
+          if ! git diff --cached --quiet; then
+            git commit -m "data: cases $(date -u +%Y-%m-%d\ %H:%M) UTC"
+            git pull --rebase -X theirs origin main || git pull --rebase origin main
+            git push
+          fi
 
       - name: Kushner / KRE buildings (parcels, cases, documents)
         continue-on-error: true
@@ -50,17 +71,25 @@ jobs:
 
       - name: Ownership and sales history (county deed index + state sales file)
         continue-on-error: true
-        timeout-minutes: 60
+        timeout-minutes: 45
         run: python sales.py
 
       - name: Copy the current version of each document to the release
         continue-on-error: true   # a document problem never holds back the map update
+        timeout-minutes: 45
         env:
           GH_TOKEN: ${{ github.token }}
         run: python docs_mirror.py
 
       - name: Build map data and page
         run: python build.py
+
+      - name: Save the raw pull (deeds, portfolio)
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: raw
+          key: raw-${{ github.run_id }}-all
 
       - name: Commit if anything changed
         id: commit
@@ -81,7 +110,7 @@ jobs:
   publish:
     needs: update
     # Publish after a data change, or whenever the page itself is pushed.
-    if: always() && (github.event_name == 'push' || needs.update.outputs.changed == 'true' || github.event_name == 'workflow_dispatch')
+    if: always() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule')
     runs-on: ubuntu-latest
     environment:
       name: github-pages
