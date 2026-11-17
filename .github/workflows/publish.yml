@@ -1,0 +1,40 @@
+name: Publish site now (no data refresh)
+
+# Puts the committed pages and data live without waiting for a running data update.
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: publish-only
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Assemble site
+        run: |
+          mkdir -p _site/data
+          cp index.html _site/index.html
+          cp data/map.json _site/data/map.json
+          if [ -f kushner.html ]; then cp kushner.html _site/kushner.html; fi
+          if [ -f data/portfolio.json ]; then cp data/portfolio.json _site/data/portfolio.json; fi
+          if [ -f data/boundaries.json ]; then cp data/boundaries.json _site/data/boundaries.json; fi
+          if [ -d data/detail ]; then cp -r data/detail _site/data/detail; fi
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deploy
+        uses: actions/deploy-pages@v4
