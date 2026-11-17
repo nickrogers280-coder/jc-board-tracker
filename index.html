@@ -199,6 +199,16 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
 .pin.zba i { border-radius: 3px; transform: rotate(45deg) scale(.9); }
 .pin.zba.selected i { transform: rotate(45deg) scale(1.25); }
 .pin.faded i { opacity: .55; box-shadow: 0 0 0 1px var(--c); }
+.pin.approved i { box-shadow: 0 0 0 1.5px var(--c), 0 0 0 4px var(--ok), 0 2px 6px rgba(0,0,0,.6); }
+.legend i.okring { background: none; border: 2px solid var(--ok); }
+.docs { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; max-height: 260px; overflow-y: auto; border: 1px solid var(--line); border-radius: 8px; }
+.docs li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 10px; padding: 7px 10px; border-bottom: 1px solid var(--line); font-size: 12.5px; }
+.docs li:last-child { border-bottom: 0; }
+.docs .fn { overflow-wrap: anywhere; }
+.docs .dt { font-family: var(--font-data); font-size: 11px; color: var(--ink-3); white-space: nowrap; }
+.docs .nt { grid-column: 1 / -1; font-size: 11.5px; color: var(--ink-3); }
+.doc-kind { display: inline-block; margin-right: 6px; padding: 0 5px; border-radius: 3px; font: 600 10px var(--font-head); letter-spacing: .05em; text-transform: uppercase; background: var(--panel-2); color: var(--ink-2); }
+.doc-kind.key { background: color-mix(in srgb, var(--pin) 22%, transparent); color: var(--pin); }
 .pin.big { width: 22px; height: 22px; } .pin.huge { width: 30px; height: 30px; }
 .pin b { position: absolute; inset: 0; display: grid; place-items: center; font: 600 10px var(--font-data); color: #0b1016; pointer-events: none; }
 .pin.huge b { font-size: 11px; }
@@ -294,10 +304,12 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
   const KINDS = [["new", "New site plans"], ["amend", "Amendments"], ["ext", "Extensions"], ["subdiv", "Subdivisions"], ["variance", "Variances (no site plan)"], ["appeal", "Appeals / interpretations"], ["sign", "Signage"], ["plan", "Plans & rezonings"], ["other", "Other"]];
   const STATUSES = [
     { key: "pending", label: "Pending", c: "var(--pin)" },
-    { key: "heard", label: "Heard / approved", c: "var(--ok)" },
+    { key: "heard", label: "Heard, awaiting vote/resolution", c: "var(--pin-possible)" },
+    { key: "approved", label: "Approved", c: "var(--ok)" },
     { key: "closed", label: "Denied / withdrawn", c: "var(--pin-closed)" },
   ];
-  const statusKey = (p) => (p.status_group === "approved" || p.status_group === "heard" ? "heard" : p.status_group === "pending" ? "pending" : "closed");
+  const statusKey = (p) => (["approved", "heard", "pending"].includes(p.status_group) ? p.status_group : "closed");
+  const statusColor = (p) => ({ approved: "var(--ok)", heard: "var(--pin-possible)", pending: "var(--pin)", closed: "var(--pin-closed)" }[statusKey(p)]);
   const $ = (s) => document.querySelector(s);
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const store = { get(k) { try { return localStorage.getItem(k); } catch { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch {} } };
@@ -311,7 +323,7 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
   const MONTHS = { january: 1, february: 2, march: 3, april: 4, may: 5, june: 6, july: 7, august: 8, september: 9, october: 10, november: 11, december: 12 };
 
   let DATA, NOW, LAST_VISIT, map, layers, markers = new Map(), selected = null, outline = null, tab = "activity", ptab = "applicant";
-  const state = { q: "", board: "", kind: "", ward: "", window: "", size: 0, statuses: new Set(["pending", "heard"]), types: new Set(TYPES.map((t) => t.key)) };
+  const state = { q: "", board: "", kind: "", ward: "", window: "", size: 0, statuses: new Set(["pending", "heard", "approved"]), types: new Set(TYPES.map((t) => t.key)) };
 
   const isNew = (p) => (NOW - parseDay(p.applied)) / 864e5 <= 14;
   const nextHearing = (p) => {
@@ -372,7 +384,7 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
     sat.on("tileerror", () => {
       if (warned || document.getElementById("jc-img")) return;
       warned = true;
-      $(".body").insertAdjacentHTML("beforeend", `<div class="sample-banner"><b>Map imagery off</b>This view can't load satellite tiles. Open the downloaded jc-board-tracker.html for imagery and parcel outlines.</div>`);
+      $(".body").insertAdjacentHTML("beforeend", `<div class="sample-banner"><b>Map imagery off</b>Satellite tiles didn't load here. Pins, lists and files still work.</div>`);
     });
     const flags = () => $("#map").classList.toggle("show-flags", map.getZoom() >= 15);
     map.on("zoomend", flags); flags();
@@ -393,7 +405,7 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
     const size = u >= 150 ? "huge" : u >= 50 ? "big" : "";
     const px = u >= 150 ? 30 : u >= 50 ? 22 : 16;
     const fresh = isNew(p) && statusKey(p) !== "closed";
-    const cls = ["pin", t.cls, size, p.board === "zoning" ? "zba" : "", fresh ? "alert" : "", statusKey(p) === "closed" ? "faded" : "", selected === p.id ? "selected" : ""].join(" ");
+    const cls = ["pin", t.cls, size, p.board === "zoning" ? "zba" : "", fresh ? "alert" : "", statusKey(p) === "closed" ? "faded" : "", statusKey(p) === "approved" ? "approved" : "", selected === p.id ? "selected" : ""].join(" ");
     const label = u >= 50 ? `<b>${u}</b>` : "";
     const flag = fresh ? `<span class="flag">Filed ${fmtShort(p.applied)}</span>` : "";
     return L.divIcon({ className: "", html: `<span class="${cls}"><i></i>${label}${flag}</span>`, iconSize: [px, px], iconAnchor: [px / 2, px / 2] });
@@ -415,7 +427,7 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
   function renderLegend() {
     const seen = new Set(DATA.cases.map((p) => p.product));
     $("#legend").innerHTML = TYPES.filter((t) => seen.has(t.key) && t.key !== "other").map((t) => `<div><i style="--c:${t.c}"></i>${esc(t.label)}</div>`).join("") +
-      `<div><i style="--c:var(--ink-2)"></i>Planning Board</div><div><i class="dia"></i>Zoning Board</div><div><i class="ring"></i>Filed in last 14 days</div><div style="color:var(--ink-3)">Bigger pin = more units</div>`;
+      `<div><i style="--c:var(--ink-2)"></i>Planning Board</div><div><i class="dia"></i>Zoning Board</div><div><i class="okring"></i>Approved</div><div><i class="ring"></i>Filed in last 14 days</div><div style="color:var(--ink-3)">Bigger pin = more units</div>`;
   }
 
   // ---------------------------------------------------------------- sidebar
@@ -424,13 +436,13 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
     const units = DATA.cases.filter((p) => p.counts_units).reduce((s, p) => s + p.units, 0);
     const newSP = DATA.cases.filter((p) => p.counts_units).length;
     const last30 = DATA.cases.filter((p) => (NOW - parseDay(p.applied)) / 864e5 <= 30).length;
-    const heard = DATA.cases.filter((p) => (p.hearings || []).some((h) => parseDay(h[0]) <= NOW)).length;
+    const approved = DATA.cases.filter((p) => statusKey(p) === "approved").length;
     $("#stats").innerHTML = `
       <div class="stat"><b>${live.length}</b><span>Active</span></div>
       <div class="stat"><b style="color:var(--p-multi)">${n0(units)}</b><span>Units proposed</span></div>
       <div class="stat"><b>${newSP}</b><span>New site plans</span></div>
       <div class="stat hot"><b>${last30}</b><span>Filed · 30 days</span></div>
-      <div class="stat"><b>${heard}</b><span>Heard</span></div>`;
+      <div class="stat"><b style="color:var(--ok)">${approved}</b><span>Approved</span></div>`;
   }
 
   function renderFilters() {
@@ -476,6 +488,8 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
       if (up && parseDay(up) >= NOW - 864e5) ev.push({ p, d: up, kind: "upcoming" });
       (p.hearings || []).forEach(([d, b]) => { if (parseDay(d) <= NOW && (NOW - parseDay(d)) / 864e5 <= 45) ev.push({ p, d, kind: "heard", board: b }); });
       if ((NOW - parseDay(p.applied)) / 864e5 <= 45) ev.push({ p, d: p.applied, kind: "filed" });
+      if (p.approved_on && (NOW - parseDay(p.approved_on)) / 864e5 <= 45) ev.push({ p, d: p.approved_on, kind: "approved" });
+      else if (p.status_changed_on && (NOW - parseDay(p.status_changed_on)) / 864e5 <= 45) ev.push({ p, d: p.status_changed_on, kind: "status" });
     });
     const up = ev.filter((e) => e.kind === "upcoming").sort((a, b) => a.d.localeCompare(b.d));
     const past = ev.filter((e) => e.kind !== "upcoming").sort((a, b) => b.d.localeCompare(a.d) || (b.p.units || 0) - (a.p.units || 0));
@@ -519,7 +533,9 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
     if (tab === "activity") {
       list.innerHTML = ev.length ? ev.map((e) => {
         const tag = e.kind === "upcoming" ? `<span class="tag" style="--t:var(--pin-possible)">On agenda ${fmtShort(e.d)}</span>`
-          : e.kind === "heard" ? `<span class="tag" style="--t:var(--ok)">Heard · ${e.board === "Zoning Board" ? "ZBA" : "PB"}</span>`
+          : e.kind === "approved" ? `<span class="tag" style="--t:var(--ok)">Approved</span>`
+          : e.kind === "status" ? `<span class="tag" style="--t:${statusColor(e.p)}">${esc(e.p.status)}</span>`
+          : e.kind === "heard" ? `<span class="tag" style="--t:var(--pin-possible)">Heard · ${e.board === "Zoning Board" ? "ZBA" : "PB"}</span>`
           : `<span class="tag" style="--t:var(--alert)">Filed</span>`;
         const unseen = e.kind === "filed" && LAST_VISIT && e.p.applied > LAST_VISIT.slice(0, 10);
         const when = e.kind === "upcoming" ? "Upcoming" : fmtShort(e.d);
@@ -527,7 +543,7 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
       }).join("") : `<div class="empty">Nothing filed, heard or scheduled in the last 45 days for these filters.</div>`;
     } else if (tab === "apps") {
       const sorted = vis.slice().sort((a, b) => b.applied.localeCompare(a.applied) || b.id.localeCompare(a.id));
-      list.innerHTML = sorted.length ? sorted.map((p) => itemHtml(p, `<div class="top"><span class="mono" style="font-size:11.5px;color:var(--ink-2)">${p.id}</span><span class="tag" style="--t:${statusKey(p) === "heard" ? "var(--ok)" : statusKey(p) === "closed" ? "var(--pin-closed)" : "var(--pin)"}">${esc(p.status)}</span><span class="when">${fmtShort(p.applied)}</span></div>`)).join("")
+      list.innerHTML = sorted.length ? sorted.map((p) => itemHtml(p, `<div class="top"><span class="mono" style="font-size:11.5px;color:var(--ink-2)">${p.id}</span><span class="tag" style="--t:${statusColor(p)}">${esc(p.status)}</span><span class="when">${fmtShort(p.applied)}</span></div>`)).join("")
         : `<div class="empty">No applications match these filters.</div>`;
     } else {
       const label = { applicant: "applicant", attorney: "attorney", owner: "owner mailing address" }[ptab];
@@ -550,11 +566,26 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
   function renderFoot() {
     const located = DATA.cases.filter((p) => p.lat != null).length;
     const named = DATA.cases.filter((p) => p.applicant).length;
-    $("#foot").innerHTML = `Data pulled ${new Date(DATA.generated_at).toLocaleString("en-US", { month: "short", day: "numeric", year: "numeric" })} · ${DATA.cases.length} cases (P2026, Z2026) · ${located} mapped · ${named} with applicant named` +
+    const ndocs = DATA.cases.reduce((s, p) => s + (p.docs || []).length, 0);
+    $("#foot").innerHTML = `Last change ${new Date(DATA.generated_at).toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })} · checks the city portal and new board agendas every 6 hours<br>${DATA.cases.length} cases · ${ndocs.toLocaleString()} documents · ${located} mapped · ${named} with applicant named` +
       `<br>Sources: Jersey City permit portal, 2026 Planning &amp; Zoning Board agendas (JC Open Data), NJ MOD-IV tax data (NJOGIS). Units, stories and affordable counts are read from each application's description. Verify before relying on figures.`;
   }
 
   // ---------------------------------------------------------------- application file
+  const DOC_KIND = [[/site ?plan|architect|drawing|plans?\b|elevation|floor plan/i, "Plans", 1], [/survey/i, "Survey", 1], [/staff memo|staff report/i, "Staff memo", 1],
+    [/traffic/i, "Traffic", 1], [/storm ?water|drainage/i, "Stormwater", 1], [/render/i, "Rendering", 1], [/resolution|memorializ/i, "Resolution", 1],
+    [/affordable|\bAH\b/i, "Affordable", 0], [/notice|proof of service|200.?f(oo)?t|affidavit/i, "Notice", 0], [/forestry|jcmua|fire|engineering|review/i, "Review", 0],
+    [/tax cert/i, "Tax cert", 0], [/demolition/i, "Demolition", 0], [/application|checklist|zoning (chart|table)/i, "Application", 0]];
+  function docKind(d) { const t = d.name + " " + d.note; const k = DOC_KIND.find(([re]) => re.test(t)); return k ? { label: k[1], key: !!k[2] } : null; }
+  function docsHtml(p) {
+    const docs = p.docs || [];
+    const link = `${PORTAL}${esc(p.case_id)}?tab=attachments`;
+    if (!docs.length) return `<div class="sec"><h3>Documents</h3><p class="note">No public documents posted yet. They usually appear once the application is deemed complete. <a href="${link}" target="_blank" rel="noopener">Check the city portal</a></p></div>`;
+    const order = docs.slice().sort((a, b) => (docKind(b)?.key ? 1 : 0) - (docKind(a)?.key ? 1 : 0) || b.added.localeCompare(a.added));
+    return `<div class="sec"><h3>Documents · ${docs.length}</h3><ul class="docs">${order.map((d) => { const k = docKind(d); return `<li><span class="fn">${k ? `<span class="doc-kind${k.key ? " key" : ""}">${esc(k.label)}</span>` : ""}${esc(d.name)}</span><span class="dt">${fmtShort(d.added)}</span>${d.note ? `<span class="nt">${esc(d.note)}</span>` : ""}</li>`; }).join("")}</ul>
+      <p class="note" style="margin:6px 0 0"><a href="${link}" target="_blank" rel="noopener">Open and download these on the city portal</a></p></div>`;
+  }
+
   function copyBtn(text) { return `<button class="copy" data-copy="${esc(text)}" aria-label="Copy ${esc(text)}">Copy</button>`; }
 
   function renderDetail(p) {
@@ -565,7 +596,8 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
     const up = nextHearing(p);
     const hist = [...(p.hearings || []).map(([d, b]) => [`${parseDay(d) > NOW ? "Scheduled" : "On agenda"} · ${b}`, d]), ["Filed", p.applied]];
     if (up && !(p.hearings || []).some((h) => h[0] === up)) hist.unshift([`Next hearing · ${p.board === "zoning" ? "Zoning Board" : "Planning Board"}`, up]);
-    if (p.completed) hist.unshift([p.status, p.completed]);
+    (p.status_history || []).forEach((h) => { if (h[1]) hist.push([`Status: ${h[0]}`, h[1]]); });
+    if (p.completed && !(p.status_history || []).some((h) => h[1] === p.completed)) hist.push([p.status, p.completed]);
     hist.sort((a, b) => b[1].localeCompare(a[1]));
     const figs = [["Units", p.units ? n0(p.units) : "—"], ["Stories", p.stories || "—"],
       p.hotel_rooms ? ["Hotel rooms", p.hotel_rooms] : p.affordable ? ["Affordable", p.affordable] : ["Parking", p.parking != null ? n0(p.parking) : "—"]];
@@ -575,10 +607,11 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
         <button class="x" id="d-close" aria-label="Close">×</button>
         <h2>${esc(titleCase(p.address) || "Location not listed")}</h2>
         <div class="where">${esc(placeLine(p))}${p.zone ? " · " + esc(p.zone) : ""}</div>
-        <div class="tags"><span class="tag" style="--t:${t.c}">${esc(t.label)}</span><span class="tag" style="--t:var(--ink-2)">${p.board === "zoning" ? "Zoning Board" : "Planning Board"} · ${esc(p.kind_label)}</span><span class="tag" style="--t:${statusKey(p) === "heard" ? "var(--ok)" : statusKey(p) === "closed" ? "var(--pin-closed)" : "var(--pin)"}">${esc(p.status)}</span></div>
+        <div class="tags"><span class="tag" style="--t:${t.c}">${esc(t.label)}</span><span class="tag" style="--t:var(--ink-2)">${p.board === "zoning" ? "Zoning Board" : "Planning Board"} · ${esc(p.kind_label)}</span><span class="tag" style="--t:${statusColor(p)}">${esc(p.status)}</span></div>
       </div>
       <div class="d-body">
         ${up && parseDay(up) >= NOW - 864e5 ? `<div class="alerts-box"><div><b>On the ${p.board === "zoning" ? "Zoning" : "Planning"} Board agenda ${fmtDate(up)}</b></div>${p.agenda_last ? `<small>${esc(p.agenda_last)}</small>` : ""}</div>` : ""}
+        ${statusKey(p) === "approved" ? `<div class="reo-box" style="--pin-reo:var(--ok)"><b>Approved${p.approved_on ? " " + fmtDate(p.approved_on) : ""}</b><div>${esc(p.type)}${p.approval_expires ? " · approval expires " + fmtDate(p.approval_expires) : ""}</div></div>` : ""}
         <div class="figs">${figs.map(([k, v]) => `<div class="fig"><span>${k}</span><b>${esc(v)}</b></div>`).join("")}</div>
         ${affPct != null ? `<div class="meter"><div><b>${affPct}%</b> of units affordable (${p.affordable} of ${n0(p.units)})</div><div class="bar"><i style="width:${Math.min(affPct, 100)}%;--fill:var(--ok)"></i></div></div>` : ""}
         <div class="sec"><h3>What's proposed</h3><p class="desc">${esc(p.desc || "No description filed.")}</p>
@@ -606,10 +639,11 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
           ${p.last_sale_price ? `<dt>Last sale</dt><dd>${money(p.last_sale_price)}${p.last_sale_date ? " · " + fmtDate(p.last_sale_date) : ""}</dd>` : ""}
           ${p.units && p.calc_acre ? `<dt>Density</dt><dd>${Math.round(p.units / p.calc_acre)} units / acre</dd>` : ""}
         </dl></div>` : ""}
+        ${docsHtml(p)}
         <div class="sec"><h3>Timeline</h3><ol class="timeline">${hist.map((h) => `<li><span>${esc(h[0])}</span><time>${fmtDate(h[1])}</time></li>`).join("")}</ol></div>
         ${related.length || sameMail.length ? `<div class="sec"><h3>Related 2026 cases</h3><div class="related">${[...related, ...sameMail].slice(0, 8).map((x) => `<button data-id="${x.id}"><span class="mono">${x.id}</span> · ${esc(x.kind_label)} · ${esc(titleCase(x.address))}${related.includes(x) ? "" : ' <span class="note">(same owner address)</span>'}</button>`).join("")}</div></div>` : ""}
         <div class="links">
-          <a href="${PORTAL + esc(p.case_id)}" target="_blank" rel="noopener">City portal &amp; plans</a>
+          <a href="${PORTAL + esc(p.case_id)}?tab=attachments" target="_blank" rel="noopener">City portal &amp; plans</a>
           <a href="https://www.google.com/maps/search/?api=1&query=${ll}" target="_blank" rel="noopener">Google Maps</a>
           ${p.lat != null ? `<a href="https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${p.lat},${p.lon}" target="_blank" rel="noopener">Street View</a>` : ""}
         </div>

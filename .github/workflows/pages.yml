@@ -1,35 +1,85 @@
-name: Publish JC Board Tracker
+name: Update and publish JC Board Tracker
 
 on:
+  schedule:
+    # Every 6 hours (UTC). Picks up new filings, status changes and newly posted board agendas.
+    - cron: "23 */6 * * *"
+  workflow_dispatch: {}
   push:
     branches: [main]
-  workflow_dispatch: {}
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
 concurrency:
-  group: pages
-  cancel-in-progress: true
+  group: tracker
+  cancel-in-progress: false
 
 jobs:
+  update:
+    if: github.event_name != 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    outputs:
+      changed: ${{ steps.commit.outputs.changed }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: pip install -q requests pdfplumber
+
+      # Last run's raw pull (parcel matches, geocodes, agenda text) so each run only fetches what's new.
+      - uses: actions/cache@v4
+        with:
+          path: raw
+          key: raw-${{ github.run_id }}
+          restore-keys: raw-
+
+      - name: Pull cases, documents and agendas
+        run: python fetch.py
+
+      - name: Build map data and page
+        run: python build.py
+
+      - name: Commit if anything changed
+        id: commit
+        run: |
+          git config user.name "Claude"
+          git config user.email "noreply@anthropic.com"
+          git add data/ index.html
+          if git diff --cached --quiet; then
+            echo "No changes."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            git commit -m "data: update $(date -u +%Y-%m-%d\ %H:%M) UTC"
+            git push
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
   publish:
+    needs: update
+    # Publish after a data change, or whenever the page itself is pushed.
+    if: always() && (github.event_name == 'push' || needs.update.outputs.changed == 'true' || github.event_name == 'workflow_dispatch')
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
       - name: Assemble site
         run: |
           mkdir -p _site/data
           cp index.html _site/index.html
           cp data/map.json _site/data/map.json
       - uses: actions/configure-pages@v5
-        with:
-          enablement: true
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site

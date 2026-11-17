@@ -10,8 +10,13 @@ from datetime import datetime
 from pathlib import Path
 
 ROOT = Path(__file__).parent
-cases_raw = json.loads((ROOT / "raw/jc_cases_2026.json").read_text(encoding="utf-8"))
-agendas = json.loads((ROOT / "raw/jc_agendas_2026.json").read_text(encoding="utf-8"))
+def _raw(name, legacy):
+    p = ROOT / "raw" / name
+    return json.loads((p if p.exists() else ROOT / "raw" / legacy).read_text(encoding="utf-8"))
+cases_raw = _raw("jc_cases.json", "jc_cases_2026.json")
+agendas = _raw("jc_agendas.json", "jc_agendas_2026.json")
+_hp = ROOT / "data/history.json"
+history = json.loads(_hp.read_text(encoding="utf-8")) if _hp.exists() else {}
 
 WORDS = {w: i for i, w in enumerate("zero one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty".split())}
 
@@ -151,7 +156,7 @@ CLASS_PRODUCT = {"2": "smallres", "4C": "multifamily", "4A": "commercial", "4B":
 
 def status_group(s):
     s = (s or "").lower()
-    if s == "approved" or s == "complete":
+    if s in ("approved", "complete", "approved with conditions"):
         return "approved"
     if s in ("denied",):
         return "denied"
@@ -242,6 +247,9 @@ for c in cases_raw["cases"]:
         "last_sale_price": p.get("SALE_PRICE") or None,
         "last_sale_date": None,
         "owner_mail": mail,
+        "approval_expires": (c.get("approvalExpires") or "")[:10] or None,
+        "docs": [{"name": d.get("name", ""), "note": d.get("note", ""), "added": d.get("added", "")} for d in (c.get("docs") or [])],
+        "status_history": history.get(c["id"], []),
     }
     dd = p.get("DEED_DATE")
     if isinstance(dd, (int, float)) and dd:
@@ -294,13 +302,30 @@ for rs in groups.values():
     for r in rs:
         r["attorney"] = display
 
+# When each case was approved: the first time "Approved" was seen (or the portal's completion date for the seed).
+for r in out:
+    r["approved_on"] = None
+    if r["status_group"] == "approved":
+        hit = [h for h in r["status_history"] if status_group(h[0]) == "approved"]
+        r["approved_on"] = next((h[1] for h in hit if h[1]), None) or r["completed"]
+    r["status_changed_on"] = r["status_history"][-1][1] if r["status_history"] and len(r["status_history"][-1]) == 2 else None
+
 # Units counted toward the headline only once per site: new site plans that are still alive.
 for r in out:
     r["counts_units"] = bool(r["kind"] == "new" and r["units"] and r["status_group"] not in ("closed", "denied"))
     r["mail_group"] = len(by_mail.get((r["owner_mail"] or "").upper(), ())) if r["owner_mail"] else 0
 
+dest = ROOT / "data/map.json"
+generated = cases_raw.get("pulled") or datetime.utcnow().isoformat() + "Z"
+if dest.exists():
+    try:
+        old = json.loads(dest.read_text(encoding="utf-8"))
+        if json.dumps(old.get("cases"), sort_keys=True) == json.dumps(out, sort_keys=True):
+            generated = old.get("generated_at", generated)  # nothing changed: keep the old stamp so no commit is made
+    except Exception:
+        pass
 data = {
-    "generated_at": cases_raw.get("pulled") or datetime.utcnow().isoformat() + "Z",
+    "generated_at": generated,
     "since": "2026-01-01",
     "sources": {
         "portal": "Jersey City Online Permitting & Licensing Portal (EnerGov) - plan cases P2026-*, Z2026-*",
@@ -309,7 +334,6 @@ data = {
     },
     "cases": out,
 }
-dest = ROOT / "data/map.json"
 dest.parent.mkdir(exist_ok=True)
 dest.write_text(json.dumps(data, separators=(",", ":")), encoding="utf-8")
 
