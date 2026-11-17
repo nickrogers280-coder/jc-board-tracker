@@ -12,6 +12,7 @@ import re
 import subprocess
 import sys
 import tempfile
+import time
 from pathlib import Path
 
 import requests
@@ -23,7 +24,7 @@ API = "https://jerseycitynj-energovpub.tylerhost.net/apps/selfservice/api/"
 HDR = {"tenantId": "1", "tenantName": "JerseyCityNJProd", "Tyler-TenantUrl": "JerseyCityNJProd", "Tyler-Tenant-Culture": "en-US",
        "FileToken": "", "DownloadProvider": "attachment", "FileType": "attachment", "AllowViewCorrection": "false",
        "User-Agent": "Mozilla/5.0 (JC Board Tracker)"}
-CHUNK = 8 * 1024 * 1024
+CHUNK = 20_000_000  # same chunk size the portal itself uses
 MAX_BYTES = 1_900_000_000  # GitHub release assets top out at 2 GB
 
 # Same document types the map shows; the newest file of each type per case is "the current version".
@@ -62,6 +63,16 @@ def asset_name(case, doc):
     return f"{case}__{doc['id'][:8]}__{safe}"
 
 
+def warm(sess):
+    """Load the portal page once so the session carries the portal's cookies (server affinity)."""
+    sess.cookies.clear()
+    try:
+        sess.get("https://jerseycitynj-energovpub.tylerhost.net/apps/selfservice/JerseyCityNJProd", headers={"User-Agent": HDR["User-Agent"]}, timeout=60)
+        sess.get(API + "energov/search/criteria", headers=HDR, timeout=60)
+    except requests.RequestException:
+        pass
+
+
 def gh(*args, check=True):
     return subprocess.run(["gh", *args], check=check, capture_output=True, text=True)
 
@@ -85,28 +96,44 @@ def main():
 
     added = failed = 0
     s = requests.Session()
+    warm(s)
     for aid, (case, d, kind) in want.items():
         name = asset_name(case, d)
         if aid in mirror and mirror[aid]["asset"] in existing:
             continue
         try:
-            meta = s.get(API + "energov/attachments/metadata/", headers={**HDR, "FileID": aid}, timeout=60).json()["Result"]
-            size = int(meta["FileSize"])
-            if size > MAX_BYTES:
-                print("too large for a release asset, skipped:", case, d["name"], size)
-                continue
+            size = None
             with tempfile.TemporaryDirectory() as td:
                 path = Path(td) / name
-                with open(path, "wb") as fh:
-                    got = 0
-                    while got < size:
-                        end = min(got + CHUNK, size) - 1
-                        r = s.get(API + "/energov/attachments/rangedownload/", headers={**HDR, "FileID": aid, "range": f"bytes={got}-{end}"}, timeout=180)
-                        r.raise_for_status()
-                        fh.write(r.content)
-                        got += len(r.content)
-                        if not r.content:
-                            raise RuntimeError("empty chunk")
+                for attempt in range(6):
+                    try:
+                        # The portal keeps a file ready on the server that answered the metadata call; ask again and
+                        # re-download from the start if a chunk lands on a different server.
+                        meta = s.get(API + "energov/attachments/metadata/", headers={**HDR, "FileID": aid}, timeout=60).json()["Result"]
+                        size = int(meta["FileSize"])
+                        if size > MAX_BYTES:
+                            break
+                        tok = meta.get("FileToken") or ""
+                        with open(path, "wb") as fh:
+                            got = 0
+                            while got < size:
+                                end = min(got + CHUNK, size) - 1
+                                r = s.get(API + "/energov/attachments/rangedownload/", headers={**HDR, "FileID": aid, "FileToken": tok, "range": f"bytes={got}-{end}"}, timeout=180)
+                                r.raise_for_status()
+                                if not r.content:
+                                    raise RuntimeError("empty chunk")
+                                fh.write(r.content)
+                                got += len(r.content)
+                        break
+                    except Exception:
+                        if attempt == 5:
+                            raise
+                        time.sleep(1.5 * (attempt + 1))
+                        if attempt in (2, 4):
+                            warm(s)
+                if size and size > MAX_BYTES:
+                    print("too large for a release asset, skipped:", case, d["name"], size)
+                    continue
                 gh("release", "upload", TAG, str(path), "-R", REPO, "--clobber")
             mirror[aid] = {"asset": name, "size": size, "case": case, "kind": kind}
             existing.add(name)

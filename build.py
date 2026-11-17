@@ -276,7 +276,12 @@ for c in cases_raw["cases"]:
         for l in lots:
             _, blk_, lot_ = l["pin"].split("_", 2)
             by_block[blk_].append(lot_)
-        rec["lots_label"] = "; ".join(f"Block {k} · Lot{'s' if len(v) > 1 else ''} {', '.join(v)}" for k, v in by_block.items())
+        def _lotkey(x):
+            try:
+                return float(x)
+            except ValueError:
+                return 1e9
+        rec["lots_label"] = "; ".join(f"Block {k} · Lot{'s' if len(v) > 1 else ''} {', '.join(sorted(v, key=_lotkey))}" for k, v in by_block.items())
         rec["lots_acre"] = round(sum(float(l.get("acre") or 0) for l in lots), 3) or None
         rec["lots_net"] = sum(int(l.get("net") or 0) for l in lots) or None
     rec["product"] = product_of(c, f, kind)
