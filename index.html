@@ -260,6 +260,12 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
 .filter-note { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--ink-2); }
 .filter-note button { background: none; border: 1px solid var(--line); border-radius: 999px; padding: 2px 8px; font-size: 11px; color: var(--ink-2); cursor: pointer; }
 .row select { flex-basis: 90px; }
+.ev-head { position: sticky; top: 0; z-index: 2; display: flex; justify-content: space-between; align-items: baseline; padding: 7px 14px 6px; background: var(--panel); border-bottom: 1px solid var(--line); font: 600 11px var(--font-head); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); }
+.ev-head span { font: 500 11px var(--font-data); letter-spacing: 0; text-transform: none; color: var(--ink-3); }
+.ev-jump { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; padding: 8px 14px; font-size: 11.5px; color: var(--ink-3); border-bottom: 1px solid var(--line); }
+.ev-jump button { background: none; border: 1px solid var(--line); border-radius: 999px; padding: 1px 8px; font: 500 11px var(--font-data); color: var(--ink-2); cursor: pointer; }
+.ev-jump button:hover { border-color: var(--pin); color: var(--ink); }
+.ev-more { padding: 14px; text-align: center; font-size: 12px; color: var(--ink-3); }
 .dev-link { color: var(--ink-2); font-size: 12px; text-decoration: none; border: 1px solid var(--line); border-radius: 6px; padding: 5px 10px; white-space: nowrap; }
 .dev-link:hover { color: var(--ink); border-color: var(--pin); }
 @media (max-width: 760px) { .dev-link { display: none; } }
@@ -385,14 +391,15 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
   };
   const boardShort = (p) => (p.board === "zoning" ? "ZBA" : "PB");
 
-  function visible(p) {
+  function visible(p, noWindow) {
     if (!state.statuses.has(statusKey(p))) return false;
     if (!state.types.has(p.product)) return false;
     if (state.board && p.board !== state.board) return false;
     if (state.kind && p.kind !== state.kind) return false;
     if (state.ward && p.ward !== state.ward) return false;
     if (state.size && !((p.units || 0) >= state.size)) return false;
-    if (state.window === "active") { const d = parseDay(p.applied); if (p.stale || (!["pending", "heard"].includes(statusKey(p)) && !(d && d >= +NOW - 365 * 864e5))) return false; }
+    if (noWindow) { /* the activity timeline runs back to 2018 on its own */ }
+    else if (state.window === "active") { const d = parseDay(p.applied); if (p.stale || (!["pending", "heard"].includes(statusKey(p)) && !(d && d >= +NOW - 365 * 864e5))) return false; }
     else if (typeof state.window === "string" && /^y\d{4}$/.test(state.window)) { if (!String(p.applied || "").startsWith(state.window.slice(1))) return false; }
     else if (state.window) { const d = parseDay(p.applied); if (!d || d < +NOW - state.window * 864e5) return false; }
     if (state.exist && !(p.existing || []).some((c) => (state.exist === "15" ? /^15/.test(c) : c === state.exist))) return false;
@@ -560,21 +567,99 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
     if (pts.length) map.fitBounds(pts, { padding: [60, 60], maxZoom: 16 });
   }
 
+  // Every dated event on every case that passes the filters (all but the date window), newest first.
+  // Upcoming hearings lead. The list renders a page at a time as the reader scrolls back.
   function events() {
     const ev = [];
+    const seen = new Set();
+    const add = (p, d, kind, extra) => { if (!d) return; const k = p.id + kind + d; if (seen.has(k)) return; seen.add(k); ev.push({ p, d: String(d).slice(0, 10), kind, ...extra }); };
     DATA.cases.forEach((p) => {
-      if (!visible(p)) return;
+      if (!visible(p, true)) return;
       const up = nextHearing(p);
-      if (up && parseDay(up) >= NOW - 864e5) ev.push({ p, d: up, kind: "upcoming" });
-      (p.hearings || []).forEach(([d, b]) => { if (parseDay(d) <= NOW && (NOW - parseDay(d)) / 864e5 <= 45) ev.push({ p, d, kind: "heard", board: b }); });
-      if ((NOW - parseDay(p.applied)) / 864e5 <= 45) ev.push({ p, d: p.applied, kind: "filed" });
-      if (p.approved_on && (NOW - parseDay(p.approved_on)) / 864e5 <= 45) ev.push({ p, d: p.approved_on, kind: "approved" });
-      else if (p.status_changed_on && (NOW - parseDay(p.status_changed_on)) / 864e5 <= 45) ev.push({ p, d: p.status_changed_on, kind: "status" });
+      if (up && parseDay(up) >= NOW - 864e5) add(p, up, "upcoming");
+      (p.hearings || []).forEach(([d, b]) => { if (parseDay(d) <= NOW && d !== up) add(p, d, "heard", { board: b }); });
+      add(p, p.applied, "filed");
+      if (p.approved_on) add(p, p.approved_on, "approved");
+      (p.status_history || []).forEach(([st, d, seed]) => {
+        if (!d || seed === "seed" && !p.completed) return;
+        if (/approved/i.test(st) && p.approved_on) return;
+        add(p, d, /approved/i.test(st) ? "approved" : /denied/i.test(st) ? "denied" : /withdrawn|void/i.test(st) ? "withdrawn" : "status", { status: st });
+      });
+      if (p.completed && !p.approved_on && /denied|withdrawn|void|complete/i.test(p.status || "")) add(p, p.completed, /denied/i.test(p.status) ? "denied" : /withdrawn|void/i.test(p.status) ? "withdrawn" : "status", { status: p.status });
     });
     const up = ev.filter((e) => e.kind === "upcoming").sort((a, b) => a.d.localeCompare(b.d));
-    const past = ev.filter((e) => e.kind !== "upcoming").sort((a, b) => b.d.localeCompare(a.d) || (b.p.units || 0) - (a.p.units || 0));
+    const past = ev.filter((e) => e.kind !== "upcoming" && e.d <= NOW.toISOString().slice(0, 10)).sort((a, b) => b.d.localeCompare(a.d) || (b.p.units || 0) - (a.p.units || 0));
     return [...up, ...past];
   }
+
+  const EV_TAG = {
+    upcoming: (e) => `<span class="tag" style="--t:var(--pin-possible)">On agenda ${fmtShort(e.d)}</span>`,
+    approved: () => `<span class="tag" style="--t:var(--ok)">Approved</span>`,
+    denied: () => `<span class="tag" style="--t:var(--pin-closed)">Denied</span>`,
+    withdrawn: () => `<span class="tag" style="--t:var(--pin-closed)">Withdrawn</span>`,
+    status: (e) => `<span class="tag" style="--t:${statusColor(e.p)}">${esc(e.status || e.p.status)}</span>`,
+    heard: (e) => `<span class="tag" style="--t:var(--pin-possible)">Heard · ${e.board === "Zoning Board" ? "ZBA" : "PB"}</span>`,
+    filed: () => `<span class="tag" style="--t:var(--alert)">Filed</span>`,
+  };
+  const PAGE = 60;
+  let feed = [], shown = 0, feedObs = null;
+  const monthOf = (d) => (d ? new Date(d.slice(0, 7) + "-15T12:00:00").toLocaleDateString("en-US", { month: "long", year: "numeric" }) : "");
+
+  function feedHtml(from, to) {
+    let html = "";
+    for (let i = from; i < to && i < feed.length; i++) {
+      const e = feed[i], prev = feed[i - 1];
+      if (e.kind === "upcoming" && (!prev || prev.kind !== "upcoming")) html += `<div class="ev-head">Coming up</div>`;
+      if (e.kind !== "upcoming" && (!prev || prev.kind === "upcoming" || monthOf(prev.d) !== monthOf(e.d))) {
+        const n = feedCounts[monthOf(e.d)] || 0;
+        html += `<div class="ev-head">${monthOf(e.d)}<span>${n} event${n === 1 ? "" : "s"}</span></div>`;
+      }
+      const unseen = e.kind === "filed" && LAST_VISIT && e.p.applied > LAST_VISIT.slice(0, 10);
+      const when = e.kind === "upcoming" ? "Upcoming" : fmtShort(e.d) + (e.d.slice(0, 4) !== String(NOW.getFullYear()) ? ", " + e.d.slice(0, 4) : "");
+      html += itemHtml(e.p, `<div class="top">${unseen ? '<span class="unseen" title="Filed since your last visit"></span>' : ""}${EV_TAG[e.kind](e)}<span class="when">${when}</span></div>`);
+    }
+    return html;
+  }
+  let feedCounts = {};
+
+  function renderFeed(list) {
+    feed = events();
+    feedCounts = {};
+    feed.forEach((e) => { if (e.kind !== "upcoming") { const m = monthOf(e.d); feedCounts[m] = (feedCounts[m] || 0) + 1; } });
+    shown = Math.min(PAGE, feed.length);
+    if (feedObs) feedObs.disconnect();
+    $("#n-activity").textContent = feed.length.toLocaleString();
+    if (!feed.length) { list.innerHTML = `<div class="empty">No activity for these filters.</div>`; return; }
+    const years = [...new Set(feed.filter((e) => e.kind !== "upcoming").map((e) => e.d.slice(0, 4)))];
+    list.innerHTML = `<div class="ev-jump">Jump to ${years.map((y) => `<button data-y="${y}">${y}</button>`).join("")}</div>` + feedHtml(0, shown) + `<div class="ev-more" id="ev-more">${feedMoreText()}</div>`;
+    wireItems(list);
+    list.querySelectorAll(".ev-jump button").forEach((b) => (b.onclick = () => jumpToYear(b.dataset.y)));
+    feedObs = new IntersectionObserver((ents) => { if (ents.some((x) => x.isIntersecting)) loadMore(); }, { root: list, rootMargin: "400px" });
+    feedObs.observe($("#ev-more"));
+  }
+  function feedMoreText() {
+    if (shown >= feed.length) { const last = feed[feed.length - 1]; return `That's everything${last && last.kind !== "upcoming" ? ` · back to ${fmtDate(last.d)}` : ""}`; }
+    const last = feed[shown - 1];
+    return `Loading earlier activity… (showing back to ${fmtDate(last.d)})`;
+  }
+  function loadMore(until) {
+    if (shown >= feed.length) return;
+    const list = $("#list"), more = $("#ev-more");
+    const to = until != null ? Math.max(until + PAGE, shown + PAGE) : shown + PAGE;
+    more.insertAdjacentHTML("beforebegin", feedHtml(shown, to));
+    shown = Math.min(to, feed.length);
+    more.textContent = feedMoreText();
+    wireItems(list);
+  }
+  function jumpToYear(y) {
+    const idx = feed.findIndex((e) => e.kind !== "upcoming" && e.d.slice(0, 4) === y);
+    if (idx < 0) return;
+    if (idx >= shown) loadMore(idx);
+    const heads = [...$("#list").querySelectorAll(".ev-head")];
+    const h = heads.find((x) => x.textContent.includes(y));
+    if (h) $("#list").scrollTop = h.offsetTop - $("#list").offsetTop - 34;
+  }
+  function wireItems(list) { list.querySelectorAll(".item:not([data-w])").forEach((b) => { b.dataset.w = 1; b.onclick = () => select(b.dataset.id, true); }); }
 
   function itemHtml(p, top) {
     const t = TYPE[p.product] || TYPE.other;
@@ -604,25 +689,16 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
 
   function renderList() {
     const vis = DATA.cases.filter(visible);
-    const ev = events();
     const pl = players();
-    $("#n-activity").textContent = ev.length;
+    $("#n-activity").textContent = "";
     $("#n-apps").textContent = vis.length;
     $("#n-players").textContent = pl.length;
     const fn = $("#filter-note");
     if (state.q) { fn.hidden = false; fn.innerHTML = `Showing matches for “${esc(state.q)}” <button id="clear-q">Clear</button>`; $("#clear-q").onclick = () => { $("#q").value = ""; state.q = ""; refresh(); }; } else fn.hidden = true;
     const list = $("#list");
     if (tab === "activity") {
-      list.innerHTML = ev.length ? ev.map((e) => {
-        const tag = e.kind === "upcoming" ? `<span class="tag" style="--t:var(--pin-possible)">On agenda ${fmtShort(e.d)}</span>`
-          : e.kind === "approved" ? `<span class="tag" style="--t:var(--ok)">Approved</span>`
-          : e.kind === "status" ? `<span class="tag" style="--t:${statusColor(e.p)}">${esc(e.p.status)}</span>`
-          : e.kind === "heard" ? `<span class="tag" style="--t:var(--pin-possible)">Heard · ${e.board === "Zoning Board" ? "ZBA" : "PB"}</span>`
-          : `<span class="tag" style="--t:var(--alert)">Filed</span>`;
-        const unseen = e.kind === "filed" && LAST_VISIT && e.p.applied > LAST_VISIT.slice(0, 10);
-        const when = e.kind === "upcoming" ? "Upcoming" : fmtShort(e.d);
-        return itemHtml(e.p, `<div class="top">${unseen ? '<span class="unseen" title="Filed since your last visit"></span>' : ""}${tag}<span class="when">${when}</span></div>`);
-      }).join("") : `<div class="empty">Nothing filed, heard or scheduled in the last 45 days for these filters.</div>`;
+      renderFeed(list);
+      return;
     } else if (tab === "apps") {
       const sorted = vis.slice().sort((a, b) => b.applied.localeCompare(a.applied) || b.id.localeCompare(a.id));
       list.innerHTML = sorted.length ? sorted.map((p) => itemHtml(p, `<div class="top"><span class="mono" style="font-size:11.5px;color:var(--ink-2)">${p.id}</span><span class="tag" style="--t:${statusColor(p)}">${esc(p.status)}</span><span class="when">${fmtShort(p.applied)}</span></div>`)).join("")
