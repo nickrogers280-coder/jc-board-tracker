@@ -551,6 +551,26 @@ def sales_for(pins):
     return outl[:80]
 
 
+GOV = re.compile(r"DEPARTMENT OF ENV|\bNJDEP\b|DEPARTMENT OF PROTECTION|CITY OF\b|COUNTY OF\b|REDEVELOPMENT AGENCY|STATE OF NEW JERSEY", re.I)
+ORG = re.compile(r"\b(LLC|L\.L\.C|INC|LP|L\.P|CORP|COMPANY|CO|ASSOC|ASSOCIATION|TRUST|AUTHORITY|UNIVERSITY|CONDOMINIUM|PARTNERS|HOLDINGS|BANK|FUND)\b", re.I)
+
+
+def owner_from_deeds(pins):
+    """Owner of record from the newest deed on the lot (county index): the grantee, or the grantor when the grantee
+    is a government body (DEP deed notices, easements to the City). A unit sale to a person marks a condominium."""
+    deeds = []
+    for pin in pins or []:
+        deeds += [d for d in (SALES.get(pin) or {}).get("deeds") or [] if re.match(r"deed", d.get("type") or "", re.I) and "master" not in (d.get("type") or "").lower()]
+    if not deeds:
+        return None
+    d = max(deeds, key=lambda x: x.get("recorded") or "")
+    to, frm = (d.get("to") or "").strip(), (d.get("from") or "").strip()
+    owner, note = (frm, "government party on the deed") if GOV.search(to) else (to, "")
+    if owner and not ORG.search(owner):
+        owner, note = (f"Condominium; sponsor {frm.title()}" if ORG.search(frm) else "Condominium (individually owned units)"), "latest deed is a unit sale"
+    return {"owner": owner.title() if owner.isupper() else owner, "date": d.get("recorded"), "bookpage": d.get("bookpage"), "note": note} if owner else None
+
+
 for r in out:
     r["sales"] = sales_for(r.get("parcel_pins") or [r.get("pams_pin")])
     r["sales_checked"] = bool(any(p in SALES for p in (r.get("parcel_pins") or [r.get("pams_pin")]) if p))
@@ -659,6 +679,7 @@ if _pf.exists():
             "developers": bld.get("developers") or [{"key": bld["company"], "role": "Developer"}],
             "owner_mail": bld.get("owner_mail") or next((", ".join(x for x in [(l.get("ST_ADDRESS") or "").strip(), (l.get("CITY_STATE") or "").strip()] if x) for l in (bld.get("lots") or []) if l.get("ST_ADDRESS")), None),
             "discovered": bool(bld.get("discovered")),
+            "owner_of_record": bld.get("owner_of_record") or owner_from_deeds(pins),
             "status": bld.get("status"), "completed": bld.get("completed"), "units": bld.get("units"), "stories": bld.get("stories"),
             "summary": bld.get("summary"), "sources": bld.get("sources") or [], "addresses": bld.get("addresses") or [],
             "lat": bld.get("lat") or (lots[0].get("lat") if lots else None), "lon": bld.get("lon") or (lots[0].get("lon") if lots else None),

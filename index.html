@@ -207,6 +207,19 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
 .pin.faded i { opacity: .55; box-shadow: 0 0 0 1px var(--c); }
 .pin.approved i { box-shadow: 0 0 0 1.5px var(--c), 0 0 0 4px var(--ok), 0 2px 6px rgba(0,0,0,.6); }
 .legend i.okring { background: none; border: 2px solid var(--ok); }
+.stages { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; margin: 2px 0 4px; }
+.stages li { list-style: none; font-size: 11px; color: var(--ink-3); border-top: 3px solid var(--line); padding-top: 5px; line-height: 1.25; }
+.stages li.done { border-color: var(--ok); color: var(--ink-2); }
+.stages li.now { border-color: var(--pin); color: var(--ink); font-weight: 600; }
+.stages li time { display: block; font-family: var(--font-data); font-size: 10.5px; color: var(--ink-3); font-weight: 400; }
+.stages.stop li.now { border-color: var(--pin-closed); }
+.hist-head { margin: 18px 0 0; padding-top: 14px; border-top: 1px dashed var(--line); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+.sales { width: 100%; border-collapse: collapse; font-size: 12px; }
+.sales th { text-align: left; font-weight: 500; color: var(--ink-3); font-size: 11px; padding: 4px 6px; border-bottom: 1px solid var(--line); }
+.sales td { padding: 5px 6px; border-bottom: 1px solid var(--line); vertical-align: top; overflow-wrap: anywhere; }
+.sales td.n { font-family: var(--font-data); white-space: nowrap; }
+.sales tr.mort td { color: var(--ink-3); }
+.sales-wrap { max-height: 320px; overflow: auto; border: 1px solid var(--line); border-radius: 8px; }
 .docs { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; max-height: 260px; overflow-y: auto; border: 1px solid var(--line); border-radius: 8px; }
 .docs li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 10px; padding: 7px 10px; border-bottom: 1px solid var(--line); font-size: 12.5px; }
 .docs li:last-child { border-bottom: 0; }
@@ -247,18 +260,22 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
 .filter-note { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--ink-2); }
 .filter-note button { background: none; border: 1px solid var(--line); border-radius: 999px; padding: 2px 8px; font-size: 11px; color: var(--ink-2); cursor: pointer; }
 .row select { flex-basis: 90px; }
+.dev-link { color: var(--ink-2); font-size: 12px; text-decoration: none; border: 1px solid var(--line); border-radius: 6px; padding: 5px 10px; white-space: nowrap; }
+.dev-link:hover { color: var(--ink); border-color: var(--pin); }
+@media (max-width: 760px) { .dev-link { display: none; } }
 @media (max-width: 760px) { .legend { display: none; } }
 </style>
 </head>
 <body>
 <div class="app">
   <header class="topbar">
-    <div class="brand"><h1>JC Board Tracker</h1><span class="sub">Jersey City Planning &amp; Zoning Board applications filed since Jan 1, 2026, plus earlier ones still in play</span></div>
+    <div class="brand"><h1>JC Board Tracker</h1><span class="sub">Jersey City Planning &amp; Zoning Board applications since 2018, live and past</span></div>
     <div class="stats" id="stats"></div>
     <div class="layer-toggle" role="group" aria-label="Map style">
       <button id="lyr-sat" aria-pressed="true">Satellite</button>
       <button id="lyr-street" aria-pressed="false">Streets</button>
     </div>
+    <a class="dev-link" href="developers.html">Developers map →</a>
     <button class="panel-btn" id="panel-btn" aria-controls="side">List</button>
   </header>
   <div class="body">
@@ -273,11 +290,10 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
         <div class="row">
           <select id="ward" aria-label="Ward"><option value="">All wards</option></select>
           <select id="window" aria-label="Filed">
-            <option value="">All dates</option>
-            <option value="2026">Filed in 2026</option>
-            <option value="older">Filed earlier, still active</option>
-            <option value="30">Last 30 days</option>
-            <option value="90">Last 90 days</option>
+            <option value="active" selected>Active now (open, or filed in the last year)</option>
+            <option value="30">Filed in the last 30 days</option>
+            <option value="90">Filed in the last 90 days</option>
+            <option value="">All years, 2018 on</option>
           </select>
           <select id="exist" aria-label="Existing use"><option value="">Any existing use</option></select>
           <select id="size" aria-label="Project size"><option value="">Any size</option><option value="5">5+ units</option><option value="50">50+ units</option><option value="150">150+ units</option></select>
@@ -322,7 +338,7 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
   const existLabel = (c) => EXIST[c] || c;
   const existText = (p) => (p.existing || []).map((c) => `${c} ${existLabel(c)}`).join(" + ");
   const basisText = (p) => !p.product_basis ? "" : p.product_basis === "this application" ? "from this application" : `from ${p.product_basis}`;
-  const TRACKED = { agenda: "Filed before 2026 · on a 2026 agenda", active: "Filed before 2026 · still under review", tracked: "Filed before 2026" };
+  const TRACKED = { agenda: "Filed before 2018 · on a later board agenda", active: "Filed before 2018 · still under review", tracked: "Filed before 2018" };
   const TYPE = Object.fromEntries(TYPES.map((t) => [t.key, t]));
   const KINDS = [["new", "New site plans"], ["amend", "Amendments"], ["ext", "Extensions"], ["subdiv", "Subdivisions"], ["variance", "Variances (no site plan)"], ["appeal", "Appeals / interpretations"], ["sign", "Signage"], ["plan", "Plans & rezonings"], ["other", "Other"]];
   const STATUSES = [
@@ -347,7 +363,7 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
 
   let BOUNDS = null, cityLayer = null, maskLayer = null, wardLayer = null, wardLabels = null;
   let DATA, NOW, LAST_VISIT, map, layers, markers = new Map(), selected = null, outline = null, tab = "activity", ptab = "applicant";
-  const state = { exist: "", q: "", board: "", kind: "", ward: "", window: "", size: 0, statuses: new Set(["pending", "heard", "approved"]), types: new Set(TYPES.map((t) => t.key)) };
+  const state = { exist: "", q: "", board: "", kind: "", ward: "", window: "active", size: 0, statuses: new Set(["pending", "heard", "approved"]), types: new Set(TYPES.map((t) => t.key)) };
 
   const isNew = (p) => (NOW - parseDay(p.applied)) / 864e5 <= 14;
   const nextHearing = (p) => {
@@ -376,8 +392,8 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
     if (state.kind && p.kind !== state.kind) return false;
     if (state.ward && p.ward !== state.ward) return false;
     if (state.size && !((p.units || 0) >= state.size)) return false;
-    if (state.window === 2026) { if (p.tracked_because && p.tracked_because !== "filed") return false; }
-    else if (state.window === "older") { if (!p.tracked_because || p.tracked_because === "filed") return false; }
+    if (state.window === "active") { const d = parseDay(p.applied); if (!["pending", "heard"].includes(statusKey(p)) && !(d && d >= +NOW - 365 * 864e5)) return false; }
+    else if (typeof state.window === "string" && /^y\d{4}$/.test(state.window)) { if (!String(p.applied || "").startsWith(state.window.slice(1))) return false; }
     else if (state.window) { const d = parseDay(p.applied); if (!d || d < +NOW - state.window * 864e5) return false; }
     if (state.exist && !(p.existing || []).some((c) => (state.exist === "15" ? /^15/.test(c) : c === state.exist))) return false;
     if (state.q) {
@@ -517,7 +533,9 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
     $("#board").onchange = (e) => { state.board = e.target.value; refresh(); };
     $("#kind").onchange = (e) => { state.kind = e.target.value; refresh(); };
     $("#ward").onchange = (e) => { state.ward = e.target.value; refresh(); drawWard(state.ward); if (!state.ward) fitCity(); };
-    $("#window").onchange = (e) => { const v = e.target.value; state.window = v === "older" ? "older" : +v || ""; refresh(); };
+    const yrs = {}; DATA.cases.forEach((p) => { const y = String(p.applied || "").slice(0, 4); if (/^20\d\d$/.test(y)) yrs[y] = (yrs[y] || 0) + 1; });
+    $("#window").insertAdjacentHTML("beforeend", Object.keys(yrs).sort().reverse().map((y) => `<option value="y${y}">Filed in ${y} (${yrs[y]})</option>`).join(""));
+    $("#window").onchange = (e) => { const v = e.target.value; state.window = v === "active" || /^y\d{4}$/.test(v) ? v : +v || ""; refresh(); };
     const ex = {}; DATA.cases.forEach((p) => (p.existing || []).forEach((c) => { const k = /^15/.test(c) ? "15" : c; ex[k] = (ex[k] || 0) + 1; }));
     $("#exist").insertAdjacentHTML("beforeend", Object.keys(ex).sort((a, b) => (a.length - b.length) || a.localeCompare(b)).map((k) => `<option value="${k}">Existing: ${k === "15" ? "Exempt" : esc(existLabel(k))} (${ex[k]})</option>`).join(""));
     $("#exist").onchange = (e) => { state.exist = e.target.value; refresh(); };
@@ -619,7 +637,7 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
             <span class="nm">${esc(ptab === "owner" ? titleCase(r.name) : r.name)}</span><span class="ct">${r.cases.length}</span>
             <span class="meta"><span class="mix">${TYPES.filter((t) => r.mix[t.key]).map((t) => `<i style="background:${t.c};width:${(100 * r.mix[t.key]) / r.cases.length}%"></i>`).join("")}</span>${r.units ? `${n0(r.units)} new units` : ""}${r.units ? " · " : ""}${esc(r.cases.slice(0, 2).map((c) => titleCase(c.address)).join("; "))}${r.cases.length > 2 ? "…" : ""}</span>
           </button>`).join("") : `<div class="empty">No ${label}s on record for these filters.</div>`) +
-        `<div class="empty" style="padding-top:12px">${ptab === "owner" ? "Owner names are withheld from the state's public tax data, so sites are grouped by the tax bill's mailing address. Two or more 2026 sites with the same address usually means one owner." : "Applicant and attorney names come from the board agendas, so they appear once a case is scheduled for a hearing."}</div>`;
+        `<div class="empty" style="padding-top:12px">${ptab === "owner" ? "Owner names are withheld from the state's public tax data, so sites are grouped by the tax bill's mailing address. Two or more sites with the same address usually means one owner." : "Applicant and attorney names come from the board agendas, so they appear once a case is scheduled for a hearing."}</div>`;
       list.querySelectorAll(".seg button").forEach((b) => (b.onclick = () => { ptab = b.dataset.p; renderList(); }));
       list.querySelectorAll(".player").forEach((b) => (b.onclick = () => setSearch(b.dataset.name)));
       return;
@@ -630,9 +648,9 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
   function renderFoot() {
     const located = DATA.cases.filter((p) => p.lat != null).length;
     const named = DATA.cases.filter((p) => p.applicant).length;
-    const ndocs = DATA.cases.reduce((s, p) => s + (p.docs || []).length, 0);
+    const ndocs = DATA.cases.reduce((s, p) => s + (p.n_docs != null ? p.n_docs : (p.docs || []).length), 0);
     $("#foot").innerHTML = `Last change ${new Date(DATA.generated_at).toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })} · checks the city portal and new board agendas every 6 hours<br>${DATA.cases.length} cases · ${ndocs.toLocaleString()} documents · ${located} mapped · ${named} with applicant named` +
-      `<br>Sources: Jersey City permit portal, 2026 Planning &amp; Zoning Board agendas (JC Open Data), NJ MOD-IV tax data (NJOGIS). Units, stories and affordable counts are read from each application's description. Verify before relying on figures.`;
+      `<br>Sources: Jersey City permit portal (2018 on), Planning &amp; Zoning Board agendas 2016 on (JC Open Data), NJ MOD-IV tax data (NJOGIS). Units, stories and affordable counts are read from each application's description. Verify before relying on figures.`;
   }
 
   // ---------------------------------------------------------------- application file
@@ -688,6 +706,47 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
 
   function copyBtn(text) { return `<button class="copy" data-copy="${esc(text)}" aria-label="Copy ${esc(text)}">Copy</button>`; }
 
+  const STEPS = [["filed", "Filed"], ["review", "Staff review"], ["scheduled", "Scheduled"], ["heard", "Heard"], ["approved", "Approved"]];
+  function stagesHtml(p) {
+    if (!p.stage) return "";
+    const when = {}; (p.stage_history || []).forEach(([st, d]) => { if (!when[st]) when[st] = d; });
+    const stop = ["denied", "withdrawn"].includes(p.stage);
+    const at = stop ? -1 : STEPS.findIndex((x) => x[0] === p.stage);
+    const items = STEPS.map(([k, l], i) => {
+      const cls = i < at ? "done" : i === at ? "now" : "";
+      const d = k === "filed" ? p.applied : k === "scheduled" && p.next_hearing ? p.next_hearing : k === "approved" && p.approved_on ? p.approved_on : when[k];
+      return `<li class="${cls}">${l}${d && (i <= at || k === "scheduled") ? `<time>${fmtDate(d)}</time>` : ""}</li>`;
+    });
+    if (stop) items[4] = `<li class="now">${p.stage === "denied" ? "Denied" : "Withdrawn"}${p.completed ? `<time>${fmtDate(p.completed)}</time>` : ""}</li>`;
+    return `<div class="sec"><h3>Where it is now · ${esc(p.stage_label)}</h3><ol class="stages${stop ? " stop" : ""}" style="padding:0;margin:0">${items.join("")}</ol>
+      ${p.next_hearing ? `<p class="note" style="margin:6px 0 0">Next hearing ${fmtDate(p.next_hearing)} · ${p.board === "zoning" ? "Zoning Board" : "Planning Board"}</p>` : ""}</div>`;
+  }
+
+  function salesHtml(p) {
+    const rows = p.sales || [];
+    if (!p.sales_checked && !rows.length) return `<div class="sec"><h3>Ownership &amp; sales</h3><p class="note">Not looked up yet. Deed records for each lot are pulled a few hundred lots per update, so this fills in within a few days.</p></div>`;
+    if (!rows.length) return `<div class="sec"><h3>Ownership &amp; sales</h3><p class="note">No deeds or mortgages found on these lots in the county index.</p></div>`;
+    const deeds = rows.filter((r) => /deed/i.test(r.type) && !/mortgage/i.test(r.type));
+    const priced = deeds.filter((r) => r.price > 100);
+    const fmtNames = (r) => (r.from || r.to ? `${esc(titleCase(r.from || "—"))} → ${esc(titleCase(r.to || "—"))}` : `<span class="note">names withheld in state file</span>`);
+    return `<div class="sec"><h3>Ownership &amp; sales · ${deeds.length} transfer${deeds.length === 1 ? "" : "s"}</h3>
+      <p class="note" style="margin:0 0 6px">${priced.length ? `Last priced sale ${money(priced[0].price)} · ${fmtDate(priced[0].date)}. ` : ""}Deeds and mortgages recorded with the Hudson County Register; prices from the NJ state sales file (2020 on).${nLots(p) > 1 ? ` Covers all ${nLots(p)} lots.` : ""}</p>
+      <div class="sales-wrap"><table class="sales"><thead><tr><th>Recorded</th><th>Document</th><th>From → to</th><th>Price</th></tr></thead><tbody>
+      ${rows.map((r) => `<tr class="${/mortgage/i.test(r.type) ? "mort" : ""}"><td class="n">${fmtDate(r.date)}</td><td>${esc(r.type)}${r.bookpage ? `<div class="note mono">Bk/Pg ${esc(r.bookpage)}</div>` : ""}${nLots(p) > 1 && r.pin ? `<div class="note">Lot ${esc(r.pin.split("_").slice(2).join("."))}</div>` : ""}</td><td>${fmtNames(r)}</td><td class="n">${r.price != null ? money(r.price) : "—"}${r.price != null && r.usable === false ? `<div class="note" title="State code: this price may not reflect market value">non-market${r.nu ? " (" + esc(r.nu) + ")" : ""}</div>` : ""}${r.n_lots > 1 ? `<div class="note">${r.n_lots}-lot deed</div>` : ""}</td></tr>`).join("")}
+      </tbody></table></div></div>`;
+  }
+
+  const shardCache = {};
+  async function ensureDetail(p) {
+    if (p._full || p.shard == null || p.docs) { p._full = true; return; }
+    try {
+      shardCache[p.shard] = shardCache[p.shard] || fetch(`data/detail/${p.shard}.json`).then((r) => r.json());
+      const d = (await shardCache[p.shard])[p.id] || {};
+      Object.assign(p, { docs: d.docs || [], priors: d.priors || p.priors, sales: d.sales || [] });
+      p._full = true;
+    } catch { delete shardCache[p.shard]; }
+  }
+
   function renderDetail(p) {
     const t = TYPE[p.product] || TYPE.other;
     const ll = p.lat != null ? `${p.lat},${p.lon}` : encodeURIComponent(`${p.address}, Jersey City, NJ`);
@@ -713,13 +772,14 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
       <div class="d-body">
         ${up && parseDay(up) >= NOW - 864e5 ? `<div class="alerts-box"><div><b>On the ${p.board === "zoning" ? "Zoning" : "Planning"} Board agenda ${fmtDate(up)}</b></div>${p.agenda_last ? `<small>${esc(p.agenda_last)}</small>` : ""}</div>` : ""}
         ${statusKey(p) === "approved" ? `<div class="reo-box" style="--pin-reo:var(--ok)"><b>Approved${p.approved_on ? " " + fmtDate(p.approved_on) : ""}</b><div>${esc(p.type)}${p.approval_expires ? " · approval expires " + fmtDate(p.approval_expires) : ""}</div></div>` : ""}
+        ${stagesHtml(p)}
         <div class="basis">${p.product_basis && p.product_basis !== "this application" ? `Type: <b>${esc(t.label)}</b>, from ${esc(p.product_basis)}${(p.priors || []).some((q) => q.id === p.product_basis) ? " (the approval this " + (p.kind === "ext" ? "extends" : "amends") + ")" : " (the project on this lot)"}` : ""}${(p.existing || []).length ? `${p.product_basis && p.product_basis !== "this application" ? " · " : ""}Existing lot: <b>${esc(existText(p))}</b>` : ""}${p.tracked_because && p.tracked_because !== "filed" ? ` · <span style="color:var(--pin-possible)">${esc(TRACKED[p.tracked_because] || "")}</span>` : ""}</div>
         <div class="figs">${figs.map(([k, v]) => `<div class="fig"><span>${k}</span><b>${esc(v)}</b></div>`).join("")}</div>
         ${p.inherited_from ? `<p class="note" style="margin:-8px 0 0">Project size from the earlier approval ${esc(p.inherited_from)}, which this ${p.kind === "ext" ? "extends" : "amends"}.</p>` : ""}
         ${affPct != null ? `<div class="meter"><div><b>${affPct}%</b> of units affordable (${p.affordable} of ${n0(p.units)})</div><div class="bar"><i style="width:${Math.min(affPct, 100)}%;--fill:var(--ok)"></i></div></div>` : ""}
         <div class="sec"><h3>What's proposed</h3><p class="desc">${esc(p.desc || "No description filed.")}</p>
           ${p.retail_sf || (p.parking != null && figs[2][0] !== "Parking") ? `<p class="note" style="margin:8px 0 0">${[p.retail_sf ? n0(p.retail_sf) + " SF retail/commercial" : "", p.parking != null && figs[2][0] !== "Parking" ? n0(p.parking) + " parking spaces" : ""].filter(Boolean).join(" · ")}</p>` : ""}</div>
-        ${priorsHtml(p)}
+        ${p._full ? docsHtml(p) : `<div class="sec"><h3>Documents</h3><p class="note">Loading…</p></div>`}
         <div class="sec"><h3>Application</h3><dl class="kv">
           <dt>Case</dt><dd><span class="mono">${esc(p.id)}</span>${copyBtn(p.id)}</dd>
           <dt>Type</dt><dd>${esc(p.type)}</dd>
@@ -731,8 +791,11 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
         <div class="sec"><h3>Players</h3><dl class="kv">
           <dt>Applicant</dt><dd>${p.applicant ? `<b>${esc(p.applicant)}</b>` : `<span class="note">Named once the case reaches an agenda</span>`}</dd>
           <dt>Attorney</dt><dd>${p.attorney ? esc(p.attorney) : "—"}</dd>
-          <dt>Tax bill to</dt><dd>${p.owner_mail ? esc(titleCase(p.owner_mail)) + (sameMail.length ? `<div class="note">Same mailing address on ${sameMail.length} other 2026 ${sameMail.length === 1 ? "case" : "cases"}</div>` : "") : "—"}</dd>
+          <dt>Tax bill to</dt><dd>${p.owner_mail ? esc(titleCase(p.owner_mail)) + (sameMail.length ? `<div class="note">Same mailing address on ${sameMail.length} other ${sameMail.length === 1 ? "case" : "cases"}</div>` : "") : "—"}</dd>
         </dl></div>
+        <div class="sec"><h3>Timeline</h3><ol class="timeline">${hist.map((h) => `<li><span>${esc(h[0])}</span><time>${fmtDate(h[1])}</time></li>`).join("")}</ol></div>
+        <div class="hist-head">Property history</div>
+        ${p._full ? priorsHtml(p) + salesHtml(p) : `<p class="note">Loading…</p>`}
         ${p.prop_class || p.net_value ? `<div class="sec"><h3>Tax record</h3><dl class="kv">
           ${(p.existing || []).length ? `<dt>Existing use</dt><dd>${esc(existText(p))}${nLots(p) > 1 ? ` <span class="note">(across ${nLots(p)} lots)</span>` : ""}<div class="note">Current tax class: what's there now, not what's proposed</div></dd>` : p.class_label ? `<dt>Existing use</dt><dd>${esc(p.prop_class)} · ${esc(p.class_label)}</dd>` : ""}
           ${p.prop_loc ? `<dt>Tax address</dt><dd>${esc(titleCase(p.prop_loc))}</dd>` : ""}
@@ -744,9 +807,7 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
           ${p.last_sale_price ? `<dt>Last sale</dt><dd>${money(p.last_sale_price)}${p.last_sale_date ? " · " + fmtDate(p.last_sale_date) : ""}</dd>` : ""}
           ${p.units && (p.lots_acre || p.calc_acre) ? `<dt>Density</dt><dd>${Math.round(p.units / (p.lots_acre || p.calc_acre))} units / acre</dd>` : ""}
         </dl></div>` : ""}
-        ${docsHtml(p)}
-        <div class="sec"><h3>Timeline</h3><ol class="timeline">${hist.map((h) => `<li><span>${esc(h[0])}</span><time>${fmtDate(h[1])}</time></li>`).join("")}</ol></div>
-        ${related.length || sameMail.length ? `<div class="sec"><h3>Related 2026 cases</h3><div class="related">${[...related, ...sameMail].slice(0, 8).map((x) => `<button data-id="${x.id}"><span class="mono">${x.id}</span> · ${esc(x.kind_label)} · ${esc(titleCase(x.address))}${related.includes(x) ? "" : ' <span class="note">(same owner address)</span>'}</button>`).join("")}</div></div>` : ""}
+        ${related.length || sameMail.length ? `<div class="sec"><h3>Related cases</h3><div class="related">${[...related, ...sameMail].slice(0, 8).map((x) => `<button data-id="${x.id}"><span class="mono">${x.id}</span> · ${esc(x.kind_label)} · ${esc(titleCase(x.address))}${related.includes(x) ? "" : ' <span class="note">(same owner address)</span>'}</button>`).join("")}</div></div>` : ""}
         <div class="links">
           <a href="${PORTAL + esc(p.case_id)}?tab=attachments" target="_blank" rel="noopener">City portal &amp; plans</a>
           <a href="https://www.google.com/maps/search/?api=1&query=${ll}" target="_blank" rel="noopener">Google Maps</a>
@@ -769,6 +830,7 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
     selected = id;
     [prev, id].forEach((pid) => { const m = markers.get(pid); if (m) m.setIcon(pinIcon(m._p)); });
     renderDetail(p);
+    if (!p._full) ensureDetail(p).then(() => { if (selected === p.id) { const y = $("#detail").scrollTop; renderDetail(p); $("#detail").scrollTop = y; } });
     $("#detail").hidden = false;
     $("#detail").scrollTop = 0;
     if (window.matchMedia("(max-width: 760px)").matches) $("#side").classList.add("collapsed");
@@ -784,19 +846,52 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
     }
   }
 
+  // Tax lots for a set of PAMS PINs, as GeoJSON features tagged _kind:
+  //   "lot"    the block/lot itself (condo and parking units are drawn as their whole lot);
+  //   "unit"   a condo unit with a real footprint on the state map (e.g. one tower of a multi-tower lot);
+  //   "parent" the lot a new subdivided lot came from, when the state map doesn't have the new lot yet.
+  const LOT_URL = "https://services2.arcgis.com/XVOqAjTOJ5P6ngMu/arcgis/rest/services/Parcels_Composite_NJ_WM/FeatureServer/0/query";
+  const baseLot = (pin) => String(pin).split("_").slice(0, 3).join("_");
+  const parentLot = (pin) => { const [m, b, l] = String(pin).split("_"); return l && l.includes(".") ? `${m}_${b}_${l.split(".")[0]}` : null; };
+  const sqm = (g) => { let t = 0; const polys = g.type === "Polygon" ? [g.coordinates] : g.type === "MultiPolygon" ? g.coordinates : []; for (const poly of polys) { const r = poly[0]; let a = 0; for (let i = 0; i < r.length - 1; i++) a += r[i][0] * r[i + 1][1] - r[i + 1][0] * r[i][1]; t += Math.abs(a) / 2 * 84300 * 110574; } return t; };
+  async function lotQuery(pins) {
+    if (!pins.length) return [];
+    const r = await fetch(LOT_URL, { method: "POST", body: new URLSearchParams({ where: `PAMS_PIN IN (${pins.map((x) => `'${String(x).replace(/'/g, "''")}'`).join(",")})`, outFields: "PAMS_PIN,PCLBLOCK,PCLLOT", returnGeometry: "true", outSR: "4326", f: "geojson" }) });
+    return (await r.json()).features || [];
+  }
+  async function lotFeatures(pins) {
+    pins = [...new Set(pins.filter(Boolean))];
+    const bases = [...new Set(pins.map(baseLot))];
+    const got = await lotQuery([...new Set([...pins, ...bases])]);
+    const by = Object.fromEntries(got.filter((f) => f.geometry).map((f) => [f.properties.PAMS_PIN, f]));
+    const out = new Map();
+    for (const pin of pins) {
+      const base = baseLot(pin);
+      if (base !== pin) {
+        if (by[base]) out.set(base, { ...by[base], properties: { ...by[base].properties, _kind: "lot" } });
+        if (by[pin] && sqm(by[pin].geometry) >= 200) out.set(pin, { ...by[pin], properties: { ...by[pin].properties, _kind: "unit" } });
+      } else if (by[pin]) out.set(pin, { ...by[pin], properties: { ...by[pin].properties, _kind: "lot" } });
+    }
+    const missing = pins.filter((p) => !out.has(baseLot(p)) && !out.has(p));
+    const parents = [...new Set(missing.map(parentLot).filter(Boolean))];
+    if (parents.length) for (const f of await lotQuery(parents)) if (f.geometry) out.set(f.properties.PAMS_PIN, { ...f, properties: { ...f.properties, _kind: "parent" } });
+    return [...out.values()];
+  }
+  const LOT_STYLE = { lot: { weight: 2.5, fillOpacity: 0.14, dashArray: "6 4" }, unit: { weight: 2, fillOpacity: 0.32, dashArray: null }, parent: { weight: 2, fillOpacity: 0.08, dashArray: "2 5" } };
+
   async function drawParcel(p) {
     const pins = (p.parcel_pins && p.parcel_pins.length ? p.parcel_pins : [p.pams_pin]).filter(Boolean);
     if (!pins.length) return;
     const want = p.id;
     try {
       const local = DATA.parcels ? pins.map((x) => DATA.parcels[x]).filter(Boolean) : [];
-      const gj = local.length ? { type: "FeatureCollection", features: local } : await (await fetch(PARCELS + "?" + new URLSearchParams({ where: `PAMS_PIN IN (${pins.map((x) => `'${String(x).replace(/'/g, "''")}'`).join(",")})`, outFields: "PAMS_PIN,PCLBLOCK,PCLLOT", returnGeometry: "true", outSR: "4326", f: "geojson" }))).json();
+      const gj = local.length ? { type: "FeatureCollection", features: local } : { type: "FeatureCollection", features: await lotFeatures(pins) };
       if (selected !== want || !gj.features?.length) return;
       if (outline) outline.remove();
-      const many = gj.features.length > 1;
+      const many = gj.features.filter((f) => f.properties?._kind !== "unit").length > 1;
       outline = L.geoJSON(gj, {
-        style: { color: "#ffe066", weight: 2.5, fillColor: "#ffe066", fillOpacity: many ? 0.18 : 0.12, dashArray: "6 4" }, interactive: false,
-        onEachFeature: (f, layer) => { const pr = f.properties || {}; if (pr.PCLLOT) layer.bindTooltip(many ? `Lot ${pr.PCLLOT}` : `Block ${pr.PCLBLOCK} · Lot ${pr.PCLLOT}`, { permanent: gj.features.length <= 12, direction: "center", className: "lot-label" }); },
+        style: (f) => ({ color: f.properties?._kind === "parent" ? "#ffb347" : "#ffe066", fillColor: "#ffe066", ...(LOT_STYLE[f.properties?._kind] || LOT_STYLE.lot) }), interactive: false,
+        onEachFeature: (f, layer) => { const pr = f.properties || {}; if (pr.PCLLOT) layer.bindTooltip(pr._kind === "parent" ? `Lot ${pr.PCLLOT} (before subdivision)` : pr._kind === "unit" ? "Building footprint" : many ? `Lot ${pr.PCLLOT}` : `Block ${pr.PCLBLOCK} · Lot ${pr.PCLLOT}`, { permanent: gj.features.length <= 12, direction: "center", className: "lot-label" }); },
       }).addTo(map);
       if (many) {
         const mobile = window.matchMedia("(max-width: 760px)").matches;
@@ -847,7 +942,7 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
     store.set("jcbt:lastVisit", DATA.generated_at);
     if (window.matchMedia("(max-width: 760px)").matches) $("#side").classList.add("collapsed");
     const h = decodeURIComponent(location.hash.slice(1));
-    if (/^[PZ]2026-\d{4}$/.test(h)) select(h, false);
+    if (/^[PZ](\d{4}|\d{2})-\d{3,4}$/.test(h)) select(h, false);
   }
   start();
 })();

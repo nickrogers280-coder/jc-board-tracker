@@ -61,7 +61,9 @@
      "key": "kc",
      "role": "Developer"
     }
-   ]
+   ],
+   "lat": 40.73013,
+   "lon": -74.06406
   },
   {
    "id": "65-bay",
@@ -91,8 +93,8 @@
    "pins": [
     "0906_11608_1_C0002"
    ],
-   "lat": 40.71978,
-   "lon": -74.03635
+   "lat": 40.71981,
+   "lon": -74.03573
   },
   {
    "id": "journal-squared-1",
@@ -208,7 +210,9 @@
    ],
    "pins": [
     "0906_9404_34"
-   ]
+   ],
+   "lat": 40.73365,
+   "lon": -74.06552
   },
   {
    "id": "813-pavonia",
@@ -317,8 +321,8 @@
     "0906_15907_1_C0001",
     "0906_15907_1_C0002"
    ],
-   "lat": 40.71413,
-   "lon": -74.04443,
+   "lat": 40.71407,
+   "lon": -74.04394,
    "developers": [
     {
      "key": "kre",
@@ -415,7 +419,9 @@
    ],
    "pins": [
     "0906_13001_2_C8002"
-   ]
+   ],
+   "lat": 40.71965,
+   "lon": -74.04195
   },
   {
    "id": "sable",
@@ -996,10 +1002,10 @@
   },
   {
    "key": "other",
-   "label": "Developer not yet identified",
-   "short": "?",
+   "label": "Owner of record (developer not yet identified)",
+   "short": "OWN",
    "color": "#6b7684",
-   "note": "Found in the NJ tax records (built 2010 or later, 100+ units). The tax-bill address is shown; the developer hasn't been confirmed yet."
+   "note": "Found in the NJ tax records (built 2010 or later, 100+ units). Owner names are withheld from the state's public tax data under Daniel's Law, so the owner shown is the grantee on the latest deed in the Hudson County Register index."
   }
  ],
  "mail_rules": [
@@ -1254,6 +1260,248 @@
     "https://jerseydigs.com/buildings/hudson-house-east/",
     "https://www.greystar.com/hudson-house-east-jersey-city-nj/p_23453"
    ]
+  }
+ },
+ "owners": {
+  "425 SUMMIT AVE": {
+   "owner": "Summit and Sip LLC",
+   "date": "2024-08-29",
+   "bookpage": "9844/906",
+   "note": "DEP deed notice"
+  },
+  "411 SUMMIT AVE": {
+   "owner": "413 Summit Holding LLC",
+   "date": "2021-07-15",
+   "bookpage": "9581/241",
+   "note": ""
+  },
+  "175 SECOND ST": {
+   "owner": "175 Second Street LLC",
+   "date": "2021-12-22",
+   "bookpage": "9625/390",
+   "note": "DEP deed notice"
+  },
+  "160 FIRST ST": {
+   "owner": "Condominium; sponsor 160 First Street Urban Renewal LLC",
+   "date": "2022-05-11",
+   "bookpage": "9665/299",
+   "note": "latest deed is a unit sale"
+  },
+  "10 PROVOST ST": {
+   "owner": "Condominium; sponsor 126-142 Morgan Street Urban Renewal LLC",
+   "date": "2019-06-18",
+   "bookpage": "9410/113",
+   "note": "latest deed is a unit sale"
+  },
+  "155 BAY STREET": {
+   "owner": "Condominium; sponsor 134 Bay Street LLC",
+   "date": "2024-08-28",
+   "bookpage": "9844/666",
+   "note": "latest deed is a unit sale"
+  },
+  "190 ACADEMY ST": {
+   "owner": "190 Academy Urban Renewal LLC",
+   "date": "2022-07-25",
+   "bookpage": "9684/271",
+   "note": ""
+  },
+  "321 WARREN ST": {
+   "owner": "LMV Warren Street Holdings LP",
+   "date": "2024-08-05",
+   "bookpage": "9839/38",
+   "note": ""
+  },
+  "198 VAN VORST ST": {
+   "owner": "EQR Madox LLC (Equity Residential), bought 2019",
+   "date": "2019-01-11",
+   "bookpage": "9371/953",
+   "note": "seller 198 Van Vorst Street LLC"
+  },
+  "207 VAN VORST ST": {
+   "owner": "HUSPP Lenox & Quinn LLC",
+   "date": "2025-01-22",
+   "bookpage": "9874/312",
+   "note": "DEP deed notice"
+  },
+  "197 VAN VORST ST": {
+   "owner": "HUSPP Lenox & Quinn LLC, bought 2024",
+   "date": "2024-08-06",
+   "bookpage": "9839/185",
+   "note": "seller 207 Van Vorst Realty Company Phase II LLC"
+  },
+  "77 HUDSON ST": {
+   "owner": "Condominium (individually owned units)",
+   "date": "2021-04-15",
+   "bookpage": "9550/128",
+   "note": "latest deed is a unit sale"
+  },
+  "270 JOHNSTON AVE": {
+   "owner": "FD Johnston Ave LLC",
+   "date": "2024-05-22",
+   "bookpage": "9824/111",
+   "note": "acquired from the Jersey City Redevelopment Agency"
+  },
+  "295 JOHNSTON AVE": {
+   "owner": "100 Monitor Street LLC",
+   "date": "2022-02-10",
+   "bookpage": "9639/611",
+   "note": "deed to the City"
+  },
+  "215 GROVE ST": {
+   "owner": "AmerInvest Jersey City Development LLC, bought 2025",
+   "date": "2025-05-01",
+   "bookpage": "9897/274",
+   "note": "seller JCC One LLC"
+  },
+  "201 MARIN BLVD": {
+   "owner": "Condominium; sponsor Liberty Harbor North Urban Renewal LLC",
+   "date": "2019-06-19",
+   "bookpage": "9410/736",
+   "note": "latest deed is a unit sale"
+  },
+  "132 YALE AVE": {
+   "owner": "100 Water Street Development LLC",
+   "date": "2023-07-27",
+   "bookpage": "9761/382",
+   "note": "DEP deed notice"
+  },
+  "15 CARBON PL": {
+   "owner": "Kean University (from New Jersey City University, 2026)",
+   "date": "2026-07-14",
+   "bookpage": "9996/387",
+   "note": ""
+  },
+  "33 UNIVERSITY PLACE BLVD": {
+   "owner": "Kean University (from New Jersey City University, 2026)",
+   "date": "2026-07-14",
+   "bookpage": "9996/551",
+   "note": ""
+  },
+  "23 UNIVERSITY PLACE BLVD": {
+   "owner": "HC West Campus I Urban Renewal LLC",
+   "date": "2024-12-12",
+   "bookpage": "9866/405",
+   "note": "from New Jersey City University"
+  },
+  "49 FISK ST": {
+   "owner": "49 Fisk Property Owner LLC",
+   "date": "2026-02-20",
+   "bookpage": "9966/253",
+   "note": "DEP deed notice"
+  },
+  "100 PATERSON PLANK RD": {
+   "owner": "Condominium (The Cliffs); sponsor Paterson Plank Rd J-C Owner LLC",
+   "date": "2026-01-08",
+   "bookpage": "9955/328",
+   "note": ""
+  },
+  "3 NEW YORK AVE": {
+   "owner": "Devan Propco LLC",
+   "date": "2025-11-19",
+   "bookpage": "9944/1",
+   "note": "DEP deed notice"
+  },
+  "315 FIFTEENTH ST": {
+   "owner": "Coles Street Associates L.L.C.",
+   "date": "2026-08-19",
+   "bookpage": "10005/625",
+   "note": "DEP deed notice"
+  },
+  "75 PARK LANE SOUTH": {
+   "owner": "Condominium; sponsor 75 Park Lane LLC",
+   "date": "2021-02-03",
+   "bookpage": "9534/53",
+   "note": "latest deed is a unit sale"
+  },
+  "25 SENATE PL": {
+   "owner": "Senate Place Urban Renewal LLC",
+   "date": "2017-12-06",
+   "bookpage": "9261/7",
+   "note": ""
+  },
+  "532 SUMMIT AVE": {
+   "owner": "575 Pavonia LLC, bought 2020",
+   "date": "2020-01-06",
+   "bookpage": "9461/99",
+   "note": "seller 532 Summit Avenue Holdings LLC"
+  },
+  "2955 KENNEDY BLVD": {
+   "owner": "Condominium (2 Journal Square Condominium Association)",
+   "date": "2019-11-13",
+   "bookpage": "9449/746",
+   "note": ""
+  },
+  "161 VAN WAGENEN AVE": {
+   "owner": "161 Van Wagenen Ave LLC",
+   "date": "2024-06-05",
+   "bookpage": "9826/96",
+   "note": "acquired from the City"
+  },
+  "345 BALDWIN AVE": {
+   "owner": "345 Baldwin Avenue LLC, bought 2021",
+   "date": "2021-05-27",
+   "bookpage": "9567/518",
+   "note": "seller TRG Baldwin Owner LLC"
+  },
+  "32 OAKLAND AVE": {
+   "owner": "Overlook LLC",
+   "date": "2025-03-20",
+   "bookpage": "9887/738",
+   "note": "DEP deed notice"
+  },
+  "829 GARFIELD AVE": {
+   "owner": "829 Garfield Holdings LP",
+   "date": "2024-09-11",
+   "bookpage": "9847/228",
+   "note": "DEP deed notice"
+  },
+  "463 PACIFIC AVE": {
+   "owner": "Jersey City Housing Authority",
+   "date": "2026-06-01",
+   "bookpage": "9986/506",
+   "note": "DEP deed notice"
+  },
+  "474 WARREN ST": {
+   "owner": "GS FC Jersey City PEP 2 Urban Renewal LLC",
+   "date": "2018-09-10",
+   "bookpage": "9338/621",
+   "note": "tax bill to Cleveland's Key Tower, Forest City's former headquarters"
+  },
+  "2 SECOND ST": {
+   "owner": "Condominium (individually owned units)",
+   "date": "2026-10-16",
+   "bookpage": "10018/94",
+   "note": "latest deed is a unit sale"
+  },
+  "400 CLAREMONT AVE": {
+   "owner": "400 Claremont Urban Renewal LLC",
+   "date": null,
+   "bookpage": null,
+   "note": "per press; deeds are filed under the lots before they were combined"
+  },
+  "837 JERSEY AVE": {
+   "owner": "City of Jersey City",
+   "date": "2020-02-25",
+   "bookpage": null,
+   "note": "party granting a 2020 DEP deed notice; may be a city-owned or ground-leased site"
+  },
+  "300 COLES ST": {
+   "owner": "Not found in the deed index",
+   "date": null,
+   "bookpage": null,
+   "note": "lot renumbered; deeds are filed under the earlier block/lot"
+  },
+  "120 YORK STREET": {
+   "owner": "Not found in the deed index",
+   "date": null,
+   "bookpage": null,
+   "note": "lot renumbered; deeds are filed under the earlier block/lot"
+  },
+  "148 FIRST ST": {
+   "owner": "Not found in the deed index",
+   "date": null,
+   "bookpage": null,
+   "note": "lot renumbered; deeds are filed under the earlier block/lot"
   }
  }
 }

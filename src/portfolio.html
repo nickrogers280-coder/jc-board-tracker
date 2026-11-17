@@ -149,7 +149,7 @@
       </div>
       <div class="d-body">
         <div class="figs">${figs.map(([k, v]) => `<div class="fig"><span>${k}</span><b>${esc(v)}</b></div>`).join("")}</div>
-        <div class="sec"><h3>Who's involved</h3><div class="roles">${devsOf(b).map((d) => `<div>${tagHtml(d.key)}<span><b>${esc(CO[d.key].label)}</b> · ${esc(d.role || "Developer")}</span></div>`).join("")}${(b.partners || []).map((p) => `<div><span class="tag" style="--t:var(--ink-2)">With</span><span>${esc(p)}</span></div>`).join("")}</div>
+        <div class="sec"><h3>Who's involved</h3><div class="roles">${devsOf(b).filter((d) => !(d.key === "other" && b.owner_of_record && /not yet identified/i.test(d.role || ""))).map((d) => `<div>${tagHtml(d.key)}<span><b>${esc(CO[d.key].label)}</b> · ${esc(d.role || "Developer")}</span></div>`).join("")}${(b.partners || []).map((p) => `<div><span class="tag" style="--t:var(--ink-2)">With</span><span>${esc(p)}</span></div>`).join("")}${b.owner_of_record ? `<div><span class="tag" style="--t:var(--ink-2)">Owner</span><span><b>${esc(b.owner_of_record.owner)}</b><span class="note"> · owner of record per the latest deed${b.owner_of_record.date ? ", recorded " + fmtDate(b.owner_of_record.date) : ""}${b.owner_of_record.bookpage ? ", Bk/Pg " + esc(b.owner_of_record.bookpage) : ""}${b.owner_of_record.note ? " (" + esc(b.owner_of_record.note) + ")" : ""}</span></span></div>` : ""}</div>
           ${devsOf(b).some((d) => CO[d.key].note) ? `<p class="note" style="margin:6px 0 0">${devsOf(b).filter((d) => CO[d.key].note).map((d) => esc(CO[d.key].note)).join(" ")}</p>` : ""}</div>
         <div class="sec"><h3>About</h3><p class="desc">${esc(b.summary || "")}</p></div>
         <div class="sec"><h3>Board applications · ${b.cases.length}</h3>${b.cases.length ? `<p class="note" style="margin:0 0 8px">Newest first. Current version of each document first; older uploads under each list.</p>${b.cases.map(caseHtml).join("")}` : `<p class="note">No Planning or Zoning Board case found online for these lots. Approvals before the city's online portal (about 2016) are on paper at the Division of City Planning.</p>`}</div>
@@ -170,14 +170,50 @@
     $("#d-close").onclick = () => { selected = null; $("#detail").hidden = true; redraw(); renderList(); if (outlines) { outlines.remove(); outlines = null; } try { history.replaceState(null, "", location.pathname); } catch {} };
   }
 
+  // Tax lots for a set of PAMS PINs, as GeoJSON features tagged _kind:
+  //   "lot"    the block/lot itself (condo and parking units are drawn as their whole lot);
+  //   "unit"   a condo unit with a real footprint on the state map (e.g. one tower of a multi-tower lot);
+  //   "parent" the lot a new subdivided lot came from, when the state map doesn't have the new lot yet.
+  const LOT_URL = "https://services2.arcgis.com/XVOqAjTOJ5P6ngMu/arcgis/rest/services/Parcels_Composite_NJ_WM/FeatureServer/0/query";
+  const baseLot = (pin) => String(pin).split("_").slice(0, 3).join("_");
+  const parentLot = (pin) => { const [m, b, l] = String(pin).split("_"); return l && l.includes(".") ? `${m}_${b}_${l.split(".")[0]}` : null; };
+  const sqm = (g) => { let t = 0; const polys = g.type === "Polygon" ? [g.coordinates] : g.type === "MultiPolygon" ? g.coordinates : []; for (const poly of polys) { const r = poly[0]; let a = 0; for (let i = 0; i < r.length - 1; i++) a += r[i][0] * r[i + 1][1] - r[i + 1][0] * r[i][1]; t += Math.abs(a) / 2 * 84300 * 110574; } return t; };
+  async function lotQuery(pins) {
+    if (!pins.length) return [];
+    const r = await fetch(LOT_URL, { method: "POST", body: new URLSearchParams({ where: `PAMS_PIN IN (${pins.map((x) => `'${String(x).replace(/'/g, "''")}'`).join(",")})`, outFields: "PAMS_PIN,PCLBLOCK,PCLLOT", returnGeometry: "true", outSR: "4326", f: "geojson" }) });
+    return (await r.json()).features || [];
+  }
+  async function lotFeatures(pins) {
+    pins = [...new Set(pins.filter(Boolean))];
+    const bases = [...new Set(pins.map(baseLot))];
+    const got = await lotQuery([...new Set([...pins, ...bases])]);
+    const by = Object.fromEntries(got.filter((f) => f.geometry).map((f) => [f.properties.PAMS_PIN, f]));
+    const out = new Map();
+    for (const pin of pins) {
+      const base = baseLot(pin);
+      if (base !== pin) {
+        if (by[base]) out.set(base, { ...by[base], properties: { ...by[base].properties, _kind: "lot" } });
+        if (by[pin] && sqm(by[pin].geometry) >= 200) out.set(pin, { ...by[pin], properties: { ...by[pin].properties, _kind: "unit" } });
+      } else if (by[pin]) out.set(pin, { ...by[pin], properties: { ...by[pin].properties, _kind: "lot" } });
+    }
+    const missing = pins.filter((p) => !out.has(baseLot(p)) && !out.has(p));
+    const parents = [...new Set(missing.map(parentLot).filter(Boolean))];
+    if (parents.length) for (const f of await lotQuery(parents)) if (f.geometry) out.set(f.properties.PAMS_PIN, { ...f, properties: { ...f.properties, _kind: "parent" } });
+    return [...out.values()];
+  }
+  const LOT_STYLE = { lot: { weight: 2.5, fillOpacity: 0.14, dashArray: "6 4" }, unit: { weight: 2, fillOpacity: 0.32, dashArray: null }, parent: { weight: 2, fillOpacity: 0.08, dashArray: "2 5" } };
+
   async function drawLots(b) {
     if (outlines) { outlines.remove(); outlines = null; }
     if (!b.pins.length) return;
     try {
-      const url = "https://services2.arcgis.com/XVOqAjTOJ5P6ngMu/arcgis/rest/services/Parcels_Composite_NJ_WM/FeatureServer/0/query?" + new URLSearchParams({ where: `PAMS_PIN IN (${b.pins.map((x) => `'${x}'`).join(",")})`, outFields: "PAMS_PIN", returnGeometry: "true", outSR: "4326", f: "geojson" });
-      const gj = await (await fetch(url)).json();
-      if (selected !== b.id) return;
-      outlines = L.geoJSON(gj, { style: { color: CO[devsOf(b)[0].key].color, weight: 2, fillOpacity: 0.15 } }).addTo(map);
+      const feats = await lotFeatures(b.pins);
+      if (selected !== b.id || !feats.length) return;
+      const c = CO[devsOf(b)[0].key].color;
+      outlines = L.geoJSON({ type: "FeatureCollection", features: feats }, {
+        style: (f) => ({ color: c, fillColor: c, ...(LOT_STYLE[f.properties._kind] || LOT_STYLE.lot) }), interactive: false,
+        onEachFeature: (f, layer) => { const pr = f.properties; layer.bindTooltip(pr._kind === "unit" ? "Building footprint" : `Block ${pr.PCLBLOCK} · Lot ${pr.PCLLOT}${pr._kind === "parent" ? " (before subdivision)" : ""}`, { permanent: pr._kind !== "unit", direction: "center", className: "lot-label" }); },
+      }).addTo(map);
     } catch {}
   }
 
@@ -211,7 +247,7 @@
         const me = devsOf(b).find((d) => d.key === k);
         return `<button class="item" data-id="${b.id}" aria-current="${selected === b.id}">
         <div class="top">${devsOf(b).map((d) => tagHtml(d.key)).join("")}<span class="addr">${esc(b.name)}</span><span class="when">${esc(b.completed || b.status || "")}</span></div>
-        <div class="meta">${esc(b.addresses[0])}${me && me.role && me.role !== "Developer" ? " · " + esc(me.role) : ""}</div>
+        <div class="meta">${esc(b.addresses[0])}${k === "other" && b.owner_of_record ? " · " + esc(b.owner_of_record.owner) : me && me.role && me.role !== "Developer" ? " · " + esc(me.role) : ""}</div>
         <div class="change">${[b.units ? n0(b.units) + " units" : "", b.stories ? b.stories + " stories" : "", b.cases.length ? b.cases.length + " board case" + (b.cases.length === 1 ? "" : "s") : "", isProposed(b) ? b.status : ""].filter(Boolean).join(" · ")}</div>
       </button>`; }).join("");
     }).join("") || `<p class="note" style="padding:14px">Pick a developer above.</p>`;

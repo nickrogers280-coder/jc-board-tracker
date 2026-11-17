@@ -68,6 +68,7 @@ def merge(cfg, rows):
     have_addr = {addr_key(a) for b in curated for a in b.get("addresses") or []}
     known = {addr_key(k): v for k, v in (cfg.get("known") or {}).items()}
     rules = cfg.get("mail_rules") or []
+    owners = {addr_key(k): v for k, v in (cfg.get("owners") or {}).items()}
     out = list(curated)
     for a in fold(rows):
         pin, loc = a["PAMS_PIN"], a.get("PROP_LOC") or ""
@@ -96,6 +97,6 @@ def merge(cfg, rows):
             "name": name or title(loc), "company": devs[0]["key"], "developers": devs, "partners": [],
             "addresses": [title(loc)], "units": u, "stories": st, "completed": str(yr), "status": "Completed",
             "summary": summary, "sources": sources, "pins": [pin], "lat": a.get("lat"), "lon": a.get("lon"),
-            "owner_mail": mail, "discovered": True,
+            "owner_mail": mail, "discovered": True, "owner_of_record": owners.get(addr_key(loc)),
         })
     return out

@@ -74,6 +74,28 @@ def case_record(x):
             "desc": re.sub(r"\s+", " ", d.get("Description") or x.get("Description") or "").strip(), "pin": d.get("MainParcelNumber"), "docs": docs}
 
 
+def place(pins):
+    """Map position for a building: its tax lot's center. A condo or parking unit is drawn at its whole lot, unless
+    the unit has a real footprint on the state map (one tower of a multi-tower lot), which is then used."""
+    base = lambda p: "_".join(p.split("_")[:3])
+    ask = sorted({x for p in pins for x in (p, base(p))})
+    r = requests.post(F.PARCELS, data={"where": "PAMS_PIN IN (" + ",".join(f"'{x}'" for x in ask) + ")", "outFields": "PAMS_PIN",
+                                       "returnGeometry": "true", "returnCentroid": "true", "outSR": "4326", "f": "json"}, timeout=90)
+    geo = {}
+    for f in r.json().get("features") or []:
+        area = 0.0
+        for ring in (f.get("geometry") or {}).get("rings") or []:
+            area += abs(sum(ring[i][0] * ring[i + 1][1] - ring[i + 1][0] * ring[i][1] for i in range(len(ring) - 1))) / 2 * 84300 * 110574
+        c = f.get("centroid") or {}
+        geo[f["attributes"]["PAMS_PIN"]] = (area, c.get("y"), c.get("x"))
+    for p in pins:
+        if base(p) != p and p in geo and geo[p][0] >= 200:
+            return geo[p][1], geo[p][2]
+        if base(p) in geo:
+            return geo[base(p)][1], geo[base(p)][2]
+    return None
+
+
 def discover():
     """Every Jersey City parcel built since devmap.DISCOVER_SINCE whose tax description lists 100+ units."""
     rows, off = [], 0
@@ -154,6 +176,13 @@ def main():
                 x = F.find_case(cid)
                 if x:
                     seen.add(cid); cases.append(case_record(x))
+        if pins:
+            try:
+                ll = place(pins)
+                if ll and ll[0]:
+                    rec["lat"], rec["lon"] = ll
+            except Exception as e:
+                print("placement failed", b["id"], e, file=sys.stderr)
         rec["pins"], rec["lots"], rec["cases"] = pins, lots, cases
         print(f"{b['id']}: {len(pins)} lots, {len(cases)} cases, {sum(len(c.get('docs') or []) + len((c.get('odp') or {}).get('docs') or []) for c in cases)} documents")
         out.append(rec)
