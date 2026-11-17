@@ -1,0 +1,265 @@
+{
+ "title": "Kushner & KRE in Jersey City",
+ "note": "Buildings developed by Kushner Companies (Charles, Jared and Nicole Kushner's firm) and by KRE Group / Kushner Real Estate Group (Jonathan Kushner's firm). They are separate companies. Partners are listed where the press or the developer names them.",
+ "buildings": [
+  {
+   "id": "the-journal",
+   "name": "The Journal (One Journal Square)",
+   "company": "kc",
+   "partners": [],
+   "addresses": [
+    "1 Journal Square Plaza",
+    "30 Journal Square"
+   ],
+   "units": 1723,
+   "stories": 64,
+   "completed": "2024-2025",
+   "status": "Completed",
+   "summary": "Twin 52-story residential towers over a 12-story base next to the Journal Square PATH, about 40,000 SF of retail. Renamed The Journal in Nov 2024.",
+   "sources": [
+    "https://en.wikipedia.org/wiki/The_Journal_(building)",
+    "https://commercialobserver.com/2024/07/nicole-kushner-meyer-laurent-morali-new-jersey/"
+   ]
+  },
+  {
+   "id": "30-journal-square",
+   "name": "30 Journal Square (proposed tower)",
+   "company": "kc",
+   "partners": [],
+   "addresses": [
+    "30 Journal Square Plaza"
+   ],
+   "units": null,
+   "stories": 71,
+   "completed": null,
+   "status": "Proposed",
+   "summary": "Redesigned 71-story residential tower with a 14,000 SF public plaza, designed by Marchetto Higgins Stieve. Needs Planning Board approval of site plan amendments (P2025-0264).",
+   "cases": [
+    "P2025-0264"
+   ],
+   "sources": [
+    "https://jerseydigs.com/30-journal-square-jersey-city-tower-unveiled/"
+   ]
+  },
+  {
+   "id": "65-bay",
+   "name": "65 Bay Street (Trump Bay Street)",
+   "company": "kc",
+   "partners": [
+    "KABR Group"
+   ],
+   "addresses": [
+    "65 Bay Street"
+   ],
+   "units": 447,
+   "stories": 50,
+   "completed": "2016",
+   "status": "Completed",
+   "summary": "50-story rental tower with about 17,800 SF of ground-floor retail in Downtown Jersey City.",
+   "sources": [
+    "https://kushner.com/project/65-bay-street",
+    "https://newyorkyimby.com/2016/03/50-story-446-unit-residential-tower-wraps-up-construction-at-65-bay-street-jersey-city.html"
+   ]
+  },
+  {
+   "id": "journal-squared-1",
+   "name": "Journal Squared, Tower 1",
+   "company": "kre",
+   "partners": [
+    "National Real Estate Advisors"
+   ],
+   "addresses": [
+    "615 Pavonia Avenue"
+   ],
+   "units": 538,
+   "stories": 53,
+   "completed": "2017",
+   "status": "Completed",
+   "summary": "First tower of the three-tower Journal Squared rental complex by the Journal Square PATH.",
+   "sources": [
+    "https://re-nj.com/first-phase-of-jersey-city-rental-complex-opens-for-leasing/"
+   ]
+  },
+  {
+   "id": "journal-squared-2",
+   "name": "Journal Squared, Tower 2",
+   "company": "kre",
+   "partners": [
+    "National Real Estate Advisors"
+   ],
+   "addresses": [
+    "605 Pavonia Avenue"
+   ],
+   "units": 704,
+   "stories": 70,
+   "completed": "2021",
+   "status": "Completed",
+   "summary": "Second and tallest Journal Squared tower.",
+   "sources": [
+    "https://jerseydigs.com/tag/kre-group/page/3/"
+   ]
+  },
+  {
+   "id": "journal-squared-3",
+   "name": "Journal Squared, Tower 3",
+   "company": "kre",
+   "partners": [
+    "National Real Estate Advisors"
+   ],
+   "addresses": [
+    "595 Pavonia Avenue"
+   ],
+   "units": 598,
+   "stories": 60,
+   "completed": "2024",
+   "status": "Completed",
+   "summary": "Third Journal Squared tower; refinanced in 2025.",
+   "sources": [
+    "https://re-nj.com/kre-national-ink-255-million-refi-for-598-unit-journal-squared-tower-jll-says/"
+   ]
+  },
+  {
+   "id": "808-pavonia",
+   "name": "808 Pavonia Avenue (proposed)",
+   "company": "kre",
+   "partners": [],
+   "addresses": [
+    "808 Pavonia Avenue"
+   ],
+   "units": null,
+   "stories": 54,
+   "completed": null,
+   "status": "Proposed",
+   "summary": "Proposed 54-story KRE tower near Journal Square.",
+   "sources": [
+    "https://www.skyscrapercenter.com/company/7002"
+   ]
+  },
+  {
+   "id": "813-pavonia",
+   "name": "813 Pavonia Avenue",
+   "company": "kre",
+   "partners": [],
+   "addresses": [
+    "813 Pavonia Avenue"
+   ],
+   "units": null,
+   "stories": 48,
+   "completed": "2027 (expected)",
+   "status": "Under construction",
+   "summary": "48-story KRE tower near Journal Square, expected 2027.",
+   "sources": [
+    "https://www.skyscrapercenter.com/company/7002"
+   ]
+  },
+  {
+   "id": "351-marin",
+   "name": "351 Marin",
+   "company": "kre",
+   "partners": [
+    "Northwestern Mutual"
+   ],
+   "addresses": [
+    "351 Marin Boulevard"
+   ],
+   "units": 507,
+   "stories": 38,
+   "completed": "2021",
+   "status": "Completed",
+   "summary": "38-story rental tower a block north of Christopher Columbus Drive; leased up in five months.",
+   "sources": [
+    "https://re-nj.com/kre-northwestern-unveil-new-jersey-city-high-rise-after-leasing-500-units-in-five-months/"
+   ]
+  },
+  {
+   "id": "485-marin",
+   "name": "485 Marin",
+   "company": "kre",
+   "partners": [],
+   "addresses": [
+    "485 Marin Boulevard"
+   ],
+   "units": 397,
+   "stories": 17,
+   "completed": "2018",
+   "status": "Completed",
+   "summary": "Two 17-story towers with ground-floor retail in Hamilton Park.",
+   "sources": [
+    "https://www.cityrealty.com/nyc/market-insight/features/get-to-know/a-talk-kushner-brothers-their-latest-jersey-city-ventures/22022"
+   ]
+  },
+  {
+   "id": "18-park",
+   "name": "18 Park",
+   "company": "kre",
+   "partners": [
+    "Ironstate Development"
+   ],
+   "addresses": [
+    "18 Park Avenue"
+   ],
+   "units": 422,
+   "stories": null,
+   "completed": "2014",
+   "status": "Completed",
+   "summary": "Downtown rental building at 18 Park Avenue; KRE's first project designed with Hollwich Kushner.",
+   "sources": [
+    "https://www.multihousingnews.com/kre-group-ironstate-nj-city-development-fully-leased/"
+   ]
+  },
+  {
+   "id": "235-grand",
+   "name": "235 Grand",
+   "company": "kre",
+   "partners": [
+    "Ironstate Development"
+   ],
+   "addresses": [
+    "235 Grand Street"
+   ],
+   "units": 549,
+   "stories": 46,
+   "completed": "2023",
+   "status": "Completed",
+   "summary": "46-story rental tower on the former Boys & Girls Club of Hudson County site.",
+   "sources": [
+    "https://re-nj.com/ironstate-kre-reveal-new-549-unit-rental-tower-in-jersey-city-slideshow/"
+   ]
+  },
+  {
+   "id": "225-grand",
+   "name": "225 Grand",
+   "company": "kre",
+   "partners": [],
+   "addresses": [
+    "225 Grand Street"
+   ],
+   "units": null,
+   "stories": null,
+   "completed": null,
+   "status": "Completed",
+   "summary": "Part of KRE's Northern Chapter rental portfolio, next to 235 Grand.",
+   "sources": [
+    "https://jerseydigs.com/kushner-northern-chapter-company/"
+   ]
+  },
+  {
+   "id": "grove-pointe",
+   "name": "Grove Pointe",
+   "company": "kre",
+   "partners": [],
+   "addresses": [
+    "100 Christopher Columbus Drive",
+    "102 Christopher Columbus Drive"
+   ],
+   "units": null,
+   "stories": null,
+   "completed": "c. 2004",
+   "status": "Completed",
+   "summary": "KRE's first ground-up project in Jersey City: rentals at 100 and condominiums at 102 Christopher Columbus Drive.",
+   "sources": [
+    "https://re-nj.com/kre-northwestern-unveil-new-jersey-city-high-rise-after-leasing-500-units-in-five-months/"
+   ]
+  }
+ ]
+}

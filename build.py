@@ -6,7 +6,7 @@ Inputs (from the browser pull):
 """
 import json, re, sys
 from collections import defaultdict
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).parent
@@ -464,6 +464,93 @@ for r in out:
     if r.get("inherited"):
         r["inherited_from"] = src["id"]
 
+# ------------------------------------------------------------------ approval stage
+# Where each case is in the process, from the portal status, the board agendas and the status history.
+STAGES = ["filed", "review", "scheduled", "heard", "approved"]
+STAGE_LABEL = {"filed": "Filed: completeness check", "review": "Under staff review", "scheduled": "Scheduled for a hearing",
+               "heard": "Heard: decision / resolution pending", "approved": "Approved", "denied": "Denied", "withdrawn": "Withdrawn / void"}
+
+
+def stage_of(r):
+    s = (r["status"] or "").lower()
+    if r["status_group"] == "approved":
+        return "approved"
+    if "denied" in s:
+        return "denied"
+    if s in ("withdrawn", "void", "closed", "expired"):
+        return "withdrawn"
+    if "resolution" in s:
+        return "heard"
+    today = datetime.now(timezone.utc).date().isoformat()
+    past = [h[0] for h in r["hearings"] if h[0] and h[0] <= today]
+    future = [h[0] for h in r["hearings"] if h[0] and h[0] > today]
+    m = re.search(r"\bTO\s+([A-Z]+)\s+(\d{1,2}),?\s+(\d{4})", r.get("agenda_last") or "", re.I)
+    if m:
+        try:
+            future.append(datetime.strptime(f"{m.group(1)[:3]} {m.group(2)} {m.group(3)}", "%b %d %Y").date().isoformat())
+        except ValueError:
+            pass
+    future = sorted(d for d in future if d > today)
+    r["next_hearing"] = future[0] if future else None
+    if future:
+        return "scheduled"
+    if past:
+        return "heard"
+    if s in ("submitted", "submitted - online", "incomplete", "fees due"):
+        return "filed"
+    return "review"
+
+
+_sp = ROOT / "data/stages.json"
+stage_hist = json.loads(_sp.read_text(encoding="utf-8")) if _sp.exists() else {}
+_today = datetime.now(timezone.utc).date().isoformat()
+for r in out:
+    r["stage"] = stage_of(r)
+    r["stage_label"] = STAGE_LABEL[r["stage"]]
+    h = stage_hist.setdefault(r["id"], [])
+    if not h or h[-1][0] != r["stage"]:
+        h.append([r["stage"], _today])
+    r["stage_history"] = h
+_sp.write_text(json.dumps(stage_hist, indent=0, sort_keys=True), encoding="utf-8")
+
+# ------------------------------------------------------------------ sales history
+_salesp = ROOT / "raw/sales.json"
+SALES = json.loads(_salesp.read_text(encoding="utf-8")) if _salesp.exists() else {}
+
+
+def sales_for(pins):
+    """Deeds and mortgages on these lots (county index), with prices from the state sales file matched by book/page."""
+    seen, outl = set(), []
+    for pin in pins:
+        rec = SALES.get(pin) or {}
+        sr = {(s.get("book"), s.get("page")): s for s in rec.get("sr1a") or []}
+        used = set()
+        for d in rec.get("deeds") or []:
+            key = d.get("instrument") or (d.get("recorded"), d.get("bookpage"), d.get("type"))
+            if key in seen:
+                continue
+            seen.add(key)
+            bk, _, pg = (d.get("bookpage") or "").partition("/")
+            s = sr.get((bk.lstrip("0"), pg.lstrip("0"))) if "deed" in d["type"].lower() else None
+            if s:
+                used.add((s.get("book"), s.get("page")))
+            outl.append({"date": d.get("recorded"), "type": d["type"], "from": d.get("from"), "to": d.get("to"), "bookpage": d.get("bookpage"),
+                         "price": s.get("price") if s else None, "usable": s.get("usable") if s else None, "nu": s.get("nu") if s else None,
+                         "n_lots": s.get("n_lots") if s else None, "pin": pin})
+        for k, s in sr.items():
+            if k in used or ("sr1a",) + k in seen:
+                continue
+            seen.add(("sr1a",) + k)
+            outl.append({"date": s.get("recorded") or s.get("deed_date"), "type": "Deed (state sales record)", "from": None, "to": None,
+                         "bookpage": f"{k[0]}/{k[1]}", "price": s.get("price"), "usable": s.get("usable"), "nu": s.get("nu"), "n_lots": s.get("n_lots"), "pin": pin})
+    outl.sort(key=lambda x: x.get("date") or "", reverse=True)
+    return outl[:80]
+
+
+for r in out:
+    r["sales"] = sales_for(r.get("parcel_pins") or [r.get("pams_pin")])
+    r["sales_checked"] = bool(any(p in SALES for p in (r.get("parcel_pins") or [r.get("pams_pin")]) if p))
+
 # Units counted toward the headline only once per site: new site plans that are still alive.
 for r in out:
     r["counts_units"] = bool(r["kind"] == "new" and r["units"] and r["status_group"] not in ("closed", "denied"))
@@ -501,8 +588,58 @@ print("status", Counter(r["status_group"] for r in out))
 print("located", sum(1 for r in out if r["lat"]), "applicant", sum(1 for r in out if r["applicant"]), "attorney", sum(1 for r in out if r["attorney"]))
 print("units (new site plans, live)", sum(r["units"] for r in out if r["counts_units"]))
 
+# ------------------------------------------------------------------ Kushner / KRE portfolio page data
+_pf = ROOT / "raw/portfolio.json"
+if _pf.exists():
+    tracked = {r["id"]: r for r in out}
+    pf_cfg = json.loads((ROOT / "portfolio.json").read_text(encoding="utf-8"))
+    buildings = []
+    for bld in json.loads(_pf.read_text(encoding="utf-8")):
+        cases = []
+        for c in bld.get("cases") or []:
+            odp = c.get("odp") or {}
+            figs = parse_desc(c.get("desc") or "")
+            k, kl = kind_of(c.get("type") or "") if c.get("type") else ("other", "Archived application")
+            live = tracked.get(c["id"])
+            cases.append({
+                "id": c["id"], "case_id": c.get("caseId"), "type": c.get("type") or "", "kind": k, "kind_label": kl,
+                "status": c.get("status") or "", "applied": c.get("applied") or "", "address": c.get("address") or "",
+                "desc": c.get("desc") or "", "odp": odp.get("dataset"), **{x: figs[x] for x in ("units", "stories")},
+                "stage": live["stage"] if live else None, "stage_label": live["stage_label"] if live else None,
+                "next_hearing": live.get("next_hearing") if live else None,
+                "docs": [doc_out(d) for d in c.get("docs") or []] + [doc_out(d) for d in odp.get("docs") or []],
+            })
+        def ckey(c):
+            m = re.match(r"[PZ](\d{2,4})-(\d+)", c["id"])
+            y = int(m.group(1)) if m else 0
+            y = y + 2000 if y < 100 else y
+            return (c["applied"] or f"{y}-00-00", int(m.group(2)) if m else 0)
+        cases.sort(key=ckey, reverse=True)
+        lots = bld.get("lots") or []
+        pins = bld.get("pins") or []
+        by_block = defaultdict(list)
+        for p_ in pins:
+            _, bk, lt = p_.split("_", 2)
+            by_block[bk].append(lt)
+        buildings.append({
+            "id": bld["id"], "name": bld["name"], "company": bld["company"], "partners": bld.get("partners") or [],
+            "status": bld.get("status"), "completed": bld.get("completed"), "units": bld.get("units"), "stories": bld.get("stories"),
+            "summary": bld.get("summary"), "sources": bld.get("sources") or [], "addresses": bld.get("addresses") or [],
+            "lat": bld.get("lat") or (lots[0].get("lat") if lots else None), "lon": bld.get("lon") or (lots[0].get("lon") if lots else None),
+            "pins": pins, "lots_label": "; ".join(f"Block {k} · Lot{'s' if len(v) > 1 else ''} {', '.join(v)}" for k, v in by_block.items()),
+            "existing": sorted({l.get("PROP_CLASS") for l in lots if l.get("PROP_CLASS")}),
+            "net_value": sum(int(l.get("NET_VALUE") or 0) for l in lots) or None, "acres": round(sum(float(l.get("CALC_ACRE") or 0) for l in lots), 3) or None,
+            "cases": cases, "sales": sales_for(pins),
+        })
+    port = {"generated_at": generated, "title": pf_cfg.get("title"), "note": pf_cfg.get("note"), "buildings": buildings}
+    (ROOT / "data/portfolio.json").write_text(json.dumps(port, separators=(",", ":")), encoding="utf-8")
+    print(f"portfolio: {len(buildings)} buildings, {sum(len(x['cases']) for x in buildings)} cases, {sum(len(c['docs']) for x in buildings for c in x['cases'])} documents")
+
 # Assemble the page: shared stylesheet from the Distress Map (src/head.html) + tracker markup/script.
 (ROOT / "index.html").write_text((ROOT / "src/head.html").read_text(encoding="utf-8") + (ROOT / "src/body.html").read_text(encoding="utf-8"), encoding="utf-8")
+if (ROOT / "src/portfolio.html").exists():
+    (ROOT / "kushner.html").write_text((ROOT / "src/head.html").read_text(encoding="utf-8").replace("<title>JC Board Tracker</title>", "<title>Kushner & KRE in Jersey City</title>")
+                                       + (ROOT / "src/portfolio.html").read_text(encoding="utf-8"), encoding="utf-8")
 # Standalone single file: same page with the data embedded, for opening from disk or uploading anywhere.
 page = (ROOT / "index.html").read_text(encoding="utf-8")
 blob = json.dumps(data, separators=(",", ":")).replace("</", "<\\/")

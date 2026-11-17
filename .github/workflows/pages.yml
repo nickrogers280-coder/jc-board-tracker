@@ -44,6 +44,15 @@ jobs:
       - name: Pull cases, documents and agendas
         run: python fetch.py
 
+      - name: Kushner / KRE buildings (parcels, cases, documents)
+        continue-on-error: true
+        run: python portfolio.py
+
+      - name: Ownership and sales history (county deed index + state sales file)
+        continue-on-error: true
+        timeout-minutes: 60
+        run: python sales.py
+
       - name: Copy the current version of each document to the release
         continue-on-error: true   # a document problem never holds back the map update
         env:
@@ -58,7 +67,7 @@ jobs:
         run: |
           git config user.name "Claude"
           git config user.email "noreply@anthropic.com"
-          git add data/ index.html
+          git add data/ index.html kushner.html
           if git diff --cached --quiet; then
             echo "No changes."
             echo "changed=false" >> "$GITHUB_OUTPUT"
@@ -86,6 +95,8 @@ jobs:
           mkdir -p _site/data
           cp index.html _site/index.html
           cp data/map.json _site/data/map.json
+          if [ -f kushner.html ]; then cp kushner.html _site/kushner.html; fi
+          if [ -f data/portfolio.json ]; then cp data/portfolio.json _site/data/portfolio.json; fi
           if [ -f data/boundaries.json ]; then cp data/boundaries.json _site/data/boundaries.json; fi
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
