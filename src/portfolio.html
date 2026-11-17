@@ -158,9 +158,10 @@
           ${b.lots_label ? `<dt>Lots</dt><dd>${esc(b.lots_label)}</dd>` : `<dt>Lots</dt><dd class="note">Parcel not matched</dd>`}
           ${b.existing.length ? `<dt>Tax class</dt><dd>${esc(b.existing.join(", "))}</dd>` : ""}
           ${b.net_value ? `<dt>Assessed</dt><dd>${money(b.net_value)}</dd>` : ""}
+          ${b.owner_mail ? `<dt>Tax bill to</dt><dd>${esc(b.owner_mail)}<div class="note">Usually the owner's office; owner names are withheld from the state's public tax data</div></dd>` : ""}
           ${b.acres ? `<dt>Land</dt><dd>${b.acres.toFixed(2)} acres · ${n0(Math.round(b.acres * 43560))} SF</dd>` : ""}
         </dl></div>
-        <div class="sec"><h3>Sources</h3><div class="srcs">${b.sources.map((u) => `<a href="${esc(u)}" target="_blank" rel="noopener">${esc(u.replace(/^https?:\/\/(www\.)?/, ""))}</a>`).join("")}</div></div>
+        <div class="sec"><h3>Sources</h3>${b.discovered ? `<p class="note" style="margin:0 0 6px">Found in the NJ tax records: built ${esc(b.completed)} with ${n0(b.units)} units.</p>` : ""}<div class="srcs">${b.sources.map((u) => `<a href="${esc(u)}" target="_blank" rel="noopener">${esc(u.replace(/^https?:\/\/(www\.)?/, ""))}</a>`).join("")}</div></div>
         <div class="links">
           <a href="https://www.google.com/maps/search/?api=1&query=${b.lat != null ? b.lat + "," + b.lon : encodeURIComponent(b.addresses[0] + ", Jersey City, NJ")}" target="_blank" rel="noopener">Google Maps</a>
           ${b.lat != null ? `<a href="https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${b.lat},${b.lon}" target="_blank" rel="noopener">Street View</a>` : ""}
@@ -234,7 +235,7 @@
     const vis = DATA.buildings.filter(shown);
     const ndocs = vis.reduce((s, b) => s + b.cases.reduce((t, c) => t + (c.docs || []).length, 0), 0);
     $("#stats").innerHTML = `<div class="stat"><b>${vis.length}</b><span>Buildings</span></div><div class="stat"><b>${n0(vis.reduce((s, b) => s + (b.units || 0), 0))}</b><span>Units</span></div><div class="stat"><b>${vis.reduce((s, b) => s + b.cases.length, 0)}</b><span>Board cases</span></div><div class="stat"><b>${n0(ndocs)}</b><span>Documents</span></div>`;
-    $("#legend").innerHTML = keys.map((k) => `<div><i style="--c:${CO[k].color}"></i>${esc(CO[k].label)}</div>`).join("") + `<div><i class="hollow"></i>Proposed / under construction</div><div><i style="background:linear-gradient(90deg,#e3b34c 50%,#ff7a59 50%)"></i>Two or more companies</div>`;
+    $("#legend").innerHTML = `<div style="color:var(--ink-3)">Pin color = developer (chips at left)</div><div><i class="hollow"></i>Proposed / under construction</div><div><i style="background:linear-gradient(90deg,#e3b34c 50%,#ff7a59 50%)"></i>Two or more companies</div>`;
     $("#foot").innerHTML = `Updated ${new Date(DATA.generated_at).toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })} with the board tracker, every 6 hours.<br>Pins sit on each building's tax parcel (NJ MOD-IV). Roles and figures come from the developer and press sources listed on each building; board cases and files from the Jersey City permit portal; deeds from the Hudson County Register; sale prices from the NJ Division of Taxation.`;
   }
 

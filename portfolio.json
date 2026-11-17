@@ -87,7 +87,12 @@
      "key": "kc",
      "role": "Developer"
     }
-   ]
+   ],
+   "pins": [
+    "0906_11608_1_C0002"
+   ],
+   "lat": 40.71978,
+   "lon": -74.03635
   },
   {
    "id": "journal-squared-1",
@@ -112,7 +117,12 @@
      "key": "kre",
      "role": "Developer"
     }
-   ]
+   ],
+   "pins": [
+    "0906_9501_4.01_C0001"
+   ],
+   "lat": 40.73254,
+   "lon": -74.06126
   },
   {
    "id": "journal-squared-2",
@@ -137,7 +147,12 @@
      "key": "kre",
      "role": "Developer"
     }
-   ]
+   ],
+   "pins": [
+    "0906_9501_4.01_C0002"
+   ],
+   "lat": 40.73218,
+   "lon": -74.0608
   },
   {
    "id": "journal-squared-3",
@@ -162,7 +177,12 @@
      "key": "kre",
      "role": "Developer"
     }
-   ]
+   ],
+   "pins": [
+    "0906_9501_4.01_C8003"
+   ],
+   "lat": 40.73241,
+   "lon": -74.06019
   },
   {
    "id": "808-pavonia",
@@ -185,6 +205,9 @@
      "key": "kre",
      "role": "Developer"
     }
+   ],
+   "pins": [
+    "0906_9404_34"
    ]
   },
   {
@@ -208,6 +231,9 @@
      "key": "kre",
      "role": "Developer"
     }
+   ],
+   "pins": [
+    "0906_10601_38"
    ]
   },
   {
@@ -233,7 +259,12 @@
      "key": "kre",
      "role": "Developer"
     }
-   ]
+   ],
+   "pins": [
+    "0906_11508_3.01"
+   ],
+   "lat": 40.72118,
+   "lon": -74.04143
   },
   {
    "id": "485-marin",
@@ -256,7 +287,12 @@
      "key": "kre",
      "role": "Developer"
     }
-   ]
+   ],
+   "pins": [
+    "0906_10102_1.02"
+   ],
+   "lat": 40.72724,
+   "lon": -74.04047
   },
   {
    "id": "18-park",
@@ -319,7 +355,12 @@
      "key": "ironstate",
      "role": "Co-developer"
     }
-   ]
+   ],
+   "pins": [
+    "0906_15906_3"
+   ],
+   "lat": 40.71567,
+   "lon": -74.04447
   },
   {
    "id": "225-grand",
@@ -342,7 +383,12 @@
      "key": "kre",
      "role": "Developer"
     }
-   ]
+   ],
+   "pins": [
+    "0906_15906_5"
+   ],
+   "lat": 40.71555,
+   "lon": -74.04343
   },
   {
    "id": "grove-pointe",
@@ -366,6 +412,9 @@
      "key": "kre",
      "role": "Developer"
     }
+   ],
+   "pins": [
+    "0906_13001_2_C8002"
    ]
   },
   {
@@ -697,7 +746,7 @@
   },
   {
    "id": "revetment-embankment",
-   "name": "Embankment House & Revetment House",
+   "name": "Revetment House",
    "company": "lefrak",
    "developers": [
     {
@@ -707,19 +756,21 @@
     {
      "key": "greystar",
      "role": "Property manager since 2023"
+    },
+    {
+     "key": "rockpoint",
+     "role": "Owner since 2023"
     }
    ],
-   "partners": [
-    "Rockpoint Group (owner since 2023)"
-   ],
+   "partners": [],
    "addresses": [
     "310 10th Street"
    ],
-   "units": null,
-   "stories": null,
-   "completed": "2018",
+   "units": 163,
+   "stories": 7,
+   "completed": "2020",
    "status": "Completed",
-   "summary": "Two Hamilton Park rental buildings on former rail embankment along 10th Street. LeFrak sold them in 2023 to an affiliate of Rockpoint Group; Greystar took over management. Revetment House's tax record (310 Tenth St, Block 8601 Lot 2): 7 stories, 163 units, 2020.",
+   "summary": "Hamilton Park rental on former rail embankment along 10th Street (tax address 310 Tenth St, Block 8601 Lot 2: 7 stories, 163 units). LeFrak sold it with Embankment House in 2023 to an affiliate of Rockpoint Group; Greystar took over management.",
    "sources": [
     "https://jerseydigs.com/embankment-revetment-house-jersey-city/",
     "https://jerseydigs.com/revetment-house-at-310-10th-street/"
@@ -905,6 +956,304 @@
    "short": "GRY",
    "color": "#b7c3cf",
    "note": "Greystar's Jersey City role found so far is property management and leasing, not development."
+  },
+  {
+   "key": "mocco",
+   "label": "Liberty Harbor (Peter Mocco)",
+   "short": "LH",
+   "color": "#e8915a"
+  },
+  {
+   "key": "namdar",
+   "label": "Namdar Group",
+   "short": "NAM",
+   "color": "#5ad1e8"
+  },
+  {
+   "key": "bne",
+   "label": "BNE Real Estate Group",
+   "short": "BNE",
+   "color": "#a3e05a"
+  },
+  {
+   "key": "hbc",
+   "label": "Hoboken Brownstone Co.",
+   "short": "HBC",
+   "color": "#d8b4fe"
+  },
+  {
+   "key": "rockpoint",
+   "label": "Rockpoint (owner)",
+   "short": "RKP",
+   "color": "#94a3b8",
+   "note": "Rockpoint is an owner/investor here, not the original developer."
+  },
+  {
+   "key": "fisher",
+   "label": "Fisher Development",
+   "short": "FSH",
+   "color": "#f59e9e"
+  },
+  {
+   "key": "other",
+   "label": "Developer not yet identified",
+   "short": "?",
+   "color": "#6b7684",
+   "note": "Found in the NJ tax records (built 2010 or later, 100+ units). The tax-bill address is shown; the developer hasn't been confirmed yet."
   }
- ]
+ ],
+ "mail_rules": [
+  {
+   "match": [
+    "210 HUDSON"
+   ],
+   "key": "veris",
+   "role": "Owner (tax bill to Veris's Jersey City office)"
+  },
+  {
+   "match": [
+    "520 US",
+    "520 22",
+    "520 USHWY"
+   ],
+   "key": "kre",
+   "role": "Owner (tax bill to KRE's Bridgewater office)"
+  },
+  {
+   "match": [
+    "30 COLUMBIA TURNPIKE",
+    "18 COLUMBIA TURNPIKE"
+   ],
+   "key": "kc",
+   "role": "Owner (tax bill to Kushner Companies, Florham Park)"
+  },
+  {
+   "match": [
+    "111 TOWN SQUARE",
+    "40 WEST 57TH",
+    "40 W 57TH"
+   ],
+   "key": "lefrak",
+   "role": "Owner (tax bill to LeFrak)"
+  },
+  {
+   "match": [
+    "345 TENTH",
+    "345 10TH"
+   ],
+   "key": "mocco",
+   "role": "Developer (inferred: same tax-bill address as Mocco's 88 Regent and 333 Grand)"
+  },
+  {
+   "match": [
+    "98 CUTTER",
+    "98 CUTTERMILL"
+   ],
+   "key": "namdar",
+   "role": "Developer (inferred: same tax-bill address as Namdar's 9 Homestead Place)"
+  },
+  {
+   "match": [
+    "16 MICROLAB"
+   ],
+   "key": "bne",
+   "role": "Developer (inferred: same tax-bill address as BNE's 675 Monmouth and 100 Hoboken Ave)"
+  },
+  {
+   "match": [
+    "3953 MAPLE"
+   ],
+   "key": "rockpoint",
+   "role": "Owner (tax bill to Rockpoint's Dallas office; same address as Revetment House)"
+  }
+ ],
+ "known": {
+  "88 REGENT ST": {
+   "name": "88 Regent",
+   "developers": [
+    {
+     "key": "mocco",
+     "role": "Developer"
+    }
+   ],
+   "sources": [
+    "https://jerseydigs.com/liberty-harbors-88-regent-street-rises-in-jersey-city/"
+   ]
+  },
+  "333 GRAND ST": {
+   "name": "333 Grand",
+   "developers": [
+    {
+     "key": "mocco",
+     "role": "Developer"
+    }
+   ],
+   "sources": [
+    "https://jerseydigs.com/liberty-harbors-88-regent-street-rises-in-jersey-city/"
+   ]
+  },
+  "9 HOMESTEAD PL": {
+   "name": "9 Homestead",
+   "developers": [
+    {
+     "key": "namdar",
+     "role": "Developer"
+    }
+   ],
+   "sources": [
+    "https://www.multihousingnews.com/namdar-group-lands-160m-for-jersey-city-tower/"
+   ]
+  },
+  "675 MONMOUTH ST": {
+   "name": "The Enclave",
+   "developers": [
+    {
+     "key": "bne",
+     "role": "Co-developer"
+    },
+    {
+     "key": "hbc",
+     "role": "Co-developer"
+    }
+   ],
+   "sources": [
+    "https://re-nj.com/hoboken-brownstone-is-making-its-mark-in-jersey-city-backed-by-40-years-of-urban-redevelopment-expertise/",
+    "https://re-nj.com/joint-venture-opens-latest-luxury-rental-project-in-jersey-city/"
+   ],
+   "note": "Three-phase Enclave campus (260, 137 and 240 units) with McKinney Properties."
+  },
+  "100 HOBOKEN AVE": {
+   "name": "100 House",
+   "developers": [
+    {
+     "key": "bne",
+     "role": "Co-developer (joint venture)"
+    }
+   ],
+   "sources": [
+    "https://re-nj.com/joint-venture-opens-latest-luxury-rental-project-in-jersey-city/"
+   ]
+  },
+  "39 NEW YORK AVENUE": {
+   "name": "39 New York Ave",
+   "developers": [
+    {
+     "key": "hbc",
+     "role": "Co-developer with The NRP Group"
+    }
+   ],
+   "sources": [
+    "https://re-nj.com/hoboken-brownstone-is-making-its-mark-in-jersey-city-backed-by-40-years-of-urban-redevelopment-expertise/"
+   ]
+  },
+  "270 TENTH ST": {
+   "name": "Embankment House",
+   "developers": [
+    {
+     "key": "lefrak",
+     "role": "Developer"
+    },
+    {
+     "key": "greystar",
+     "role": "Property manager since 2023"
+    },
+    {
+     "key": "rockpoint",
+     "role": "Owner since 2023"
+    }
+   ],
+   "sources": [
+    "https://jerseydigs.com/embankment-revetment-house-jersey-city/"
+   ]
+  },
+  "75 PARK LANE SOUTH": {
+   "name": "Park and Shore",
+   "developers": [
+    {
+     "key": "other",
+     "role": "Developer: Strategic Capital (not yet a tracked group)"
+    }
+   ],
+   "sources": [
+    "https://www.6sqft.com/newports-master-plan-ambitions-diversity-and-development-at-lefraks-jersey-city-community/"
+   ]
+  },
+  "400 CLAREMONT AVE": {
+   "name": "3 Acres",
+   "developers": [
+    {
+     "key": "other",
+     "role": "Developer: 400 Claremont Urban Renewal LLC (principals not named)"
+    }
+   ],
+   "sources": [
+    "https://re-nj.com/jersey-city-developer-lands-120-million-in-debt-equity-for-631-unit-project-progress-capital-says/"
+   ]
+  },
+  "1 PARK VIEW AVENUE": {
+   "name": "Vantage (second tower)",
+   "developers": [
+    {
+     "key": "fisher",
+     "role": "Developer"
+    }
+   ],
+   "sources": [
+    "https://re-nj.com/fisher-set-to-unveil-452-luxury-apartments-in-jersey-city-completing-two-tower-project/"
+   ]
+  },
+  "33 PARK VIEW AVE": {
+   "name": "Vantage (first tower)",
+   "developers": [
+    {
+     "key": "fisher",
+     "role": "Developer"
+    }
+   ],
+   "sources": [
+    "https://re-nj.com/fisher-opens-448-unit-residential-tower-in-jersey-city/"
+   ]
+  },
+  "425 SUMMIT AVE": {
+   "name": "425 Summit",
+   "developers": [
+    {
+     "key": "other",
+     "role": "Developer: Arden Group and Spitzer Enterprises (not yet tracked groups)"
+    }
+   ],
+   "sources": [
+    "https://re-nj.com/arden-spitzer-detail-plans-for-390-unit-apartment-tower-in-journal-square/"
+   ]
+  },
+  "474 WARREN ST": {
+   "name": "VYV",
+   "developers": [
+    {
+     "key": "other",
+     "role": "Developer not yet identified"
+    }
+   ],
+   "sources": [
+    "https://jerseydigs.com/buildings/vyv/"
+   ]
+  },
+  "315 FIFTEENTH ST": {
+   "name": "Hudson House East",
+   "developers": [
+    {
+     "key": "other",
+     "role": "Developer not yet identified"
+    },
+    {
+     "key": "greystar",
+     "role": "Property manager (Greystar listing)"
+    }
+   ],
+   "sources": [
+    "https://jerseydigs.com/buildings/hudson-house-east/",
+    "https://www.greystar.com/hudson-house-east-jersey-city-nj/p_23453"
+   ]
+  }
+ }
 }

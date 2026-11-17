@@ -11,6 +11,8 @@ from pathlib import Path
 
 import requests
 
+import devmap
+
 import fetch as F
 
 ROOT = Path(__file__).parent
@@ -72,8 +74,33 @@ def case_record(x):
             "desc": re.sub(r"\s+", " ", d.get("Description") or x.get("Description") or "").strip(), "pin": d.get("MainParcelNumber"), "docs": docs}
 
 
+def discover():
+    """Every Jersey City parcel built since devmap.DISCOVER_SINCE whose tax description lists 100+ units."""
+    rows, off = [], 0
+    while True:
+        r = requests.post(F.PARCELS, data={"where": f"PAMS_PIN LIKE '0906[_]%' AND YR_CONSTR >= {devmap.DISCOVER_SINCE} AND BLDG_DESC LIKE '%U%'",
+                                           "outFields": F.PFIELDS, "returnGeometry": "false", "returnCentroid": "true", "outSR": "4326",
+                                           "f": "json", "resultOffset": off, "resultRecordCount": 2000}, timeout=120)
+        j = r.json()
+        for f in j.get("features") or []:
+            a = f["attributes"]
+            c = f.get("centroid") or {}
+            a["lat"], a["lon"] = c.get("y"), c.get("x")
+            rows.append(a)
+        if not j.get("exceededTransferLimit"):
+            break
+        off += 2000
+    return rows
+
+
 def main():
     cfg = json.loads((ROOT / "portfolio.json").read_text())
+    try:
+        found = discover()
+        cfg["buildings"] = devmap.merge(cfg, found)
+        print(f"tax records: {len(found)} rows, {sum(1 for b in cfg['buildings'] if b.get('discovered'))} buildings added to the curated list")
+    except Exception as e:
+        print("tax-record discovery failed; curated list only:", e, file=sys.stderr)
     out = []
     for b in cfg["buildings"]:
         rec = dict(b)

@@ -657,6 +657,8 @@ if _pf.exists():
         buildings.append({
             "id": bld["id"], "name": bld["name"], "company": bld["company"], "partners": bld.get("partners") or [],
             "developers": bld.get("developers") or [{"key": bld["company"], "role": "Developer"}],
+            "owner_mail": bld.get("owner_mail") or next((", ".join(x for x in [(l.get("ST_ADDRESS") or "").strip(), (l.get("CITY_STATE") or "").strip()] if x) for l in (bld.get("lots") or []) if l.get("ST_ADDRESS")), None),
+            "discovered": bool(bld.get("discovered")),
             "status": bld.get("status"), "completed": bld.get("completed"), "units": bld.get("units"), "stories": bld.get("stories"),
             "summary": bld.get("summary"), "sources": bld.get("sources") or [], "addresses": bld.get("addresses") or [],
             "lat": bld.get("lat") or (lots[0].get("lat") if lots else None), "lon": bld.get("lon") or (lots[0].get("lon") if lots else None),
