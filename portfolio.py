@@ -78,8 +78,16 @@ def main():
     for b in cfg["buildings"]:
         rec = dict(b)
         pins, lots, cases, seen = [], [], [], set()
+        # Lots given in the config (checked by hand) win over address matching, which can land on a same-named street.
+        if b.get("pins"):
+            got = F.parcels(b["pins"])
+            for p_ in b["pins"]:
+                if p_ in got:
+                    pins.append(p_); lots.append(got[p_])
+            if lots and "lat" not in b:
+                rec["lat"], rec["lon"] = lots[0]["lat"], lots[0]["lon"]
         for addr in b["addresses"]:
-            g = F.geocode(addr + ", Jersey City, NJ")
+            g = None if b.get("pins") else F.geocode(addr + ", Jersey City, NJ")
             if g and g["score"] >= 85:
                 rec.setdefault("lat", g["lat"]); rec.setdefault("lon", g["lon"])
                 for a in parcel_at(g["lat"], g["lon"]):

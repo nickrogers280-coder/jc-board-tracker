@@ -196,16 +196,25 @@
     "Ironstate Development"
    ],
    "addresses": [
-    "18 Park Avenue"
+    "18 Park Avenue",
+    "18 Park View Avenue"
    ],
    "units": 422,
-   "stories": null,
+   "stories": 11,
    "completed": "2014",
    "status": "Completed",
-   "summary": "Downtown rental building at 18 Park Avenue; KRE's first project designed with Hollwich Kushner.",
+   "summary": "11-story, 422-unit rental building with ground-floor retail in Liberty Harbor, Downtown Jersey City. Tax address 18 Park View Ave (Block 15907, Lot 1). KRE's first project designed with Hollwich Kushner.",
    "sources": [
-    "https://www.multihousingnews.com/kre-group-ironstate-nj-city-development-fully-leased/"
-   ]
+    "https://www.multihousingnews.com/kre-group-ironstate-nj-city-development-fully-leased/",
+    "https://jerseydigs.com/buildings/18-park/"
+   ],
+   "pins": [
+    "0906_15907_1",
+    "0906_15907_1_C0001",
+    "0906_15907_1_C0002"
+   ],
+   "lat": 40.71413,
+   "lon": -74.04443
   },
   {
    "id": "235-grand",
