@@ -19,7 +19,14 @@
    "sources": [
     "https://en.wikipedia.org/wiki/The_Journal_(building)",
     "https://commercialobserver.com/2024/07/nicole-kushner-meyer-laurent-morali-new-jersey/"
-   ]
+   ],
+   "pins": [
+    "0906_9501_23",
+    "0906_9501_23_C0001",
+    "0906_9501_23_C0002"
+   ],
+   "lat": 40.7313,
+   "lon": -74.06342
   },
   {
    "id": "30-journal-square",
@@ -39,6 +46,9 @@
    ],
    "sources": [
     "https://jerseydigs.com/30-journal-square-jersey-city-tower-unveiled/"
+   ],
+   "pins": [
+    "0906_10702_4.01"
    ]
   },
   {
