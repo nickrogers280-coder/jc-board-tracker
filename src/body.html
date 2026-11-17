@@ -18,6 +18,8 @@
 .docs li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 10px; padding: 7px 10px; border-bottom: 1px solid var(--line); font-size: 12.5px; }
 .docs li:last-child { border-bottom: 0; }
 .docs .fn { overflow-wrap: anywhere; }
+.docs .fn a { color: var(--ink); text-decoration: none; border-bottom: 1px dotted var(--ink-3); }
+.docs .fn a:hover { color: var(--pin); border-color: var(--pin); }
 .docs .dt { font-family: var(--font-data); font-size: 11px; color: var(--ink-3); white-space: nowrap; }
 .docs .nt { grid-column: 1 / -1; font-size: 11.5px; color: var(--ink-3); }
 .doc-kind { display: inline-block; margin-right: 6px; padding: 0 5px; border-radius: 3px; font: 600 10px var(--font-head); letter-spacing: .05em; text-transform: uppercase; background: var(--panel-2); color: var(--ink-2); }
@@ -390,13 +392,23 @@
     [/affordable|\bAH\b/i, "Affordable", 0], [/notice|proof of service|200.?f(oo)?t|affidavit/i, "Notice", 0], [/forestry|jcmua|fire|engineering|review/i, "Review", 0],
     [/tax cert/i, "Tax cert", 0], [/demolition/i, "Demolition", 0], [/application|checklist|zoning (chart|table)/i, "Application", 0]];
   function docKind(d) { const t = d.name + " " + d.note; const k = DOC_KIND.find(([re]) => re.test(t)); return k ? { label: k[1], key: !!k[2] } : null; }
+  const mb = (b) => (b >= 1e6 ? (b / 1e6).toFixed(b >= 1e7 ? 0 : 1) + " MB" : Math.max(1, Math.round(b / 1e3)) + " KB");
+  function docRow(d, link) {
+    const k = docKind(d);
+    const name = `${k ? `<span class="doc-kind${k.key ? " key" : ""}">${esc(k.label)}</span>` : ""}${esc(d.name)}`;
+    return `<li><span class="fn">${d.url ? `<a href="${esc(d.url)}" target="_blank" rel="noopener">${name}</a>` : name}</span><span class="dt">${d.size ? mb(d.size) + " · " : ""}${fmtShort(d.added)}</span>${d.note ? `<span class="nt">${esc(d.note)}</span>` : ""}</li>`;
+  }
   function docsHtml(p) {
     const docs = p.docs || [];
     const link = `${PORTAL}${esc(p.case_id)}?tab=attachments`;
     if (!docs.length) return `<div class="sec"><h3>Documents</h3><p class="note">No public documents posted yet. They usually appear once the application is deemed complete. <a href="${link}" target="_blank" rel="noopener">Check the city portal</a></p></div>`;
-    const order = docs.slice().sort((a, b) => (docKind(b)?.key ? 1 : 0) - (docKind(a)?.key ? 1 : 0) || b.added.localeCompare(a.added));
-    return `<div class="sec"><h3>Documents · ${docs.length}</h3><ul class="docs">${order.map((d) => { const k = docKind(d); return `<li><span class="fn">${k ? `<span class="doc-kind${k.key ? " key" : ""}">${esc(k.label)}</span>` : ""}${esc(d.name)}</span><span class="dt">${fmtShort(d.added)}</span>${d.note ? `<span class="nt">${esc(d.note)}</span>` : ""}</li>`; }).join("")}</ul>
-      <p class="note" style="margin:6px 0 0"><a href="${link}" target="_blank" rel="noopener">Open and download these on the city portal</a></p></div>`;
+    const rank = (d) => (docKind(d)?.key ? 1 : 0);
+    const cur = docs.filter((d) => d.current).sort((a, b) => rank(b) - rank(a) || b.added.localeCompare(a.added));
+    const old = docs.filter((d) => !d.current).sort((a, b) => b.added.localeCompare(a.added));
+    const head = cur.length ? `<ul class="docs">${cur.map((d) => docRow(d, link)).join("")}</ul>` : `<ul class="docs">${old.splice(0, 8).map((d) => docRow(d, link)).join("")}</ul>`;
+    const rest = old.length ? `<details style="margin-top:6px"><summary>Earlier versions and other uploads (${old.length})</summary><ul class="docs" style="margin-top:6px">${old.map((d) => docRow(d, link)).join("")}</ul></details>` : "";
+    return `<div class="sec"><h3>Documents · ${cur.length ? cur.length + " current" : docs.length}</h3>${head}${rest}
+      <p class="note" style="margin:6px 0 0">${cur.length ? "Click a file to download the current version. " : ""}<a href="${link}" target="_blank" rel="noopener">All files on the city portal</a></p></div>`;
   }
 
   function copyBtn(text) { return `<button class="copy" data-copy="${esc(text)}" aria-label="Copy ${esc(text)}">Copy</button>`; }

@@ -15,6 +15,9 @@ def _raw(name, legacy):
     return json.loads((p if p.exists() else ROOT / "raw" / legacy).read_text(encoding="utf-8"))
 cases_raw = _raw("jc_cases.json", "jc_cases_2026.json")
 agendas = _raw("jc_agendas.json", "jc_agendas_2026.json")
+_mp = ROOT / "data/mirror.json"
+mirror = json.loads(_mp.read_text(encoding="utf-8")) if _mp.exists() else {}
+RELEASE = "https://github.com/nickrogers280-coder/jc-board-tracker/releases/download/documents/"
 _hp = ROOT / "data/history.json"
 history = json.loads(_hp.read_text(encoding="utf-8")) if _hp.exists() else {}
 
@@ -248,7 +251,9 @@ for c in cases_raw["cases"]:
         "last_sale_date": None,
         "owner_mail": mail,
         "approval_expires": (c.get("approvalExpires") or "")[:10] or None,
-        "docs": [{"name": d.get("name", ""), "note": d.get("note", ""), "added": d.get("added", "")} for d in (c.get("docs") or [])],
+        "docs": [dict({"name": d.get("name", ""), "note": d.get("note", ""), "added": d.get("added", "")},
+                      **({"url": RELEASE + mirror[d["id"]]["asset"], "size": mirror[d["id"]]["size"], "current": True} if d.get("id") in mirror else {}))
+                 for d in (c.get("docs") or [])],
         "status_history": history.get(c["id"], []),
     }
     dd = p.get("DEED_DATE")

@@ -21,7 +21,7 @@ jobs:
   update:
     if: github.event_name != 'push'
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 300
     outputs:
       changed: ${{ steps.commit.outputs.changed }}
     steps:
@@ -43,6 +43,12 @@ jobs:
 
       - name: Pull cases, documents and agendas
         run: python fetch.py
+
+      - name: Copy the current version of each document to the release
+        continue-on-error: true   # a document problem never holds back the map update
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python docs_mirror.py
 
       - name: Build map data and page
         run: python build.py
