@@ -58,7 +58,7 @@ jobs:
           python build.py
           git config user.name "Claude"
           git config user.email "noreply@anthropic.com"
-          git add data/ index.html kushner.html developers.html
+          git add data/ index.html $(ls kushner.html developers.html 2>/dev/null)
           if ! git diff --cached --quiet; then
             git commit -m "data: cases $(date -u +%Y-%m-%d\ %H:%M) UTC"
             git pull --rebase -X theirs origin main || git pull --rebase origin main
@@ -96,7 +96,7 @@ jobs:
         run: |
           git config user.name "Claude"
           git config user.email "noreply@anthropic.com"
-          git add data/ index.html kushner.html developers.html
+          git add data/ index.html $(ls kushner.html developers.html 2>/dev/null)
           if git diff --cached --quiet; then
             echo "No changes."
             echo "changed=false" >> "$GITHUB_OUTPUT"

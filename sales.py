@@ -183,7 +183,8 @@ def build(pins):
     path = ROOT / "raw/sales.json"
     data = json.loads(path.read_text()) if path.exists() else {}
     stale = TODAY.fromordinal(TODAY.toordinal() - 30).isoformat()
-    todo = [p for p in sorted(set(pins)) if p and p.count("_") >= 2 and (p not in data or data[p].get("checked", "") < stale)]
+    pins = [p for p in pins if p]
+    todo = [p for p in sorted(set(pins)) if p.count("_") >= 2 and (p not in data or data[p].get("checked", "") < stale)]
     budget = 400
     if todo:
         d = Deeds()
