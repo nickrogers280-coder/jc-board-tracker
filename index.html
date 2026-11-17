@@ -507,7 +507,7 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
 
   // ---------------------------------------------------------------- sidebar
   function renderStats() {
-    const live = DATA.cases.filter((p) => statusKey(p) !== "closed");
+    const live = DATA.cases.filter((p) => statusKey(p) !== "closed" && !p.stale);
     const units = DATA.cases.filter((p) => p.counts_units).reduce((s, p) => s + p.units, 0);
     const newSP = DATA.cases.filter((p) => p.counts_units).length;
     const last30 = DATA.cases.filter((p) => (NOW - parseDay(p.applied)) / 864e5 <= 30).length;
