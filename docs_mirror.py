@@ -77,17 +77,59 @@ def gh(*args, check=True):
     return subprocess.run(["gh", *args], check=check, capture_output=True, text=True)
 
 
+RELEASE_CAP = 990  # GitHub allows 1,000 files per release; new files go to one release per filing year
+
+
+class Releases:
+    """The original `documents` release (full) plus `documents-<year>` (then -<year>-2, ...) for everything after."""
+
+    def __init__(self):
+        self.names = {}
+
+    def load(self, tag):
+        if tag not in self.names:
+            if gh("release", "view", tag, "-R", REPO, check=False).returncode != 0:
+                gh("release", "create", tag, "-R", REPO, "--title", f"Case documents ({tag})",
+                   "--notes", "Current version of each document filed on tracked Jersey City Planning/Zoning Board cases. Updated automatically.")
+                self.names[tag] = {}
+            else:
+                assets = json.loads(gh("release", "view", tag, "-R", REPO, "--json", "assets").stdout).get("assets") or []
+                self.names[tag] = {x["name"]: x.get("size") for x in assets}
+        return self.names[tag]
+
+    def find(self, name, year):
+        for tag in [TAG] + self.tags(year):
+            if name in self.load(tag):
+                return tag, self.names[tag][name]
+        return None, None
+
+    def tags(self, year):
+        out, n = [f"{TAG}-{year}"], 2
+        while len(self.load(out[-1])) >= RELEASE_CAP:
+            out.append(f"{TAG}-{year}-{n}")
+            n += 1
+        return out
+
+    def target(self, year):
+        return self.tags(year)[-1]
+
+
+def case_year(case):
+    m = re.match(r"[PZ](\d{4}|\d{2})-", case or "")
+    if not m:
+        return "other"
+    y = int(m.group(1))
+    return y + 2000 if y < 100 else y
+
+
 def main():
     cases = json.loads((ROOT / "raw/jc_cases.json").read_text())["cases"]
+    # Newest filings first, so a backlog never holds back the documents people look at most.
+    cases.sort(key=lambda c: (c.get("status") or "").lower() in ("approved", "denied", "withdrawn", "void", "closed", "expired"))
+    cases.sort(key=lambda c: c.get("applied") or "", reverse=True)
     mpath = ROOT / "data/mirror.json"
     mirror = json.loads(mpath.read_text()) if mpath.exists() else {}
-
-    if gh("release", "view", TAG, "-R", REPO, check=False).returncode != 0:
-        gh("release", "create", TAG, "-R", REPO, "--title", "Case documents",
-           "--notes", "Current version of each document filed on tracked Jersey City Planning/Zoning Board cases. Updated automatically.")
-    assets = json.loads(gh("release", "view", TAG, "-R", REPO, "--json", "assets").stdout).get("assets") or []
-    existing = {x["name"] for x in assets}
-    sizes = {x["name"]: x.get("size") for x in assets}
+    rel = Releases()
 
     want = {}
     for c in cases:
@@ -111,13 +153,15 @@ def main():
     added = failed = 0
     s = requests.Session()
     warm(s)
-    budget = int(os.environ.get("MIRROR_MAX_FILES", "250"))  # spread big backlogs over several runs
+    budget = int(os.environ.get("MIRROR_MAX_FILES", "400"))  # spread big backlogs over several runs
     for aid, (case, d, kind) in want.items():
         name = asset_name(case, d)
-        if aid in mirror and mirror[aid]["asset"] in existing:
+        if aid in mirror and mirror[aid]["asset"] in rel.load(mirror[aid].get("tag", TAG)):
             continue
-        if name in existing:  # already on the release (e.g. a run whose record didn't get saved): just record it
-            mirror[aid] = {"asset": name, "size": sizes.get(name) or 0, "case": case, "kind": kind}
+        year = case_year(case)
+        tag, size0 = rel.find(name, year)
+        if tag:  # already on a release (e.g. a run whose record didn't get saved): just record it
+            mirror[aid] = {"asset": name, "size": size0 or 0, "case": case, "kind": kind, "tag": tag}
             continue
         try:
             size = None
@@ -155,9 +199,10 @@ def main():
                 if size and size > MAX_BYTES:
                     print("too large for a release asset, skipped:", case, d["name"], size)
                     continue
-                gh("release", "upload", TAG, str(path), "-R", REPO, "--clobber")
-            mirror[aid] = {"asset": name, "size": size, "case": case, "kind": kind}
-            existing.add(name)
+                tag = rel.target(year)
+                gh("release", "upload", tag, str(path), "-R", REPO, "--clobber")
+            mirror[aid] = {"asset": name, "size": size, "case": case, "kind": kind, "tag": tag}
+            rel.names[tag][name] = size
             added += 1
             time.sleep(0.6)
             if added >= budget:
@@ -171,7 +216,7 @@ def main():
     # Drop copies that a newer version has replaced, so the release only holds current files.
     removed = 0
     for aid in [a for a in mirror if a not in want]:
-        gh("release", "delete-asset", TAG, mirror[aid]["asset"], "-R", REPO, "-y", check=False)
+        gh("release", "delete-asset", mirror[aid].get("tag", TAG), mirror[aid]["asset"], "-R", REPO, "-y", check=False)
         del mirror[aid]
         removed += 1
 

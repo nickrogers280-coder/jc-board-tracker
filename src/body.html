@@ -66,7 +66,7 @@
 <body>
 <div class="app">
   <header class="topbar">
-    <div class="brand"><h1>JC Board Tracker</h1><span class="sub">Jersey City Planning &amp; Zoning Board applications filed since Jan 1, 2026, plus earlier ones still in play</span></div>
+    <div class="brand"><h1>JC Board Tracker</h1><span class="sub">Jersey City Planning &amp; Zoning Board applications since 2018, live and past</span></div>
     <div class="stats" id="stats"></div>
     <div class="layer-toggle" role="group" aria-label="Map style">
       <button id="lyr-sat" aria-pressed="true">Satellite</button>
@@ -86,11 +86,10 @@
         <div class="row">
           <select id="ward" aria-label="Ward"><option value="">All wards</option></select>
           <select id="window" aria-label="Filed">
-            <option value="">All dates</option>
-            <option value="2026">Filed in 2026</option>
-            <option value="older">Filed earlier, still active</option>
-            <option value="30">Last 30 days</option>
-            <option value="90">Last 90 days</option>
+            <option value="active" selected>Active now (open, or filed in the last year)</option>
+            <option value="30">Filed in the last 30 days</option>
+            <option value="90">Filed in the last 90 days</option>
+            <option value="">All years, 2018 on</option>
           </select>
           <select id="exist" aria-label="Existing use"><option value="">Any existing use</option></select>
           <select id="size" aria-label="Project size"><option value="">Any size</option><option value="5">5+ units</option><option value="50">50+ units</option><option value="150">150+ units</option></select>
@@ -135,7 +134,7 @@
   const existLabel = (c) => EXIST[c] || c;
   const existText = (p) => (p.existing || []).map((c) => `${c} ${existLabel(c)}`).join(" + ");
   const basisText = (p) => !p.product_basis ? "" : p.product_basis === "this application" ? "from this application" : `from ${p.product_basis}`;
-  const TRACKED = { agenda: "Filed before 2026 · on a 2026 agenda", active: "Filed before 2026 · still under review", tracked: "Filed before 2026" };
+  const TRACKED = { agenda: "Filed before 2018 · on a later board agenda", active: "Filed before 2018 · still under review", tracked: "Filed before 2018" };
   const TYPE = Object.fromEntries(TYPES.map((t) => [t.key, t]));
   const KINDS = [["new", "New site plans"], ["amend", "Amendments"], ["ext", "Extensions"], ["subdiv", "Subdivisions"], ["variance", "Variances (no site plan)"], ["appeal", "Appeals / interpretations"], ["sign", "Signage"], ["plan", "Plans & rezonings"], ["other", "Other"]];
   const STATUSES = [
@@ -160,7 +159,7 @@
 
   let BOUNDS = null, cityLayer = null, maskLayer = null, wardLayer = null, wardLabels = null;
   let DATA, NOW, LAST_VISIT, map, layers, markers = new Map(), selected = null, outline = null, tab = "activity", ptab = "applicant";
-  const state = { exist: "", q: "", board: "", kind: "", ward: "", window: "", size: 0, statuses: new Set(["pending", "heard", "approved"]), types: new Set(TYPES.map((t) => t.key)) };
+  const state = { exist: "", q: "", board: "", kind: "", ward: "", window: "active", size: 0, statuses: new Set(["pending", "heard", "approved"]), types: new Set(TYPES.map((t) => t.key)) };
 
   const isNew = (p) => (NOW - parseDay(p.applied)) / 864e5 <= 14;
   const nextHearing = (p) => {
@@ -189,8 +188,8 @@
     if (state.kind && p.kind !== state.kind) return false;
     if (state.ward && p.ward !== state.ward) return false;
     if (state.size && !((p.units || 0) >= state.size)) return false;
-    if (state.window === 2026) { if (p.tracked_because && p.tracked_because !== "filed") return false; }
-    else if (state.window === "older") { if (!p.tracked_because || p.tracked_because === "filed") return false; }
+    if (state.window === "active") { const d = parseDay(p.applied); if (!["pending", "heard"].includes(statusKey(p)) && !(d && d >= +NOW - 365 * 864e5)) return false; }
+    else if (typeof state.window === "string" && /^y\d{4}$/.test(state.window)) { if (!String(p.applied || "").startsWith(state.window.slice(1))) return false; }
     else if (state.window) { const d = parseDay(p.applied); if (!d || d < +NOW - state.window * 864e5) return false; }
     if (state.exist && !(p.existing || []).some((c) => (state.exist === "15" ? /^15/.test(c) : c === state.exist))) return false;
     if (state.q) {
@@ -330,7 +329,9 @@
     $("#board").onchange = (e) => { state.board = e.target.value; refresh(); };
     $("#kind").onchange = (e) => { state.kind = e.target.value; refresh(); };
     $("#ward").onchange = (e) => { state.ward = e.target.value; refresh(); drawWard(state.ward); if (!state.ward) fitCity(); };
-    $("#window").onchange = (e) => { const v = e.target.value; state.window = v === "older" ? "older" : +v || ""; refresh(); };
+    const yrs = {}; DATA.cases.forEach((p) => { const y = String(p.applied || "").slice(0, 4); if (/^20\d\d$/.test(y)) yrs[y] = (yrs[y] || 0) + 1; });
+    $("#window").insertAdjacentHTML("beforeend", Object.keys(yrs).sort().reverse().map((y) => `<option value="y${y}">Filed in ${y} (${yrs[y]})</option>`).join(""));
+    $("#window").onchange = (e) => { const v = e.target.value; state.window = v === "active" || /^y\d{4}$/.test(v) ? v : +v || ""; refresh(); };
     const ex = {}; DATA.cases.forEach((p) => (p.existing || []).forEach((c) => { const k = /^15/.test(c) ? "15" : c; ex[k] = (ex[k] || 0) + 1; }));
     $("#exist").insertAdjacentHTML("beforeend", Object.keys(ex).sort((a, b) => (a.length - b.length) || a.localeCompare(b)).map((k) => `<option value="${k}">Existing: ${k === "15" ? "Exempt" : esc(existLabel(k))} (${ex[k]})</option>`).join(""));
     $("#exist").onchange = (e) => { state.exist = e.target.value; refresh(); };
@@ -432,7 +433,7 @@
             <span class="nm">${esc(ptab === "owner" ? titleCase(r.name) : r.name)}</span><span class="ct">${r.cases.length}</span>
             <span class="meta"><span class="mix">${TYPES.filter((t) => r.mix[t.key]).map((t) => `<i style="background:${t.c};width:${(100 * r.mix[t.key]) / r.cases.length}%"></i>`).join("")}</span>${r.units ? `${n0(r.units)} new units` : ""}${r.units ? " · " : ""}${esc(r.cases.slice(0, 2).map((c) => titleCase(c.address)).join("; "))}${r.cases.length > 2 ? "…" : ""}</span>
           </button>`).join("") : `<div class="empty">No ${label}s on record for these filters.</div>`) +
-        `<div class="empty" style="padding-top:12px">${ptab === "owner" ? "Owner names are withheld from the state's public tax data, so sites are grouped by the tax bill's mailing address. Two or more 2026 sites with the same address usually means one owner." : "Applicant and attorney names come from the board agendas, so they appear once a case is scheduled for a hearing."}</div>`;
+        `<div class="empty" style="padding-top:12px">${ptab === "owner" ? "Owner names are withheld from the state's public tax data, so sites are grouped by the tax bill's mailing address. Two or more sites with the same address usually means one owner." : "Applicant and attorney names come from the board agendas, so they appear once a case is scheduled for a hearing."}</div>`;
       list.querySelectorAll(".seg button").forEach((b) => (b.onclick = () => { ptab = b.dataset.p; renderList(); }));
       list.querySelectorAll(".player").forEach((b) => (b.onclick = () => setSearch(b.dataset.name)));
       return;
@@ -445,7 +446,7 @@
     const named = DATA.cases.filter((p) => p.applicant).length;
     const ndocs = DATA.cases.reduce((s, p) => s + (p.docs || []).length, 0);
     $("#foot").innerHTML = `Last change ${new Date(DATA.generated_at).toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })} · checks the city portal and new board agendas every 6 hours<br>${DATA.cases.length} cases · ${ndocs.toLocaleString()} documents · ${located} mapped · ${named} with applicant named` +
-      `<br>Sources: Jersey City permit portal, 2026 Planning &amp; Zoning Board agendas (JC Open Data), NJ MOD-IV tax data (NJOGIS). Units, stories and affordable counts are read from each application's description. Verify before relying on figures.`;
+      `<br>Sources: Jersey City permit portal (2018 on), Planning &amp; Zoning Board agendas 2016 on (JC Open Data), NJ MOD-IV tax data (NJOGIS). Units, stories and affordable counts are read from each application's description. Verify before relying on figures.`;
   }
 
   // ---------------------------------------------------------------- application file
@@ -544,7 +545,7 @@
         <div class="sec"><h3>Players</h3><dl class="kv">
           <dt>Applicant</dt><dd>${p.applicant ? `<b>${esc(p.applicant)}</b>` : `<span class="note">Named once the case reaches an agenda</span>`}</dd>
           <dt>Attorney</dt><dd>${p.attorney ? esc(p.attorney) : "—"}</dd>
-          <dt>Tax bill to</dt><dd>${p.owner_mail ? esc(titleCase(p.owner_mail)) + (sameMail.length ? `<div class="note">Same mailing address on ${sameMail.length} other 2026 ${sameMail.length === 1 ? "case" : "cases"}</div>` : "") : "—"}</dd>
+          <dt>Tax bill to</dt><dd>${p.owner_mail ? esc(titleCase(p.owner_mail)) + (sameMail.length ? `<div class="note">Same mailing address on ${sameMail.length} other ${sameMail.length === 1 ? "case" : "cases"}</div>` : "") : "—"}</dd>
         </dl></div>
         ${p.prop_class || p.net_value ? `<div class="sec"><h3>Tax record</h3><dl class="kv">
           ${(p.existing || []).length ? `<dt>Existing use</dt><dd>${esc(existText(p))}${nLots(p) > 1 ? ` <span class="note">(across ${nLots(p)} lots)</span>` : ""}<div class="note">Current tax class: what's there now, not what's proposed</div></dd>` : p.class_label ? `<dt>Existing use</dt><dd>${esc(p.prop_class)} · ${esc(p.class_label)}</dd>` : ""}
@@ -559,7 +560,7 @@
         </dl></div>` : ""}
         ${docsHtml(p)}
         <div class="sec"><h3>Timeline</h3><ol class="timeline">${hist.map((h) => `<li><span>${esc(h[0])}</span><time>${fmtDate(h[1])}</time></li>`).join("")}</ol></div>
-        ${related.length || sameMail.length ? `<div class="sec"><h3>Related 2026 cases</h3><div class="related">${[...related, ...sameMail].slice(0, 8).map((x) => `<button data-id="${x.id}"><span class="mono">${x.id}</span> · ${esc(x.kind_label)} · ${esc(titleCase(x.address))}${related.includes(x) ? "" : ' <span class="note">(same owner address)</span>'}</button>`).join("")}</div></div>` : ""}
+        ${related.length || sameMail.length ? `<div class="sec"><h3>Related cases</h3><div class="related">${[...related, ...sameMail].slice(0, 8).map((x) => `<button data-id="${x.id}"><span class="mono">${x.id}</span> · ${esc(x.kind_label)} · ${esc(titleCase(x.address))}${related.includes(x) ? "" : ' <span class="note">(same owner address)</span>'}</button>`).join("")}</div></div>` : ""}
         <div class="links">
           <a href="${PORTAL + esc(p.case_id)}?tab=attachments" target="_blank" rel="noopener">City portal &amp; plans</a>
           <a href="https://www.google.com/maps/search/?api=1&query=${ll}" target="_blank" rel="noopener">Google Maps</a>
@@ -660,7 +661,7 @@
     store.set("jcbt:lastVisit", DATA.generated_at);
     if (window.matchMedia("(max-width: 760px)").matches) $("#side").classList.add("collapsed");
     const h = decodeURIComponent(location.hash.slice(1));
-    if (/^[PZ]2026-\d{4}$/.test(h)) select(h, false);
+    if (/^[PZ](\d{4}|\d{2})-\d{3,4}$/.test(h)) select(h, false);
   }
   start();
 })();

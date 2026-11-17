@@ -17,7 +17,11 @@ cases_raw = _raw("jc_cases.json", "jc_cases_2026.json")
 agendas = _raw("jc_agendas.json", "jc_agendas_2026.json")
 _mp = ROOT / "data/mirror.json"
 mirror = json.loads(_mp.read_text(encoding="utf-8")) if _mp.exists() else {}
-RELEASE = "https://github.com/nickrogers280-coder/jc-board-tracker/releases/download/documents/"
+RELEASE = "https://github.com/nickrogers280-coder/jc-board-tracker/releases/download/"
+
+
+def mirror_url(m):
+    return RELEASE + m.get("tag", "documents") + "/" + m["asset"]
 _pp = ROOT / "raw/priors.json"
 priors_raw = json.loads(_pp.read_text(encoding="utf-8")) if _pp.exists() else {}
 _hp = ROOT / "data/history.json"
@@ -224,7 +228,7 @@ def desc_applicant(d):
 def doc_out(d):
     o = {"name": d.get("name", ""), "note": d.get("note", ""), "added": d.get("added", "")}
     if d.get("id") in mirror:
-        o.update(url=RELEASE + mirror[d["id"]]["asset"], size=mirror[d["id"]]["size"], current=True)
+        o.update(url=mirror_url(mirror[d["id"]]), size=mirror[d["id"]]["size"], current=True)
     elif d.get("url"):
         o.update(url=d["url"], current=True)
     return o
@@ -316,7 +320,7 @@ for c in cases_raw["cases"]:
         "tracked_because": c.get("tracked_because", "filed"),
         "approval_expires": (c.get("approvalExpires") or "")[:10] or None,
         "docs": [dict({"name": d.get("name", ""), "note": d.get("note", ""), "added": d.get("added", "")},
-                      **({"url": RELEASE + mirror[d["id"]]["asset"], "size": mirror[d["id"]]["size"], "current": True} if d.get("id") in mirror else {}))
+                      **({"url": mirror_url(mirror[d["id"]]), "size": mirror[d["id"]]["size"], "current": True} if d.get("id") in mirror else {}))
                  for d in (c.get("docs") or [])],
         "status_history": history.get(c["id"], []),
     }
@@ -567,10 +571,10 @@ if dest.exists():
         pass
 data = {
     "generated_at": generated,
-    "since": "2026-01-01",
+    "since": "2018-01-01",
     "sources": {
-        "portal": "Jersey City Online Permitting & Licensing Portal (EnerGov) - plan cases P2026-*, Z2026-*",
-        "agendas": "Jersey City Open Data - Planning Board Agendas 2026, Zoning Board Agendas 2026",
+        "portal": "Jersey City Online Permitting & Licensing Portal (EnerGov) - plan cases filed 2018 on (P18-* to P22-*, P2023-* on; Z likewise)",
+        "agendas": "Jersey City Open Data - Planning Board and Zoning Board agendas, 2016 on",
         "parcels": "NJOGIS Parcels Composite (MOD-IV)",
     },
     "cases": out,

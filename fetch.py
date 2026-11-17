@@ -20,9 +20,37 @@ from pathlib import Path
 import requests
 
 ROOT = Path(__file__).parent
-FIRST_YEAR = 2026
+FIRST_YEAR = 2018
 TODAY = date.today()
 YEARS = list(range(FIRST_YEAR, TODAY.year + 1))
+REFRESH_CLOSED_DAYS = 14  # closed cases are re-read from the portal every two weeks; open ones every run
+
+
+def case_prefixes(year):
+    """Portal case numbers: P18-102 / Z19-045 through 2022 (legacy), P2023-0001 / Z2023-0001 after. Both are tried around the switch."""
+    out = []
+    for b in ("P", "Z"):
+        if year <= 2023:
+            out.append(f"{b}{year % 100:02d}-")
+        if year >= 2022:
+            out.append(f"{b}{year}-")
+    return out
+
+
+# Agenda datasets on JC Open Data have a different name almost every year. Several per year are fine: dates are de-duplicated.
+AGENDA_SETS = {
+    2016: [("zoning-board-of-adjustment-action-agendas-2016-pdf", "Z")],
+    2020: [("planning-board-agendas-2020", "P"), ("planning-board-action-agendas-2020", "P"), ("zoning-board-action-agendas-2020", "Z")],
+    2021: [("planning-board-agendas-2021", "P"), ("pb-action-agendas-2021", "P"), ("zoning-board-agendas-2021", "Z"),
+           ("zoning-board-of-adjustment-action-agendas-2021", "Z")],
+    2022: [("planning-board-agendas-2022", "P"), ("pb-action-agendas-2022", "P"), ("zoning-board-agendas-2022", "Z"), ("zoning-board-action-agendas-2022", "Z")],
+    2023: [("pb-agendas-2023", "P"), ("pb-action-agendas-2023", "P"), ("zba-agendas-2023", "Z"), ("zoning-board-agenda-2023", "Z")],
+    2024: [("planning-board-2024-agendas", "P"), ("planning-board-agendas-from-2024", "P"), ("zba-agendas-2024", "Z")],
+}
+
+
+def agenda_sets(year):
+    return AGENDA_SETS.get(year) or [(f"planning-board-agendas-{year}", "P"), (f"zb-agendas-{year}", "Z")]
 
 API = "https://jerseycitynj-energovpub.tylerhost.net/apps/selfservice/api/energov/"
 HEADERS = {
@@ -279,7 +307,7 @@ def parse_agendas(seen_cache):
     """Return {case: {dates, app, att, zone, bl, last}} across every agenda for the tracked years."""
     ag, agenda_ids = {}, []
     for year in YEARS:
-        for ds, board in ((f"planning-board-agendas-{year}", "P"), (f"zb-agendas-{year}", "Z")):
+        for ds, board in agenda_sets(year):
             r = get(ODP + ds + "/")
             if r.status_code != 200:
                 continue
@@ -391,19 +419,14 @@ def main():
     # tracked-year board agenda; and anything tracked before (so an older case stays when it gets approved).
     rows, why = [], {}
     for y in YEARS:
-        for p in ("P", "Z"):
-            for x in search_cases(f"{p}{y}"):
-                rows.append(x)
-                why[x["CaseNumber"]] = "filed"
+        for pre in case_prefixes(y):
+            for x in search_cases(pre):
+                if x["CaseNumber"] not in why:
+                    rows.append(x)
+                    why[x["CaseNumber"]] = "filed"
     print(f"{len(rows)} cases filed since {FIRST_YEAR}")
-    if len(rows) < 50:
+    if len(rows) < 500:
         sys.exit("Portal returned too few cases; leaving the published data alone.")
-    for p in ("P", "Z"):
-        for x in search_cases(f"{p}{FIRST_YEAR - 1}"):
-            open_ = (x.get("CaseStatus") or "").strip().lower() not in CLOSED
-            if (open_ or x["CaseNumber"] in prev or x["CaseNumber"] in ag) and x["CaseNumber"] not in why:
-                rows.append(x)
-                why[x["CaseNumber"]] = "agenda" if x["CaseNumber"] in ag else ("active" if open_ else "tracked")
     extra = [c for c in list(ag) + list(prev) if c not in why]
     for ref in sorted(set(extra)):
         try:
@@ -416,8 +439,16 @@ def main():
     print(f"{len(rows)} cases tracked ({sum(1 for v in why.values() if v != 'filed')} filed before {FIRST_YEAR})")
 
     cases = []
+    fresh_after = TODAY.fromordinal(TODAY.toordinal() - REFRESH_CLOSED_DAYS).isoformat()
+    reused = 0
     for i, x in enumerate(rows):
         cid = x["CaseId"]
+        old = prev.get(x["CaseNumber"])
+        closed = (x.get("CaseStatus") or "").strip().lower() in CLOSED
+        if old and closed and old.get("status") == x.get("CaseStatus") and old.get("checked", "") >= fresh_after:
+            cases.append({**old, "tracked_because": why.get(x["CaseNumber"], "filed")})
+            reused += 1
+            continue
         try:
             d = plan_detail(cid)
         except Exception as e:
@@ -439,10 +470,11 @@ def main():
             "address": x.get("AddressDisplay"), "project": d.get("ProjectName"),
             "pin": d.get("MainParcelNumber") or x.get("MainParcel"), "desc": d.get("Description") or x.get("Description"),
             "approvalExpires": d.get("ApprovalExpireDate"), "docs": docs, "loc_pins": loc,
-            "tracked_because": why.get(x["CaseNumber"], "filed"),
+            "tracked_because": why.get(x["CaseNumber"], "filed"), "checked": TODAY.isoformat(),
         })
         if i % 25 == 0:
             print(f"  details {i}/{len(rows)}")
+    print(f"  {reused} closed cases reused from the last run")
 
     # Parcels: only look up pins we haven't matched before (tax data changes yearly, not daily).
     pins = [c["pin"] for c in cases if c["pin"]]
