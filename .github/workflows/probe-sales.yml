@@ -1,16 +1,22 @@
-name: Probe SR1A sales file (temporary)
+name: Probe deed search access (temporary)
 on: workflow_dispatch
 jobs:
   probe:
     runs-on: ubuntu-latest
     steps:
-      - run: |
-          set -e
-          curl -sSL -o s.zip https://www.nj.gov/treasury/taxation/lpt/statdata/Sales2025.zip
-          ls -la s.zip; unzip -l s.zip | head
-          unzip -o -q s.zip -d s; f=$(ls s/* | head -1); wc -l "$f"; awk '{print length($0)}' "$f" | sort | uniq -c | sort -rn | head -3
-          echo "--- Jersey City (county 09, district 06) sample, positions: price 38-46, grantor 110-144, grantee 204-238, loc 298-322, deed date 339-344, block 351-355, lot 360-364, class 627-628"
-          grep -a '^0906' "$f" | head -400 | awk '{printf "%s | %s | %s | %s | %s | B%s L%s | %s\n", substr($0,38,9), substr($0,110,35), substr($0,204,35), substr($0,298,25), substr($0,339,6), substr($0,351,5), substr($0,360,5), substr($0,627,2)}' | grep -E "4A|4B|4C| 1 " | head -25
-          echo "JC records: $(grep -ac '^0906' "$f")"
-          echo "blank grantee names among JC: $(grep -a '^0906' "$f" | awk '{g=substr($0,204,35); if (g ~ /^ *$/) n++} END{print n+0}')"
-          curl -sSI https://www.nj.gov/treasury/taxation/lpt/statdata/Sales2020.zip | grep -i content-length || true
+      - run: pip install -q requests
+      - shell: python
+        run: |
+          import requests, json, datetime
+          s = requests.Session(); s.headers["User-Agent"] = "Mozilla/5.0 (JC Board Tracker)"
+          B = "https://acclaim.hcnj.us/AcclaimWeb/"
+          r = s.get(B + "search/SearchTypeDocLegal", timeout=60); print("legal page", r.status_code, r.url[-60:])
+          r = s.post(B + "Search/Disclaimer?st=/AcclaimWeb/search/SearchTypeDocLegal", data={"disclaimer": "true"}, timeout=60); print("accept", r.status_code)
+          today = datetime.date.today().strftime("%-m/%-d/%Y")
+          form = {"DateRangeList": " ", "RecordDateFrom": "1/1/1950", "RecordDateTo": today, "Block": "21701", "Lot": "18", "LotFilter": "1",
+                  "SubdivisionFilter": "0", "TownshipFilter": "0", "CondoFilter": "0", "BookTypesDisplay": "All", "BookTypes": "All"}
+          h = {"X-Requested-With": "XMLHttpRequest"}
+          r = s.post(B + "search/SearchTypeDocLegal?Length=6", data=form, headers=h, timeout=60); print("search", r.status_code)
+          g = s.post(B + "Search/GridResults", data={"page": 1, "size": 500, "orderBy": "~", "groupBy": "~", "filter": "~"}, headers=h, timeout=60)
+          j = g.json(); print("grid", g.status_code, "total", j.get("total"))
+          for x in (j.get("data") or [])[:4]: print(x.get("RecordDate"), x.get("DirectName"), "->", x.get("IndirectName"), x.get("DocTypeDescription"), x.get("BookPage"))
