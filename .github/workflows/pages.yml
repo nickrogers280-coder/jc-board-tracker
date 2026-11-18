@@ -32,7 +32,9 @@ jobs:
           python-version: "3.12"
 
       - name: Install
-        run: pip install -q requests pdfplumber
+        run: |
+          pip install -q requests pdfplumber pypdfium2 pytesseract
+          sudo apt-get install -y -qq tesseract-ocr > /dev/null
 
       # Last run's raw pull (parcel matches, geocodes, agenda text) so each run only fetches what's new.
       - uses: actions/cache/restore@v4
@@ -74,12 +76,24 @@ jobs:
         timeout-minutes: 45
         run: python sales.py
 
+      - name: Check the document copies (drop broken ones so they're copied again)
+        continue-on-error: true
+        timeout-minutes: 25
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python verify_mirror.py
+
       - name: Copy the current version of each document to the release
         continue-on-error: true   # a document problem never holds back the map update
         timeout-minutes: 45
         env:
           GH_TOKEN: ${{ github.token }}
         run: python docs_mirror.py
+
+      - name: Applicants from each case's application form and ownership disclosure
+        continue-on-error: true
+        timeout-minutes: 40
+        run: python applicants.py
 
       - name: Build map data and page
         run: python build.py

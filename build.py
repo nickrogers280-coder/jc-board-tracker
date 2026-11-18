@@ -264,6 +264,10 @@ def build_prior(p):
     }
 
 
+# Applicants and attorneys read from each case's own filings (applicants.py), for cases no agenda has named yet.
+_ap = ROOT / "raw/applicants.json"
+FILED_PARTIES = json.loads(_ap.read_text(encoding="utf-8")) if _ap.exists() else {}
+
 out = []
 by_mail = defaultdict(set)
 for c in cases_raw["cases"]:
@@ -276,8 +280,13 @@ for c in cases_raw["cases"]:
     kind, kind_label = kind_of(c["type"])
     ag = agendas.get(c["id"], {})
     hearings = sorted({(x[:10], "Zoning Board" if x.endswith("Z") else "Planning Board") for x in ag.get("dates", [])})
-    applicant = clean_app(ag.get("app", "")) or desc_applicant(c.get("desc"))
-    attorney = norm_party(ag.get("att", ""))
+    filings = FILED_PARTIES.get(c["id"]) or {}
+    applicant, app_src = clean_app(ag.get("app", "")), "board agenda"
+    if not applicant and filings.get("applicant"):
+        applicant, app_src = filings["applicant"], "the " + (filings.get("source") or "application form")
+    if not applicant:
+        applicant, app_src = desc_applicant(c.get("desc")), "the application description"
+    attorney = norm_party(ag.get("att", "")) or (filings.get("attorney") or "")
     pin = c.get("pin") or ""
     blk = p.get("PCLBLOCK") or (pin.split("_")[1] if pin.count("_") >= 2 else "")
     lot = p.get("PCLLOT") or (pin.split("_")[2] if pin.count("_") >= 2 else "")
@@ -307,6 +316,8 @@ for c in cases_raw["cases"]:
         "lot": lot,
         "zone": clean_app(ag.get("zone", "")),
         "applicant": applicant,
+        "applicant_source": app_src if applicant else None,
+        "applicant_doc": filings.get("doc") if applicant and app_src.startswith("the ") and app_src != "the application description" else None,
         "attorney": attorney,
         "hearings": hearings,
         "agenda_last": ag.get("last", ""),

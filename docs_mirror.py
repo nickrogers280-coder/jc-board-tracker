@@ -73,6 +73,59 @@ def warm(sess):
         pass
 
 
+def intact(path):
+    """A finished file, not a cut-off one: PDFs end with %%EOF, Office files (zip) with their end-of-directory record.
+    Some downloads come back holding a different file's bytes cut to this file's size; this catches them."""
+    with open(path, "rb") as fh:
+        head = fh.read(8)
+        fh.seek(0, 2)
+        n = fh.tell()
+        fh.seek(max(0, n - 4096))
+        tail = fh.read()
+    if head.startswith(b"%PDF"):
+        return b"%%EOF" in tail
+    if head.startswith(b"PK"):
+        return b"PK\x05\x06" in tail
+    return n > 0
+
+
+def download(sess, aid, path):
+    """Download one portal attachment to path, verified. Returns its size, or a size over MAX_BYTES unread."""
+    size = None
+    for attempt in range(6):
+        try:
+            # The portal keeps a file ready on the server that answered the metadata call; ask again and
+            # re-download from the start if a chunk lands on a different server.
+            mj = sess.get(API + "energov/attachments/metadata/", headers={**HDR, "FileID": aid}, timeout=60).json()
+            meta = mj.get("Result")
+            if not meta:
+                raise RuntimeError("portal did not return the file: " + str(mj.get("ErrorMessage") or "no details"))
+            size = int(meta["FileSize"])
+            if size > MAX_BYTES:
+                return size
+            tok = meta.get("FileToken") or ""
+            with open(path, "wb") as fh:
+                got = 0
+                while got < size:
+                    end = min(got + CHUNK, size) - 1
+                    r = sess.get(API + "/energov/attachments/rangedownload/", headers={**HDR, "FileID": aid, "FileToken": tok, "range": f"bytes={got}-{end}"}, timeout=180)
+                    r.raise_for_status()
+                    if not r.content:
+                        raise RuntimeError("empty chunk")
+                    fh.write(r.content)
+                    got += len(r.content)
+            if not intact(path):
+                raise RuntimeError("download came back incomplete or as a different file")
+            return size
+        except Exception:
+            if attempt == 5:
+                raise
+            time.sleep(5 * (attempt + 1))  # back off: the portal throttles bursts of downloads
+            if attempt in (1, 3, 4):
+                warm(sess)
+    return size
+
+
 def gh(*args, check=True):
     return subprocess.run(["gh", *args], check=check, capture_output=True, text=True)
 
@@ -167,35 +220,7 @@ def main():
             size = None
             with tempfile.TemporaryDirectory() as td:
                 path = Path(td) / name
-                for attempt in range(6):
-                    try:
-                        # The portal keeps a file ready on the server that answered the metadata call; ask again and
-                        # re-download from the start if a chunk lands on a different server.
-                        mj = s.get(API + "energov/attachments/metadata/", headers={**HDR, "FileID": aid}, timeout=60).json()
-                        meta = mj.get("Result")
-                        if not meta:
-                            raise RuntimeError("portal did not return the file: " + str(mj.get("ErrorMessage") or "no details"))
-                        size = int(meta["FileSize"])
-                        if size > MAX_BYTES:
-                            break
-                        tok = meta.get("FileToken") or ""
-                        with open(path, "wb") as fh:
-                            got = 0
-                            while got < size:
-                                end = min(got + CHUNK, size) - 1
-                                r = s.get(API + "/energov/attachments/rangedownload/", headers={**HDR, "FileID": aid, "FileToken": tok, "range": f"bytes={got}-{end}"}, timeout=180)
-                                r.raise_for_status()
-                                if not r.content:
-                                    raise RuntimeError("empty chunk")
-                                fh.write(r.content)
-                                got += len(r.content)
-                        break
-                    except Exception:
-                        if attempt == 5:
-                            raise
-                        time.sleep(5 * (attempt + 1))  # back off: the portal throttles bursts of downloads
-                        if attempt in (2, 4):
-                            warm(s)
+                size = download(s, aid, path)
                 if size and size > MAX_BYTES:
                     print("too large for a release asset, skipped:", case, d["name"], size)
                     continue
