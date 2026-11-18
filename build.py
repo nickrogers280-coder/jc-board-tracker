@@ -280,7 +280,8 @@ for c in cases_raw["cases"]:
     f = parse_desc(c.get("desc"))
     kind, kind_label = kind_of(c["type"])
     ag = agendas.get(c["id"], {})
-    hearings = sorted({(x[:10], "Zoning Board" if x.endswith("Z") else "Planning Board") for x in ag.get("dates", [])})
+    hearings = sorted({(x[:10], "Zoning Board" if x.endswith("Z") else "Planning Board") for x in ag.get("dates", [])
+                       if re.match(r"\d{4}-\d\d-\d\d", x or "")})  # an agenda line with no date gives just the board letter
     filings = FILED_PARTIES.get(c["id"]) or {}
     applicant, app_src = clean_app(ag.get("app", "")), "board agenda"
     if filings.get("pv") != APPL.PV:  # names read by the first parser: clean up (or drop) until re-read
@@ -600,8 +601,9 @@ def stage_of(r):
     if "resolution" in s:
         return "heard"
     today = datetime.now(timezone.utc).date().isoformat()
-    past = [h[0] for h in r["hearings"] if h[0] and h[0] <= today]
-    future = [h[0] for h in r["hearings"] if h[0] and h[0] > today]
+    dates = [h[0] for h in r["hearings"] if re.match(r"\d{4}-\d\d-\d\d", h[0] or "")]
+    past = [d for d in dates if d <= today]
+    future = [d for d in dates if d > today]
     m = re.search(r"\bTO\s+([A-Z]+)\s+(\d{1,2}),?\s+(\d{4})", r.get("agenda_last") or "", re.I)
     if m:
         try:
@@ -641,6 +643,19 @@ for r in out:
     one_year = (datetime.now(timezone.utc).date().replace(year=datetime.now(timezone.utc).date().year - 1)).isoformat()
     r["stale"] = bool(r["stage"] in ("filed", "review", "heard", "scheduled") and (r["applied"] or "9") < two_years
                       and not r.get("next_hearing") and last_hearing < one_year)
+# Open cases a later filing on the same property has since replaced (e.g. a 2018 plan refiled in 2019, approved in
+# 2023): the portal never closed the old one, so it would otherwise read as still pending.
+_by_id = {r["id"]: r for r in out}
+OPEN = ("filed", "review", "scheduled", "heard")
+_one_year_ago = (datetime.now(timezone.utc).date().replace(year=datetime.now(timezone.utc).date().year - 1)).isoformat()
+for r in out:
+    if r["stage"] not in OPEN or r.get("next_hearing") or (r["applied"] or "9") >= _one_year_ago:
+        continue  # a recent open case can sit beside a quick later filing (an extension) and still be live
+    later = sorted((q for q in (_by_id.get(i) for i in r.get("site_ids") or []) if q and (q["applied"] or "") > (r["applied"] or "9")
+                    and q["stage"] in ("approved", "denied", "withdrawn")), key=lambda q: q["applied"])
+    if later:
+        r["superseded_by"] = later[0]["id"]
+        r["stale"] = True
 _sp.write_text(json.dumps(stage_hist, indent=0, sort_keys=True), encoding="utf-8")
 
 # ------------------------------------------------------------------ sales history

@@ -613,6 +613,8 @@
       return `<li class="${cls}">${l}${d && (i <= at || k === "scheduled") ? `<time>${fmtDate(d)}</time>` : ""}</li>`;
     });
     if (stop) items[4] = `<li class="now">${p.stage === "denied" ? "Denied" : "Withdrawn"}${p.completed ? `<time>${fmtDate(p.completed)}</time>` : ""}</li>`;
+    const sup = p.superseded_by && DATA.cases.find((x) => x.id === p.superseded_by);
+    if (sup) return `<div class="sec"><h3>Where it is now · Replaced by a later filing</h3><p class="note" style="margin:0 0 6px">The city portal still lists this case as "${esc(p.status)}", but a later application for the same property has since been decided, so this one was most likely dropped in its favor.</p><button class="linkish" data-id="${sup.id}"><span class="mono">${sup.id}</span> · filed ${fmtDate(sup.applied)} · <span style="color:${statusColor(sup)}">${esc(sup.status)}</span>${sup.units ? ` · ${n0(sup.units)} units` : ""}</button></div>`;
     if (p.stale) return `<div class="sec"><h3>Where it is now · No activity in over a year</h3><p class="note" style="margin:0">The city portal still lists this case as "${esc(p.status)}", but it was filed ${fmtDate(p.applied)} and hasn't been on a board agenda in over a year. It was most likely decided or dropped without the portal being updated; check the resolution in the documents or with the Division of City Planning.</p></div>`;
     return `<div class="sec"><h3>Where it is now · ${esc(p.stage_label)}</h3><ol class="stages${stop ? " stop" : ""}" style="padding:0;margin:0">${items.join("")}</ol>
       ${p.next_hearing ? `<p class="note" style="margin:6px 0 0">Next hearing ${fmtDate(p.next_hearing)} · ${p.board === "zoning" ? "Zoning Board" : "Planning Board"}</p>` : ""}</div>`;
