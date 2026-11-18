@@ -7,19 +7,18 @@ jobs:
       - run: |
           UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/124 Safari/537.36"
           for u in \
-            "https://jerseydigs.com/wp-json/wp/v2/posts?search=417%20Communipaw&_fields=id,date,link,title&per_page=5" \
-            "https://jerseydigs.com/wp-json/wp/v2/posts?search=jersey%20city&per_page=1&_fields=id" \
-            "https://re-nj.com/wp-json/wp/v2/posts?search=Communipaw&_fields=id,date,link,title&per_page=5" \
-            "https://www.roi-nj.com/wp-json/wp/v2/posts?search=Communipaw&_fields=id,date,link,title&per_page=5" \
-            "https://www.roi-nj.com/?s=Communipaw" \
-            "https://traded.co/sitemap.xml" \
-            "https://traded.co/robots.txt" \
-            "https://traded.co/deals/new-jersey/development-site/sale/829-bergen-avenue/" \
-            "https://webapi.legistar.com/v1/jerseycity/matters?\$top=2" \
-            "https://webapi.legistar.com/v1/cityofjerseycity/matters?\$top=2" \
-            "https://cityofjerseycity.legistar.com/Calendar.aspx" ; do
+            "https://re-nj.com/feed/" \
+            "https://re-nj.com/post-sitemap.xml" \
+            "https://re-nj.com/sitemap_index.xml" \
+            "https://re-nj.com/?s=Communipaw&feed=rss2" \
+            "https://news.google.com/rss/search?q=site:re-nj.com+%22Jersey+City%22&hl=en-US&gl=US&ceid=US:en" \
+            "https://www.bing.com/news/search?q=site%3are-nj.com+%22Communipaw%22&format=rss" \
+            "https://traded.co/sitemap-deals-hubs.xml" \
+            "https://traded.co/sitemap-deals.xml" \
+            "https://traded.co/deals/new-jersey/jersey-city/" \
+            "https://traded.co/api/deals?city=jersey-city" ; do
             echo "=== $u"
             curl -sS -A "$UA" -D /tmp/h -o /tmp/b -w "%{http_code} %{size_download}\n" --max-time 40 "$u" || true
             grep -iE "^(x-wp-total|x-wp-totalpages|content-type|location):" /tmp/h || true
-            head -c 900 /tmp/b; echo
+            head -c 1500 /tmp/b; echo; grep -o "<loc>[^<]*</loc>" /tmp/b | head -8; grep -c "<loc>" /tmp/b || true; grep -o '"city":"[^"]*"' /tmp/b | head -3
           done
