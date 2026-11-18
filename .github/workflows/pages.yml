@@ -96,6 +96,11 @@ jobs:
         timeout-minutes: 40
         run: python applicants.py
 
+      - name: News coverage (Jersey Digs, ROI-NJ, Real Estate NJ, Traded)
+        continue-on-error: true
+        timeout-minutes: 40
+        run: python news.py
+
       - name: Build map data and page
         run: python build.py
 

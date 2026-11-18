@@ -637,12 +637,9 @@ for r in out:
     elif h[-1][0] != r["stage"]:
         h.append([r["stage"], _today])
     r["stage_history"] = h
-    # Cases the portal never closed out: open status, filed over a year ago, not on an agenda in the past year or ahead.
-    last_hearing = max([x[0] for x in r["hearings"] if re.match(r"\d{4}-", x[0] or "")] or [""])
-    two_years = (datetime.now(timezone.utc).date().replace(year=datetime.now(timezone.utc).date().year - 2)).isoformat()
-    one_year = (datetime.now(timezone.utc).date().replace(year=datetime.now(timezone.utc).date().year - 1)).isoformat()
-    r["stale"] = bool(r["stage"] in ("filed", "review", "heard", "scheduled") and (r["applied"] or "9") < one_year
-                      and not r.get("next_hearing") and last_hearing < one_year)
+    # An open case stays active until something shows it isn't (a later decided filing on the property, below, or the
+    # portal closing it). Time off the board agendas alone is no evidence: plan amendments go to City Council.
+    r["stale"] = False
 # Open cases a later filing on the same property has since replaced (e.g. a 2018 plan refiled in 2019, approved in
 # 2023): the portal never closed the old one, so it would otherwise read as still pending.
 _by_id = {r["id"]: r for r in out}
@@ -657,6 +654,47 @@ for r in out:
         r["superseded_by"] = later[0]["id"]
         r["stale"] = True
 _sp.write_text(json.dumps(stage_hist, indent=0, sort_keys=True), encoding="utf-8")
+
+# ------------------------------------------------------------------ news coverage and last activity
+# Articles from Jersey Digs, ROI-NJ, Real Estate NJ and Traded that name the property (news.py pulls them); each case
+# shows the coverage of its whole property (its own address plus the other filings on the lot).
+try:
+    import news as NEWS
+    _ndb = NEWS.load()
+    _nm = NEWS.match_cases(out, _ndb)
+except Exception as e:  # news is extra: never let it hold back the map
+    print(f"news skipped: {e}")
+    NEWS, _ndb, _nm = None, {"articles": {}}, {}
+_real = lambda d: d if d and re.match(r"\d{4}-\d\d-\d\d", d) else None
+
+
+def _own_activity(q):
+    """Dated things on the case itself: filed, status changes, hearings, documents posted."""
+    ds = [q.get("applied"), q.get("status_changed_on"), q.get("next_hearing")] + [h[0] for h in q.get("hearings") or []]
+    ds += [x.get("added") for x in q.get("docs") or []]
+    return [d[:10] for d in ds if _real((d or "")[:10])]
+
+
+_one_year_ago_q = _one_year_ago
+for r in out:
+    ids = set(_nm.get(r["id"], []))
+    for sid in r.get("site_ids") or []:
+        ids |= set(_nm.get(sid, []))
+    arts = sorted((_ndb["articles"][i] for i in ids if i in _ndb["articles"]), key=lambda a: a.get("date") or "", reverse=True)
+    r["news"] = [NEWS.public(a) for a in arts[:30]] if NEWS else []
+    r["n_news"] = len(arts)
+    r["news_last"] = next((a["date"][:10] for a in arts if a.get("date")), None)
+    acts = _own_activity(r)
+    for sid in r.get("site_ids") or []:
+        q = _by_id.get(sid)
+        if q:
+            acts += [d for d in (q.get("applied"), q.get("next_hearing")) if _real(d)] + [h[0] for h in q["hearings"] if _real(h[0])]
+    if r["news_last"]:
+        acts.append(r["news_last"])
+    acts = [d for d in acts if d <= _today or d == r.get("next_hearing")]
+    r["last_activity"] = max(acts) if acts else None
+    # Still open, but nothing dated on the property in a year: shown as a note, the case still counts as active.
+    r["quiet"] = bool(r["stage"] in OPEN and not r.get("superseded_by") and (r["last_activity"] or "") < _one_year_ago_q)
 
 # ------------------------------------------------------------------ sales history
 _salesp = ROOT / "raw/sales.json"
@@ -733,7 +771,8 @@ def shard_of(case_id):
 shards = defaultdict(dict)
 full = [dict(r) for r in out]  # keeps everything, for the single-file version
 for r in out:
-    shards[shard_of(r["id"])][r["id"]] = {"docs": r.pop("docs", []), "priors": r.get("priors") or [], "sales": r.pop("sales", [])}
+    shards[shard_of(r["id"])][r["id"]] = {"docs": r.pop("docs", []), "priors": r.get("priors") or [], "sales": r.pop("sales", []),
+                                          "news": r.pop("news", [])}
     d = shards[shard_of(r["id"])][r["id"]]
     r["n_docs"], r["n_cur_docs"], r["n_sales"] = len(d["docs"]), sum(1 for x in d["docs"] if x.get("current")), len(d["sales"])
     r["n_transfers"] = sum(1 for x in d["sales"] if "deed" in (x.get("type") or "").lower() and "mortgage" not in (x.get("type") or "").lower())

@@ -68,6 +68,11 @@
 .legend i.ring { background: none; border: 1.5px solid var(--alert); }
 .desc { font-size: 13px; line-height: 1.55; color: var(--ink); margin: 0; }
 .related { display: grid; gap: 6px; }
+.news { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px; }
+.news a { color: var(--ink); font-size: 13px; line-height: 1.35; text-decoration: none; border-bottom: 1px dotted var(--ink-3); }
+.news a:hover { color: var(--pin); }
+.nmeta { font-size: 11px; color: var(--ink-3); margin-bottom: 1px; }
+.nblurb { font-size: 12px; color: var(--ink-2); margin-top: 2px; line-height: 1.35; }
 .related button { text-align: left; background: var(--panel-2); border: 1px solid var(--line); border-radius: 6px; padding: 7px 9px; font-size: 12.5px; cursor: pointer; }
 .related button:hover { border-color: var(--pin); }
 .filter-note { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--ink-2); }
@@ -615,9 +620,19 @@
     if (stop) items[4] = `<li class="now">${p.stage === "denied" ? "Denied" : "Withdrawn"}${p.completed ? `<time>${fmtDate(p.completed)}</time>` : ""}</li>`;
     const sup = p.superseded_by && DATA.cases.find((x) => x.id === p.superseded_by);
     if (sup) return `<div class="sec"><h3>Where it is now · Replaced by a later filing</h3><p class="note" style="margin:0 0 6px">The city portal still lists this case as "${esc(p.status)}", but a later application for the same property has since been decided, so this one was most likely dropped in its favor.</p><button class="linkish" data-id="${sup.id}"><span class="mono">${sup.id}</span> · filed ${fmtDate(sup.applied)} · <span style="color:${statusColor(sup)}">${esc(sup.status)}</span>${sup.units ? ` · ${n0(sup.units)} units` : ""}</button></div>`;
-    if (p.stale) return `<div class="sec"><h3>Where it is now · No activity in over a year</h3><p class="note" style="margin:0">The city portal still lists this case as "${esc(p.status)}", but it was filed ${fmtDate(p.applied)} and hasn't been on a board agenda in over a year. It was most likely decided or dropped without the portal being updated; check the resolution in the documents or with the Division of City Planning.</p></div>`;
+    const quiet = p.quiet ? `<p class="note" style="margin:6px 0 0">Quiet since ${fmtDate(p.last_activity)}: no hearing, document, related filing or news on this property in over a year. It still counts as active until the city closes it or a later filing replaces it.</p>`
+      : p.last_activity && ["filed", "review", "heard"].includes(p.stage) ? `<p class="note" style="margin:6px 0 0">Last activity ${fmtDate(p.last_activity)}${p.news_last && p.news_last === p.last_activity ? " (news coverage)" : ""}</p>` : "";
     return `<div class="sec"><h3>Where it is now · ${esc(p.stage_label)}</h3><ol class="stages${stop ? " stop" : ""}" style="padding:0;margin:0">${items.join("")}</ol>
-      ${p.next_hearing ? `<p class="note" style="margin:6px 0 0">Next hearing ${fmtDate(p.next_hearing)} · ${p.board === "zoning" ? "Zoning Board" : "Planning Board"}</p>` : ""}</div>`;
+      ${p.next_hearing ? `<p class="note" style="margin:6px 0 0">Next hearing ${fmtDate(p.next_hearing)} · ${p.board === "zoning" ? "Zoning Board" : "Planning Board"}</p>` : ""}${quiet}</div>`;
+  }
+
+  // Coverage of this property in Jersey Digs, ROI-NJ, Real Estate NJ and Traded (matched by street address).
+  function newsHtml(p) {
+    const rows = p.news || [];
+    if (!rows.length) return `<div class="sec"><h3>In the news</h3><p class="note" style="margin:0">No coverage of this address found in Jersey Digs, ROI-NJ, Real Estate NJ or Traded.</p></div>`;
+    const li = rows.slice(0, 12).map((a) => `<li><div class="nmeta">${a.date ? fmtDate(a.date) + " · " : ""}${esc(a.src)}</div><a href="${esc(a.url)}" target="_blank" rel="noopener">${esc(a.title)}</a>${a.blurb ? `<div class="nblurb">${esc(a.blurb)}</div>` : ""}</li>`).join("");
+    const more = rows.slice(12).map((a) => `<li><div class="nmeta">${a.date ? fmtDate(a.date) + " · " : ""}${esc(a.src)}</div><a href="${esc(a.url)}" target="_blank" rel="noopener">${esc(a.title)}</a></li>`).join("");
+    return `<div class="sec"><h3>In the news · ${p.n_news || rows.length} article${(p.n_news || rows.length) === 1 ? "" : "s"}</h3><ul class="news">${li}</ul>${more ? `<details><summary class="note">${rows.length - 12} more</summary><ul class="news">${more}</ul></details>` : ""}</div>`;
   }
 
   function salesHtml(p) {
@@ -640,7 +655,7 @@
     try {
       shardCache[p.shard] = shardCache[p.shard] || fetch(`data/detail/${p.shard}.json`).then((r) => r.json());
       const d = (await shardCache[p.shard])[p.id] || {};
-      Object.assign(p, { docs: d.docs || [], priors: d.priors || p.priors, sales: d.sales || [] });
+      Object.assign(p, { docs: d.docs || [], priors: d.priors || p.priors, sales: d.sales || [], news: d.news || [] });
       p._full = true;
     } catch { delete shardCache[p.shard]; }
   }
@@ -770,7 +785,7 @@
         </dl></div>
         <div class="sec"><h3>Timeline</h3><ol class="timeline">${hist.map((h) => `<li><span>${esc(h[0])}</span><time>${fmtDate(h[1])}</time></li>`).join("")}</ol></div>
         <div class="hist-head">Property history</div>
-        ${p._full ? priorsHtml(p) + salesHtml(p) : `<p class="note">Loading…</p>`}
+        ${p._full ? priorsHtml(p) + newsHtml(p) + salesHtml(p) : `<p class="note">Loading…</p>`}
         ${p.prop_class || p.net_value ? `<div class="sec"><h3>Tax record</h3><dl class="kv">
           ${(p.existing || []).length ? `<dt>Existing use</dt><dd>${esc(existText(p))}${nLots(p) > 1 ? ` <span class="note">(across ${nLots(p)} lots)</span>` : ""}<div class="note">Current tax class: what's there now, not what's proposed</div></dd>` : p.class_label ? `<dt>Existing use</dt><dd>${esc(p.prop_class)} · ${esc(p.class_label)}</dd>` : ""}
           ${p.prop_loc ? `<dt>Tax address</dt><dd>${esc(titleCase(p.prop_loc))}</dd>` : ""}
