@@ -4,24 +4,38 @@ jobs:
   probe:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - run: |
           pip install -q requests
           python3 - <<'PY'
-          import requests, re, json, collections
+          import requests, re, json, collections, time
           B="https://data.jerseycitynj.gov/api/explore/v2.1/catalog/datasets"
           ids=[]; off=0
           while True:
-              r=requests.get(B,params={"limit":100,"offset":off,"select":"dataset_id,title"},timeout=60).json()
-              res=r.get("results",[]); ids+=[(d["dataset_id"],d["title"]) for d in res]
-              if off==0: print("catalog total", r.get("total_count"))
-              if len(res)<100 or off>20000: break
+              r=requests.get(B,params={"limit":100,"offset":off,"select":"dataset_id,title,modified"},timeout=60).json()
+              res=r.get("results",[]); ids+=[(d["dataset_id"],d["title"],d.get("modified")) for d in res]
+              if len(res)<100: break
               off+=100
-          cases=[(i,t) for i,t in ids if re.match(r"^[pz]\d{2}-?\d{2,4}\b|^[pz]20\d\d-\d+",i)]
-          print("case-like datasets", len(cases))
-          c=collections.Counter(re.match(r"^([pz])(\d{2,4})",i).group(0)[:3] for i,_ in cases); print(sorted(c.items()))
-          print([x for x in cases if "communipaw" in x[0]][:10])
-          print(cases[:15])
-          others=collections.Counter(re.sub(r"[-_\d].*","",i) for i,_ in ids); print(others.most_common(25))
-          m=requests.get("https://data.jerseycitynj.gov/api/explore/v2.1/catalog/datasets/"+[x for x in cases if x[0].startswith("p22-146")][0][0],timeout=60).json()
-          print(json.dumps(m)[:3000])
+          tracked={c["id"].upper() for c in json.load(open("data/map.json"))["cases"]}
+          def num(i):
+              m=re.match(r"^([pz])(\d{2})-?(\d{2,3})(?!\d)",i) or re.match(r"^([pz])(20\d\d)-(\d{4})",i)
+              return m and f"{m.group(1).upper()}{m.group(2)}-{m.group(3)}"
+          cases=[(num(i),i,t,mod) for i,t,mod in ids if num(i)]
+          new=[x for x in cases if x[0] not in tracked]
+          print("archive cases",len(cases),"not tracked",len(new))
+          print(collections.Counter(x[0][:3] for x in new))
+          print([x[:3] for x in new if x[0] in ("P22-145","P22-146")])
+          print(new[:8])
+          print("planning/zoning titles:")
+          for i,t,mod in ids:
+              if re.match(r"^(planning|zoning)",i) and not re.search(r"application",t,re.I): print("  ",i,"|",t)
+          # resolution attachments among the untracked archive cases (sample 60)
+          hit=0;n=0;ex=[]
+          for x in new[:60]:
+              m=requests.get(B+"/"+x[1],timeout=60).json(); n+=1
+              names=[a.get("title","") for a in m.get("attachments") or []]
+              if any(re.search(r"reso",a,re.I) for a in names): hit+=1; ex.append((x[0],[a for a in names if re.search(r"reso",a,re.I)][:2]))
+              if n<=3: print(x[0], json.dumps(m.get("metas",{}))[:900]); print(names[:12])
+              time.sleep(0.3)
+          print("resolution files in",hit,"of",n); print(ex[:10])
           PY
