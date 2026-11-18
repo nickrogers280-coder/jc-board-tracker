@@ -42,7 +42,8 @@
 "asset": "Z2026-0031__0086ec23__Affidavit_of_Performance-Liberty_blank_2-2026-04-06_v1.PDF",
 "case": "Z2026-0031",
 "kind": "notice",
-"size": 9794
+"size": 9794,
+"tag": "documents-2026"
 },
 "009b4b4b-4a75-463b-959b-ad9ad2f17058": {
 "asset": "Z2025-0060__009b4b4b__Staff_Memo_for_Z2025-0059_Z2025-0060_Z2025-0061.pdf",
@@ -82,7 +83,8 @@
 "asset": "P2026-0063__014536fc__213_PACIFIC_AVE_-_II.pdf",
 "case": "P2026-0063",
 "kind": "other:213 pacific ave ii",
-"size": 51238
+"size": 51238,
+"tag": "documents-2026"
 },
 "0162e72f-3b80-461c-b6ba-b875dd9805f0": {
 "asset": "Z2025-0065__0162e72f__RESO_Z2025-0065_117_North_St_Var_B_1505_L_14.pdf",
@@ -95,7 +97,8 @@
 "asset": "P2026-0071__01c63d46__10-27-26_JCPB_-_19_-_P2026-0071_-_30_Newport_Parkway.pdf",
 "case": "P2026-0071",
 "kind": "other:jcpb 19 p2026 0071 30 newport parkway",
-"size": 194571
+"size": 194571,
+"tag": "documents-2026"
 },
 "01f57457-7322-4b2f-8d3b-440cceb5669e": {
 "asset": "P2025-0244__01f57457__10_Ownership_disclosure_form-Disclosure_-_3000_Kennedy-2025-11-11_v1.pdf",
@@ -128,7 +131,8 @@
 "asset": "P2026-0147__0222da3d__Attachment_C_-_List_of_Demolished_Sites_for_Adoption_into_Inventory_Black_Heritage.pdf",
 "case": "P2026-0147",
 "kind": "other:attachment c list of demolished sites for adoption into inve",
-"size": 75634
+"size": 75634,
+"tag": "documents-2026"
 },
 "0232e68b-c09e-4b3d-8a9f-6ccdf60709f1": {
 "asset": "P2026-0169__0232e68b__Cover_Letter-Initial_Submission_Letter_-_10_27_26-2026-10-27_v1.pdf",
@@ -148,7 +152,8 @@
 "asset": "Z2026-0047__02db666a__Principal_Points_Statement-2026-09-24_SPP_28-30_Harmon_JC_-2026-09-24_v1.pdf",
 "case": "Z2026-0047",
 "kind": "other:principal points statement spp 28 30 harmon (jc) v1",
-"size": 130110
+"size": 130110,
+"tag": "documents-2026"
 },
 "02dd9f09-91c0-4424-80f1-426898562635": {
 "asset": "Z2026-0037__02dd9f09__Architectural_Plans-577_Jackson_Ave_-_ZBA_Submission_8-6-2026-2026-08-07_v1.pdf",
@@ -175,7 +180,8 @@
 "asset": "P2026-0100__0311fdba__Affidavit_of_Ownership-04_Affidavit_of_Control_and_Ownership_NADC_6.22.2026-2026-06-23_v1.pdf",
 "case": "P2026-0100",
 "kind": "notice",
-"size": 192260
+"size": 192260,
+"tag": "documents-2026"
 },
 "031a85a9-1519-4053-9e3a-e9e888fc6c97": {
 "asset": "Z2026-0015__031a85a9__Other-2026-04-27_-_Zoning_Appeal_-_615_Jersey_Avenue_v1.pdf",
@@ -194,7 +200,8 @@
 "asset": "P2026-0038__0340b1eb__RESO_P2026-0038_445_Fairmount_784-88_West_Side_Ext_B_16301_L_9_65.pdf",
 "case": "P2026-0038",
 "kind": "resolution",
-"size": 203097
+"size": 203097,
+"tag": "documents-2026"
 },
 "035081d5-1e8d-4d57-8b3d-43a535bcf28d": {
 "asset": "P2026-0037__035081d5__Other-AT_T_-_2854_John_F_Kennedy_Blvd_-_Mount_Analysis_5.13.25_v1.pdf",
@@ -260,7 +267,8 @@
 "asset": "P2026-0110__046d7321__P2026-0110_806_WEST_SIDE_AVE_Jersey_City_NJ_07306_MUA_review_.pdf",
 "case": "P2026-0110",
 "kind": "other:p2026 0110 (806 west side ave jersey city, nj 07306) mua rev",
-"size": 171902
+"size": 171902,
+"tag": "documents-2026"
 },
 "049acecd-0c60-4f42-b9d3-482bd8bf64fc": {
 "asset": "P2025-0130__049acecd__STAFF_MEMO_P2025-0130_626_COMMUNIPAW_AVE.pdf",
@@ -323,12 +331,6 @@
 "size": 593877,
 "tag": "documents-2025"
 },
-"0512b984-4e16-4a3e-932e-ce872f5fa221": {
-"asset": "P2026-0002__0512b984__Cover_Letter-Correspondence_withdrawing_application-2026-01-16_v1.pdf",
-"case": "P2026-0002",
-"kind": "plans",
-"size": 232734
-},
 "051fed98-05c2-4fff-8189-33dbbfb4a1c4": {
 "asset": "Z2025-0079__051fed98__Architectural_Plans-Planning_Approved_Signature_Set_-_arch_-_Z2025-0079_-2025-12-02_v1.pdf",
 "case": "Z2025-0079",
@@ -340,7 +342,8 @@
 "asset": "P2026-0030__0533b2fa__Property_Tax_Certificate-Tax_Cert_2-2026_-_722_Garfield-2026-03-02_v1.pdf",
 "case": "P2026-0030",
 "kind": "tax-cert",
-"size": 29882
+"size": 29882,
+"tag": "documents-2026"
 },
 "05520e1c-63e0-4a81-a44a-2e3d2e135539": {
 "asset": "P2026-0081__05520e1c__Planning_Approved_Signature_Plans_-_ARCH_P2026-0081.pdf",
@@ -379,7 +382,8 @@
 "asset": "P2026-0158__05ef4af0__Cover_Letter-Extension_Request_Cover_Letter_--_152_Ogden-2026-10-06_v1.pdf",
 "case": "P2026-0158",
 "kind": "other:cover letter extension request cover letter 152 ogden v1",
-"size": 91278
+"size": 91278,
+"tag": "documents-2026"
 },
 "05f0049c-2560-4869-b7bb-800efce0753a": {
 "asset": "P2025-0240__05f0049c__Forestry_Comments_P2025-0240.docx",
@@ -405,7 +409,8 @@
 "asset": "P2026-0087__0643eb9f__10_Ownership_disclosure_form-Ownership_Disclosure-2026-06-05_v1.pdf",
 "case": "P2026-0087",
 "kind": "other:10% ownership disclosure form ownership disclosure v1",
-"size": 8200
+"size": 8200,
+"tag": "documents-2026"
 },
 "065dece5-cf20-4a53-ab6e-c4205a3a252b": {
 "asset": "P2025-0227__065dece5__03-24-26_JCPB_-_09_-_P2025-0227_-_39_Regent_Street.pdf",
@@ -446,7 +451,8 @@
 "asset": "P2026-0125__06ca6d18__Cover_Letter-1_Year_Extension_Request_Letter_-_08_04_26-2026-08-04_v1.pdf",
 "case": "P2026-0125",
 "kind": "other:cover letter 1 year extension request letter 08 04 26 v1",
-"size": 103452
+"size": 103452,
+"tag": "documents-2026"
 },
 "06fdcff2-230f-4589-8e9b-a543c241621f": {
 "asset": "Z2025-0093__06fdcff2__Other-Signature_Plans_NJDCA_Cert_for_eplans_Architectural_Plans_v1.pdf",
@@ -479,12 +485,6 @@
 "kind": "staff-memo",
 "size": 1368392,
 "tag": "documents-2025-2"
-},
-"0778d31c-8190-4d7f-9bff-2ee7ed1edf60": {
-"asset": "P2026-0016__0778d31c__Property_Tax_Certificate-tax_certificate_memos_Block_7302_Lots_55.01_and_55.02-2026-02-11_v1.pdf",
-"case": "P2026-0016",
-"kind": "tax-cert",
-"size": 101132
 },
 "07790da2-c81f-4c60-8758-8ed8b1056029": {
 "asset": "P2026-0091__07790da2__Cover_Letter-Correspondence_to_City_Planning_re__Admin_Amendment_092826_-2026-09-28_v1.pdf",
@@ -557,7 +557,8 @@
 "asset": "Z2026-0028__087787d7__Zoning_Determination_Letter-03_ZDL_ltr_12.23.2025-2026-03-24_v1.pdf",
 "case": "Z2026-0028",
 "kind": "other:zoning determination letter 03 zdl ltr v1",
-"size": 47734
+"size": 47734,
+"tag": "documents-2026"
 },
 "0883a07c-26f8-4ef2-80d8-3b6232398ef9": {
 "asset": "Z2025-0059__0883a07c__HPC_Resolution_To_Recommend_Denial_240_Newark_Ave_B-25-0386.pdf",
@@ -603,7 +604,8 @@
 "asset": "P2026-0109__08d3d0b0__Property_Tax_Certificate-804_Tax_Cert-2026-07-16_v1.pdf",
 "case": "P2026-0109",
 "kind": "tax-cert",
-"size": 38610
+"size": 38610,
+"tag": "documents-2026"
 },
 "08e2c8c8-1280-491b-8a28-dffc8e3373b2": {
 "asset": "P2025-0203__08e2c8c8__General_Development_Application-GDA_-_10_03_25-2025-10-03_v1.pdf",
@@ -668,13 +670,8 @@
 "asset": "P2026-0066__09d28f2d__92_OCEAN_AVE_P2026-0066_MUA_Review_001.pdf",
 "case": "P2026-0066",
 "kind": "other:92 ocean ave (p2026 0066 mua review)001",
-"size": 117792
-},
-"09fe74fa-f863-41e7-a2c5-b44eebbf5766": {
-"asset": "P2026-0007__09fe74fa__RESO_P20-125_134_Newark_Resolution.pdf.pdf",
-"case": "P2026-0007",
-"kind": "resolution",
-"size": 160507
+"size": 117792,
+"tag": "documents-2026"
 },
 "0a18b471-17cc-4975-b298-167929dbc0e4": {
 "asset": "Z2025-0046__0a18b471__Planning_Approved_Signature_Set_Civil_Z2025-0046.pdf",
@@ -807,7 +804,8 @@
 "asset": "P2026-0030__0b9aabf1__Photos-722_Garfield_Photo-2026-05-22_v1.jpg",
 "case": "P2026-0030",
 "kind": "other:photos 722 garfield photo v1",
-"size": 94093
+"size": 94093,
+"tag": "documents-2026"
 },
 "0bb39f42-ebec-47a6-abdc-71503f8e5fb9": {
 "asset": "P2026-0005__0bb39f42__Other-Certification_for_e-plans_SLCE_021926_F_v1.pdf",
@@ -840,7 +838,8 @@
 "asset": "P2026-0035__0be5244d__Affidavit_of_Ownership-Executed_Affidavit_of_Ownership_Extension_Request_-2026-03-11_v1.pdf",
 "case": "P2026-0035",
 "kind": "notice",
-"size": 22712
+"size": 22712,
+"tag": "documents-2026"
 },
 "0beb93bb-a735-4d44-9fee-a5207899c118": {
 "asset": "P2026-0025__0beb93bb__Property_Tax_Certificate-Updated_Tax_Cert-2026-03-16_v1.pdf",
@@ -956,7 +955,8 @@
 "asset": "Z2026-0047__0d7e50f0__Notice_Sample___Draft-Public_Notice_DRAFT_V3_-_NOT_FOR_PUBLICATION-2026-10-19_v1.pdf",
 "case": "Z2026-0047",
 "kind": "notice",
-"size": 119836
+"size": 119836,
+"tag": "documents-2026"
 },
 "0db0ef5c-1655-49d7-a07b-2e0a70f149e4": {
 "asset": "P2025-0196__0db0ef5c__RESO_P2025-0196_7_Orchard_St_B_15201_L_47_CORRECTIVE.pdf",
@@ -969,7 +969,8 @@
 "asset": "P2026-0077__0dbddcd5__Determination_of_Significance_Memo-Determ_Significance_Memo_04242026-2026-05-11_v1.pdf",
 "case": "P2026-0077",
 "kind": "other:determination of significance memo determ significance memo ",
-"size": 171381
+"size": 171381,
+"tag": "documents-2026"
 },
 "0dbde358-4a74-4bbd-af01-fb1e66a1bb76": {
 "asset": "Z2025-0052__0dbde358__RESO_Z2025-0052_364.5_5th_St_B_9905_L_5.pdf",
@@ -1037,7 +1038,8 @@
 "asset": "P2026-0049__0e601501__RESO_P2026-0049_206_Olean_Ave_SP_B_14704_L_34.01.pdf",
 "case": "P2026-0049",
 "kind": "other:reso p2026 0049 206 olean ave sp b 14704 l 34.01",
-"size": 255255
+"size": 255255,
+"tag": "documents-2026"
 },
 "0e6320f9-62c6-4b2d-96ab-856e01e5a593": {
 "asset": "Z2025-0067__0e6320f9__STAFF_MEMO_Z2025-0067.pdf",
@@ -1064,7 +1066,8 @@
 "asset": "P2026-0046__0e8ed1a6__RESO_P2026-0046_216-218_Academy_St_B_12204_L_14_15.pdf",
 "case": "P2026-0046",
 "kind": "other:reso p2026 0046 216 218 academy st b 12204 l 14 15",
-"size": 230414
+"size": 230414,
+"tag": "documents-2026"
 },
 "0eaa5a5c-8dd8-4cb1-ab01-0c8ae715f079": {
 "asset": "P2026-0079__0eaa5a5c__General_Development_Application-GDA_Current_178_Monticello_Ave-2026-05-14_v1.pdf",
@@ -1083,7 +1086,8 @@
 "asset": "Z2026-0041__0ed1aa25__Other-NJDCA-Certification-Daetel_1__v1.pdf",
 "case": "Z2026-0041",
 "kind": "other:other njdca certification daetel v1",
-"size": 215552
+"size": 215552,
+"tag": "documents-2026"
 },
 "0edbed53-a0c3-47a6-85c2-5c6e89fedc5c": {
 "asset": "P2025-0163__0edbed53__Architectural_Plans-2024_03-20_-_155_Newark_Ave_1_.pdf",
@@ -1120,12 +1124,6 @@
 "size": 289186,
 "tag": "documents-2025-2"
 },
-"0f361a69-e247-4cd0-88b6-6049d681fcb5": {
-"asset": "P2026-0005__0f361a69__Civil_Change_Memo-2026-01-16_Narrative_of_Changes-2026-01-22_v1.pdf",
-"case": "P2026-0005",
-"kind": "other:civil change memo narrative of changes v1",
-"size": 236880
-},
 "0f406136-a81c-430d-9182-41eb3d69e884": {
 "asset": "P2026-0129__0f406136__Forestry_Plan_Response_377_7th_St.pdf",
 "case": "P2026-0129",
@@ -1143,7 +1141,8 @@
 "asset": "Z2026-0048__0f79ce74__10_Ownership_disclosure_form-10_Disclosure_-_30_central-2026-09-24_v1.pdf",
 "case": "Z2026-0048",
 "kind": "other:10% ownership disclosure form 10 disclosure 30 central v1",
-"size": 170089
+"size": 170089,
+"tag": "documents-2026"
 },
 "0f98e004-c77c-4975-861a-0811630a0c46": {
 "asset": "P2026-0105__0f98e004__Planning_Approved_Signature_Plans_-_Signage_P2026-0105.pdf",
@@ -1162,7 +1161,8 @@
 "asset": "Z2026-0045__0fd4ded1__10_Ownership_disclosure_form-10_Percent_Sackett_St_081826-2026-08-18_v1.pdf",
 "case": "Z2026-0045",
 "kind": "other:10% ownership disclosure form 10 percent sackett st v1",
-"size": 40844
+"size": 40844,
+"tag": "documents-2026"
 },
 "0fdf4260-cd71-439f-bd95-fee5fe08e469": {
 "asset": "P2025-0257__0fdf4260__p2025-0257_-_Forestry_Comments_-_147_Academy.docx",
@@ -1196,7 +1196,8 @@
 "asset": "P2026-0051__10575a51__Affidavit_of_Ownership-2132.00_Aff_of_Ownership-signed-2026-03-26_v1.pdf",
 "case": "P2026-0051",
 "kind": "notice",
-"size": 43454
+"size": 43454,
+"tag": "documents-2026"
 },
 "108007aa-b1b5-4cf6-b91e-ce0da339a5bb": {
 "asset": "Z2025-0055__108007aa__Principal_Points_Statement-PPS_11-2025_-_366_5th_Street-2025-11-07_v1.pdf",
@@ -1215,7 +1216,8 @@
 "asset": "P2026-0112__10b0d95d__Property_Tax_Certificate-810_Tax_Cert-2026-07-16_v1.pdf",
 "case": "P2026-0112",
 "kind": "tax-cert",
-"size": 38677
+"size": 38677,
+"tag": "documents-2026"
 },
 "10b53bb6-5ab2-49a9-8f4e-a87d72158ecd": {
 "asset": "P2026-0024__10b53bb6__Affidavit_of_Ownership-Affidavit_of_Ownership_re__Admin_Amendment_0226_-2026-02-25_v1.pdf",
@@ -1329,7 +1331,8 @@
 "asset": "P2026-0052__12953096__10_Ownership_disclosure_form-Ownership_Disclosure_Statement-2026-03-31_v1.pdf",
 "case": "P2026-0052",
 "kind": "other:10% ownership disclosure form ownership disclosure statement",
-"size": 6940
+"size": 6940,
+"tag": "documents-2026"
 },
 "12d12975-2665-4b3e-aa0f-36dd867f3e2b": {
 "asset": "P2026-0148__12d12975__Property_Tax_Certificate-Liberty-2026-10-16_v1.pdf",
@@ -1341,7 +1344,8 @@
 "asset": "P2026-0100__131342d0__RESO_P2026-0100_535_Monmouth_St_aka_354_10th_St_EXT_B_6902_L_27.pdf",
 "case": "P2026-0100",
 "kind": "other:reso p2026 0100 535 monmouth st aka 354 10th st ext b 6902 l",
-"size": 196231
+"size": 196231,
+"tag": "documents-2026"
 },
 "13213ded-3534-4c93-ad37-3f075324b880": {
 "asset": "Z2025-0081__13213ded__Green_Area_Ratio_GAR_table-GAR_Worksheet_2-16-2026_-_285.5_Third-2026-02-16_v1.pdf",
@@ -1381,13 +1385,15 @@
 "asset": "Z2026-0047__13a22d4d__Property_Tax_Certificate-Tax_Certification_8.24.26_-_current-2026-08-24_v1.pdf",
 "case": "Z2026-0047",
 "kind": "tax-cert",
-"size": 193696
+"size": 193696,
+"tag": "documents-2026"
 },
 "13e42272-5c60-464a-9b2f-34455c54970d": {
 "asset": "Z2026-0048__13e42272__Property_Tax_Certificate-tax_cert_30_central-2026-11-15_v2.pdf",
 "case": "Z2026-0048",
 "kind": "tax-cert",
-"size": 234620
+"size": 234620,
+"tag": "documents-2026"
 },
 "14199972-4032-4fc8-b8b2-922eae887662": {
 "asset": "P2025-0142__14199972__RESO_P2025-0142_212-238_Culver_Ave_EXT_B_21701_L_18_19.01.pdf",
@@ -1407,13 +1413,8 @@
 "asset": "P2026-0100__1470a24d__Property_Tax_Certificate-Tax_Clearance_Cert_dated_9.2.2026-2026-09-02_v2.pdf",
 "case": "P2026-0100",
 "kind": "tax-cert",
-"size": 246802
-},
-"1497f43a-ccef-47b3-9120-c85844c54783": {
-"asset": "Z2026-0016__1497f43a__Green_Area_Ratio_GAR_table-GAR_Worksheet_FINAL-2026-01-29_v1.PDF",
-"case": "Z2026-0016",
-"kind": "other:green area ratio (gar) table gar worksheet final v1",
-"size": 65656
+"size": 246802,
+"tag": "documents-2026"
 },
 "14c96005-0880-4b2f-9a7f-8231d49fbb15": {
 "asset": "P2025-0270__14c96005__Forestry_Comments_P2025-0270.docx",
@@ -1456,12 +1457,6 @@
 "size": 328990,
 "tag": "documents-2025-2"
 },
-"1599ca15-f13f-4c9f-8a44-7b5a6d170263": {
-"asset": "P2026-0003__1599ca15__Photos-210_Bergen_Photo-2026-03-09_v1.jpg",
-"case": "P2026-0003",
-"kind": "other:photos 210 bergen photo v1",
-"size": 51169
-},
 "15cd7758-cd6d-4ab3-bede-1d66ffb2776d": {
 "asset": "P2025-0162__15cd7758__Architectural_Plans-Planning_Approved_Signature_Set_-_Arch_P2025-0162_-_Flat-2025-08-07_v1.pdf",
 "case": "P2025-0162",
@@ -1486,7 +1481,8 @@
 "asset": "P2026-0080__1614e04a__Property_Tax_Certificate-400_Claremont_Tax_Cert-2026-05-18_v1.pdf",
 "case": "P2026-0080",
 "kind": "tax-cert",
-"size": 202833
+"size": 202833,
+"tag": "documents-2026"
 },
 "161904a2-0ea9-4e25-81e6-f6cb797a6284": {
 "asset": "P2025-0165__161904a2__Bird_Friendly_Design_LDO_Amendment_w-_Floor_Amendment.pdf",
@@ -1505,7 +1501,8 @@
 "asset": "P2026-0020__164ab496__ePlan_Cert_-_Nabil.pdf",
 "case": "P2026-0020",
 "kind": "other:eplan cert nabil",
-"size": 96111
+"size": 96111,
+"tag": "documents-2026"
 },
 "165b292e-ccfa-4a22-b2fc-41d50f11a27a": {
 "asset": "P2025-0235__165b292e__P2025-0235_-_Forestry_Comments.docx",
@@ -1545,13 +1542,15 @@
 "asset": "P2026-0123__16ec6fdc__10_Ownership_disclosure_form-06b_10_percent_disclosure_form_sharma-2026-07-31_v1.pdf",
 "case": "P2026-0123",
 "kind": "other:10% ownership disclosure form 06b 10 percent disclosure form",
-"size": 88815
+"size": 88815,
+"tag": "documents-2026"
 },
 "16f4a103-5ec5-453c-b030-771cccbe1224": {
 "asset": "P2026-0023__16f4a103__Affidavit_of_Ownership-20_Long_Slip_Administrative_Amendment_Final_Site_Plan_-_Affidavit_of_Ownership-2026-02-25_v1.pdf",
 "case": "P2026-0023",
 "kind": "plans",
-"size": 28986
+"size": 28986,
+"tag": "documents-2026"
 },
 "1704534c-9d37-41d5-aed9-c373af4c2b02": {
 "asset": "P2025-0138__1704534c__Property_Tax_Certificate-Tax_Cert_7-2025_-_292-294_Van_Horne-2025-07-11_v1.pdf",
@@ -1577,19 +1576,22 @@
 "asset": "P2026-0048__1742e0bd__Water_Bill_Certificate-Water_clearance_126_Logan_Ave_20260320112759-2026-03-23_v1.pdf",
 "case": "P2026-0048",
 "kind": "other:water bill certificate water clearance 126 logan ave v1",
-"size": 42111
+"size": 42111,
+"tag": "documents-2026"
 },
 "1743240c-447a-405f-b2b8-18f2604c43b4": {
 "asset": "Z2026-0052__1743240c__Affidavit_of_Ownership-Affidavit_Ownership_93_Beacon-2026-10-05_v1.pdf",
 "case": "Z2026-0052",
 "kind": "notice",
-"size": 50075
+"size": 50075,
+"tag": "documents-2026"
 },
 "174a659d-26c1-4487-884e-0fcd8cdb1739": {
 "asset": "P2026-0109__174a659d__Notice_Sample___Draft-804_-_Public_Notice_DRAFT_-_NOT_FOR_PUBLICATION-2026-07-16_v1.pdf",
 "case": "P2026-0109",
 "kind": "notice",
-"size": 191466
+"size": 191466,
+"tag": "documents-2026"
 },
 "17719e1f-1913-4500-956f-6355481e9634": {
 "asset": "P2025-0235__17719e1f__Property_Tax_Certificate-248_erie_Taxes_paid-2026-07-07_v1.pdf",
@@ -1628,7 +1630,8 @@
 "asset": "P2026-0040__17e0f8c1__P2026-0040_-_Forestry_Comments.docx",
 "case": "P2026-0040",
 "kind": "forestry",
-"size": 11624
+"size": 11624,
+"tag": "documents-2026"
 },
 "17ef4e53-1ad6-42f9-9bd3-8023dc2c3092": {
 "asset": "P2026-0116__17ef4e53__Other-Exhibits_to_Cover_letter_dated_10-6-2026_v1.pdf",
@@ -1740,7 +1743,8 @@
 "asset": "P2026-0085__194affba__Property_Tax_Certificate-36_McAdoo-_Tax_Cert_good_thru_4Q_-2026-05-26_v1.pdf",
 "case": "P2026-0085",
 "kind": "tax-cert",
-"size": 195886
+"size": 195886,
+"tag": "documents-2026"
 },
 "1955f820-d491-46a7-8656-3382ee3a3b4b": {
 "asset": "P2025-0228__1955f820__10_Ownership_disclosure_form-6_-_Ownership_disclosure_form-2025-10-27_v1.pdf",
@@ -1915,7 +1919,8 @@
 "asset": "P2026-0078__1bfcf5a7__P2026-0078_-_Forestry_Comments.docx",
 "case": "P2026-0078",
 "kind": "forestry",
-"size": 11700
+"size": 11700,
+"tag": "documents-2026"
 },
 "1c066530-1528-4db7-9f07-95baa5f35eb9": {
 "asset": "P2025-0192__1c066530__Property_Tax_Certificate-85-87_Storms_Paid_to_Date-2025-09-29_v1.pdf",
@@ -1976,7 +1981,8 @@
 "asset": "P2026-0072__1cf62169__Property_Tax_Certificate-Tax_Cert_-_Culver_Block_22102_Lot_16-2026-05-06_v1.pdf",
 "case": "P2026-0072",
 "kind": "tax-cert",
-"size": 202786
+"size": 202786,
+"tag": "documents-2026"
 },
 "1d019918-06b7-4398-9ef5-23d8b13e0592": {
 "asset": "P2025-0228__1d019918__Traffic_Assessment_Report-3_-_2025-08-27_Traffic_Impact_Study_v1.pdf",
@@ -2102,12 +2108,6 @@
 "size": 151812,
 "tag": "documents-2025"
 },
-"1dffdb3e-84f1-4a96-9f12-de47621e1c82": {
-"asset": "P2026-0015__1dffdb3e__Affidavit_of_Ownership-Affidavit_of_Ownership-_344_Second_Extension-2026-02-11_v1.pdf",
-"case": "P2026-0015",
-"kind": "notice",
-"size": 231291
-},
 "1e0907af-6431-419c-882b-8131280f12a1": {
 "asset": "Z2025-0057__1e0907af__Principal_Points_Statement-Statement_of_Principal_Points_188_Newark_Signage-2026-05-07_v1.pdf",
 "case": "Z2025-0057",
@@ -2145,7 +2145,8 @@
 "asset": "P2026-0074__1e53e47d__Zoning_Determination_Letter-ZDL-2025-001072_124_HIGHLAND-2026-05-09_v1.pdf",
 "case": "P2026-0074",
 "kind": "other:zoning determination letter zdl 2025 124 highland v1",
-"size": 176298
+"size": 176298,
+"tag": "documents-2026"
 },
 "1e873fab-be81-44e6-835b-2efb1a33abbd": {
 "asset": "P2025-0233__1e873fab__Property_Tax_Certificate-Cert_of_Tax_Payment-2026-02-11_v1.pdf",
@@ -2158,7 +2159,8 @@
 "asset": "P2026-0159__1ea5b32c__Cover_Letter-Initial_Submission_Cover_Letter_-_80_Corbin_Avenue_10.12.26-2026-10-12_v1.pdf",
 "case": "P2026-0159",
 "kind": "other:cover letter initial submission cover letter 80 corbin avenu",
-"size": 68696
+"size": 68696,
+"tag": "documents-2026"
 },
 "1eb5289d-4446-447b-b125-179a7d452ed3": {
 "asset": "P2025-0158__1eb5289d__10_Ownership_disclosure_form-CEVG_310_JV_LLC_Ownership_Disclosure_Statement-2025-07-31_v1.pdf",
@@ -2171,7 +2173,8 @@
 "asset": "P2026-0041__1eb9371e__Resolution_-_Memorialized-PRIOR_APPROVAL_-_P2024-0105_-_1st_Extension_-_08_20_24-2026-03-18_v1.pdf",
 "case": "P2026-0041",
 "kind": "resolution",
-"size": 217082
+"size": 217082,
+"tag": "documents-2026"
 },
 "1ebff00b-b2ce-4045-af64-5ffb24108768": {
 "asset": "P2026-0139__1ebff00b__Affidavit_of_Ownership-Affidavit_of_Ownership_-_Whiton_Street-2026-09-01_v1.pdf",
@@ -2283,7 +2286,8 @@
 "asset": "P2026-0018__2088d48b__RESO_P2026-0018_200_Greene_St_SP_B_11603_L_31.03.pdf",
 "case": "P2026-0018",
 "kind": "other:reso p2026 0018 200 greene st sp b 11603 l 31.03",
-"size": 237761
+"size": 237761,
+"tag": "documents-2026"
 },
 "20d0f2d4-e6a8-4cfa-b743-5806afad3ab0": {
 "asset": "P2026-0003__20d0f2d4__Survey-BSA-19906_-_Survey_Signed_Sealed_-2026-01-13_v1.pdf",
@@ -2316,7 +2320,8 @@
 "asset": "Z2026-0049__2149f374__Affidavit_of_Ownership-AoO_-_Baldwin-2026-09-26_v1.pdf",
 "case": "Z2026-0049",
 "kind": "notice",
-"size": 240786
+"size": 240786,
+"tag": "documents-2026"
 },
 "214a702b-d7cb-4280-98e4-e34f250fc9f1": {
 "asset": "Z2025-0067__214a702b__Property_Tax_Certificate-Tax_Cert_5-2025_-_238-240_New_York-2025-08-19_v1.pdf",
@@ -2347,13 +2352,15 @@
 "asset": "Z2026-0048__21ba2695__Other-Approved_Resolution_-_32_Central_Extension_v1.pdf",
 "case": "Z2026-0048",
 "kind": "resolution",
-"size": 176210
+"size": 176210,
+"tag": "documents-2026"
 },
 "21bc73b2-b09c-46e6-9c6b-a338ac852f3b": {
 "asset": "P2026-0090__21bc73b2__10-27-26_JCPB_-_20_21_-_P2026-0089_P2026-0090_-_274-276_Columbia_Avenue_-_MINI.pdf",
 "case": "P2026-0090",
 "kind": "other:jcpb 20, 21 p2026 0089, p2026 0090 274 276 columbia avenue m",
-"size": 205075
+"size": 205075,
+"tag": "documents-2026"
 },
 "21eddadd-246b-465c-9b3f-930f29a39fd9": {
 "asset": "P2025-0166__21eddadd__RESO_P2025-0166_186_Terrace_Ave_B_2003_L_29.pdf",
@@ -2373,7 +2380,8 @@
 "asset": "Z2026-0049__221a8166__Forestry_Comments_-_Z2026-0049.docx",
 "case": "Z2026-0049",
 "kind": "forestry",
-"size": 11535
+"size": 11535,
+"tag": "documents-2026"
 },
 "22214b06-41bf-47c3-916c-71de3d07f0b5": {
 "asset": "Z2025-0087__22214b06__General_Development_Application-GDA-_79_Romaine-2025-11-18_v1.pdf",
@@ -2386,7 +2394,8 @@
 "asset": "P2026-0071__225327a4__2198_001.pdf",
 "case": "P2026-0071",
 "kind": "jcmua",
-"size": 55993
+"size": 55993,
+"tag": "documents-2026"
 },
 "2260af12-e302-49cb-9fd4-1a26c9df6ec2": {
 "asset": "Z2026-0015__2260af12__Other-Group3_Operational_Standards_Health_Violation_Report_v1.pdf",
@@ -2432,13 +2441,15 @@
 "asset": "P2026-0024__22d0568a__Property_Tax_Certificate-Payment_of_Taxes-2026-02-25_v1.pdf",
 "case": "P2026-0024",
 "kind": "tax-cert",
-"size": 19375
+"size": 19375,
+"tag": "documents-2026"
 },
 "22f71d26-ce23-4dd0-9603-ac8c73d0cd13": {
 "asset": "P2026-0058__22f71d26__P2026-0058_-_Forestry_Comments.docx",
 "case": "P2026-0058",
 "kind": "forestry",
-"size": 11866
+"size": 11866,
+"tag": "documents-2026"
 },
 "22fb9186-e3fa-45fc-bfdb-b9ed9ee6ba3b": {
 "asset": "P2025-0240__22fb9186__Architectural_Plans-199_Webster_ARCHITECTURAL_ZONING_PLANS_REVISED_3-17-26-2026-03-17_v1.pdf",
@@ -2491,7 +2502,8 @@
 "asset": "P2026-0099__2337d543__10_Ownership_disclosure_form-10_Disclsoure_-_364_Fifth-2026-06-19_v1.pdf",
 "case": "P2026-0099",
 "kind": "other:10% ownership disclosure form 10 disclsoure 364 fifth v1",
-"size": 89468
+"size": 89468,
+"tag": "documents-2026"
 },
 "233ae760-af5c-49a7-8c67-e03df8b35c60": {
 "asset": "Z2025-0081__233ae760__Resolution_-_Memorialized-Signed_Reso-_285.5_Third-2025-10-29_v1.pdf",
@@ -2544,7 +2556,8 @@
 "asset": "P2026-0023__24315e27__RESO_P2026-0023_20_Long_Slip_2_Long_Slip_Washington_Blvd_B_7302_L_3.19_3.20_3.21_3.16_3.05.pdf",
 "case": "P2026-0023",
 "kind": "other:reso p2026 0023 20 long slip 2 long slip washington blvd b 7",
-"size": 219087
+"size": 219087,
+"tag": "documents-2026"
 },
 "243412ba-5fc9-4529-bb2b-0e65400729d4": {
 "asset": "Z2026-0047__243412ba__Traffic_Assessment_Report-2026-07-30_28-30_Harmon_TACS_v1.pdf",
@@ -2571,7 +2584,8 @@
 "asset": "Z2026-0029__2456a05e__Affidavit_of_Ownership-Affidavit_of_Ownership.MannPropertyGroup-2026-03-25_v1.pdf",
 "case": "Z2026-0029",
 "kind": "notice",
-"size": 60147
+"size": 60147,
+"tag": "documents-2026"
 },
 "2461a53e-01fb-4ecb-8880-c61b9db3e719": {
 "asset": "P2025-0167__2461a53e__Notice_Packet_-_Proof_of_Service-Affidavit_of_Service_with_Attachments-2026-03-19_v1.pdf",
@@ -2645,12 +2659,6 @@
 "kind": "resolution",
 "size": 309121
 },
-"256c4a77-6f7f-43db-8fb2-ddd7831efd20": {
-"asset": "P2026-0009__256c4a77__10_Ownership_disclosure_form-10_Disclosure-2026-01-28_v1.pdf",
-"case": "P2026-0009",
-"kind": "other:10% ownership disclosure form 10 disclosure v1",
-"size": 43334
-},
 "2570602c-c877-453f-931d-98d4f092b36a": {
 "asset": "Z2025-0049__2570602c__Civil_Engineering_Plans-219-221_Warren_Permit_Set_Rev_07_250619-2025-07-03_v1.pdf",
 "case": "Z2025-0049",
@@ -2676,7 +2684,8 @@
 "asset": "P2026-0099__257dd219__10-13-26_JCPB_-_15_-_P2026-0099_-_364_Fifth_Street.pdf",
 "case": "P2026-0099",
 "kind": "other:jcpb 15 p2026 0099 364 fifth street",
-"size": 235553
+"size": 235553,
+"tag": "documents-2026"
 },
 "25831ffc-cdf0-4c31-9514-90d94cb62094": {
 "asset": "Z2025-0070__25831ffc__Photos-170_Garfield_5_1_-2026-07-24_v1.jpg",
@@ -2702,7 +2711,8 @@
 "asset": "P2026-0029__25dd7daf__Property_Tax_Certificate-Tax_Cert_2-2026_-_718_Garfield-2026-03-02_v1.pdf",
 "case": "P2026-0029",
 "kind": "tax-cert",
-"size": 29853
+"size": 29853,
+"tag": "documents-2026"
 },
 "25e79635-fe38-4ba1-bbfd-66963c033082": {
 "asset": "P2026-0037__25e79635__Planning_Approved_Signature_Set_-_arch_P2025-0134_.PDF",
@@ -2804,13 +2814,15 @@
 "asset": "Z2026-0032__2803d919__10_Ownership_disclosure_form-10_Ownership_Disclosure-2026-04-09_v1.pdf",
 "case": "Z2026-0032",
 "kind": "other:10% ownership disclosure form 10% ownership disclosure v1",
-"size": 64956
+"size": 64956,
+"tag": "documents-2026"
 },
 "280cc628-5ce8-4a32-9e5f-7a0e6952599f": {
 "asset": "P2026-0029__280cc628__10_Ownership_disclosure_form-718_Garfield_10_Disclosure--2026-09-24_v1.pdf",
 "case": "P2026-0029",
 "kind": "other:10% ownership disclosure form 718 garfield 10% disclosure v1",
-"size": 89499
+"size": 89499,
+"tag": "documents-2026"
 },
 "282aeaf3-22a2-4f7c-ba8e-f75ccd5287ec": {
 "asset": "P2025-0255__282aeaf3__Property_Tax_Certificate-Tax_Cert_2Q_4-15-25-2025-12-03_v1.pdf",
@@ -2884,7 +2896,8 @@
 "asset": "Z2026-0055__298eb357__Cover_Letter-00_Cover_Letter_Zoning_Board-2026-10-30_v1.pdf",
 "case": "Z2026-0055",
 "kind": "other:cover letter 00 cover letter zoning board v1",
-"size": 228546
+"size": 228546,
+"tag": "documents-2026"
 },
 "29bae8b3-d305-4729-bca0-80f57bf0b2f2": {
 "asset": "P2025-0183__29bae8b3__Property_Tax_Certificate-Tax_Clearance_Cert.-2025-08-27_v1.pdf",
@@ -2903,7 +2916,8 @@
 "asset": "Z2026-0049__29f96f05__10_Ownership_disclosure_form-10_disclosure_-_280_Baldwin-2026-09-26_v1.pdf",
 "case": "Z2026-0049",
 "kind": "other:10% ownership disclosure form 10 disclosure 280 baldwin v1",
-"size": 104924
+"size": 104924,
+"tag": "documents-2026"
 },
 "2a0238e1-bc19-49c5-a255-2b22674a21b0": {
 "asset": "P2025-0259__2a0238e1__127_Delaware_Ave_Transportation_Comments.pdf",
@@ -2992,17 +3006,12 @@
 "kind": "other:jcboa z2026 0004, 32 sherman place (condensed)",
 "size": 694366
 },
-"2b2d86da-9fef-4b86-9f2c-adf4b92bd0d4": {
-"asset": "Z2026-0003__2b2d86da__Property_Tax_Certificate-Tax_Certificate_Waiver_Request-2026-01-09_v1.pdf",
-"case": "Z2026-0003",
-"kind": "tax-cert",
-"size": 17115
-},
 "2b34d4c1-60e3-460a-8b3a-ef4686c9d3d6": {
 "asset": "P2026-0019__2b34d4c1__10_Ownership_disclosure_form-10_Ownership_Disclosure_Statement_-_49_Fisk_Phase_1_Amendment_FINAL_-2026-05-07_v1.pdf",
 "case": "P2026-0019",
 "kind": "other:10% ownership disclosure form 10% ownership disclosure state",
-"size": 76302
+"size": 76302,
+"tag": "documents-2026"
 },
 "2b573769-cc70-4a9a-a8b5-f7e4e2269929": {
 "asset": "Z2026-0020__2b573769__Property_Tax_Certificate-64_Harmon_Cert._of_Taxes_Paid-2026-02-18_v1.pdf",
@@ -3021,7 +3030,8 @@
 "asset": "P2026-0138__2b75acb3__Cover_Letter-8.31.2026_Req_for_an_extension-2026-08-31_v1.pdf",
 "case": "P2026-0138",
 "kind": "other:cover letter req for an extension v1",
-"size": 99017
+"size": 99017,
+"tag": "documents-2026"
 },
 "2bab64e4-f5cc-4c09-bb8f-382c20516c78": {
 "asset": "P2026-0064__2bab64e4__Resolution_-_Memorialized-Reso_P20-022_405_Route_440.pdf-2026-04-23_v1.pdf",
@@ -3033,7 +3043,8 @@
 "asset": "P2026-0047__2bc75319__Civil_Change_Memo-Civil_Narrative_of_Changes-2026-03-23_v1.pdf",
 "case": "P2026-0047",
 "kind": "other:civil change memo civil narrative of changes v1",
-"size": 86741
+"size": 86741,
+"tag": "documents-2026"
 },
 "2bde6907-4c35-4613-bda4-5bd7b692510d": {
 "asset": "Z2025-0061__2bde6907__Appeal_Application-Appeal_application_-_PSE_G_1051_Garfield_v1.pdf",
@@ -3060,7 +3071,8 @@
 "asset": "Z2026-0041__2c06573a__10_Ownership_disclosure_form-10_disclosure_form-2026-07-21_v1.pdf",
 "case": "Z2026-0041",
 "kind": "other:10% ownership disclosure form 10 disclosure form v1",
-"size": 89849
+"size": 89849,
+"tag": "documents-2026"
 },
 "2c17f90d-56cf-4d48-a1fb-9cb959142a75": {
 "asset": "Z2026-0015__2c17f90d__Photos-Group3_Operational_Standards_Interior_Seating.jpg-2026-04-28_v1.jpg",
@@ -3072,7 +3084,8 @@
 "asset": "P2026-0104__2c347c0a__Affidavit_of_Ownership-Ownership_Disclosure_Statement-2026-07-02_v1.pdf",
 "case": "P2026-0104",
 "kind": "notice",
-"size": 6868
+"size": 6868,
+"tag": "documents-2026"
 },
 "2c723927-4702-4490-b976-dbe14ba453d2": {
 "asset": "P2026-0049__2c723927__Other-206-olean-ave-jc-eplan_v1.pdf",
@@ -3105,7 +3118,8 @@
 "asset": "P2026-0089__2cbcea55__10_Ownership_disclosure_form-10_disclosure_form-2026-06-08_v1.pdf",
 "case": "P2026-0089",
 "kind": "other:10% ownership disclosure form 10 disclosure form v1",
-"size": 175837
+"size": 175837,
+"tag": "documents-2026"
 },
 "2cc4e0e2-653f-4c02-8629-4bce28dde3fa": {
 "asset": "P2025-0142__2cc4e0e2__10_Ownership_disclosure_form-Disclosure_Statement_212_Culver_-2025-07-16_v1.pdf",
@@ -3173,7 +3187,8 @@
 "asset": "P2026-0047__2def5726__Property_Tax_Certificate-Bayfront_Avenue_Tax_Assessment_Record-2026-03-23_v1.pdf",
 "case": "P2026-0047",
 "kind": "tax-cert",
-"size": 202466
+"size": 202466,
+"tag": "documents-2026"
 },
 "2df169d9-86b9-4eca-85f8-c8845013135c": {
 "asset": "P2025-0187__2df169d9__Affidavit_of_Ownership-Affidavit_of_Ownership-2025-09-03_v1.pdf",
@@ -3301,7 +3316,8 @@
 "asset": "P2026-0092__2f7fe84f__Ltr_to_Tanya_Marione_11.3.2026.pdf",
 "case": "P2026-0092",
 "kind": "other:ltr to tanya marione",
-"size": 197734
+"size": 197734,
+"tag": "documents-2026"
 },
 "2f9399bf-950e-4a00-a511-eedfda730f7e": {
 "asset": "P2025-0228__2f9399bf__Water_Bill_Certificate-11_-_Payment_of_Water_veolia_September_2025-2025-10-27_v1.pdf",
@@ -3333,7 +3349,8 @@
 "asset": "P2026-0018__3058eb53__Principal_Points_Statement-200_Greene_Street_-_Principal_Points_Statement-2026-02-13_v1.pdf",
 "case": "P2026-0018",
 "kind": "other:principal points statement 200 greene street principal point",
-"size": 102516
+"size": 102516,
+"tag": "documents-2026"
 },
 "30636cc0-0b48-455c-a01b-9afaea6598fb": {
 "asset": "P2025-0200__30636cc0__RESO_P2025-0200_IZO_Amendment_Coverted_Hotel_Units_PB_AMD.pdf",
@@ -3373,7 +3390,8 @@
 "asset": "P2026-0049__31204c52__Principal_Points_Statement-2026-03-23_SPP_206_Olean_Ave_JC_-2026-03-24_v1.pdf",
 "case": "P2026-0049",
 "kind": "other:principal points statement spp 206 olean ave(jc) v1",
-"size": 108745
+"size": 108745,
+"tag": "documents-2026"
 },
 "313a793c-9f2f-4609-ba17-cfc2448af4e9": {
 "asset": "P2026-0110__313a793c__Survey-2509048-JERSEY-CITY-SURVEY-LOT-75-10-07-2025-Dsig-2026-07-16_v1.pdf",
@@ -3385,25 +3403,22 @@
 "asset": "P2026-0077__31c89f11__Zoning_Determination_Letter-ZDL-2026-000465_-_34_LAIDLAW_AVE-2026-05-11_v1.pdf",
 "case": "P2026-0077",
 "kind": "other:zoning determination letter zdl 2026 34 laidlaw ave v1",
-"size": 164279
+"size": 164279,
+"tag": "documents-2026"
 },
 "31d84fa3-ed5f-43f2-ac58-b2f5bfd30a9a": {
 "asset": "Z2026-0055__31d84fa3__RESO_Z2024-0028_533_Bergen_Ave_B_18406_L_17.pdf",
 "case": "Z2026-0055",
 "kind": "resolution",
-"size": 145075
-},
-"31d99f71-90e1-407b-ac3a-0878168982b6": {
-"asset": "P2026-0015__31d99f71__Property_Tax_Certificate-Tax_Cert_2-2026_-_344_Second-2026-02-11_v1.pdf",
-"case": "P2026-0015",
-"kind": "tax-cert",
-"size": 24354
+"size": 145075,
+"tag": "documents-2026"
 },
 "31e56529-db13-4c82-a6db-303eddfb54b1": {
 "asset": "P2026-0030__31e56529__10_Ownership_disclosure_form-722_Garfield_10_Disclosure-2026-03-02_v1.pdf",
 "case": "P2026-0030",
 "kind": "other:10% ownership disclosure form 722 garfield 10% disclosure v1",
-"size": 88775
+"size": 88775,
+"tag": "documents-2026"
 },
 "31f7a3c6-c7da-4ae0-94f3-49f70a655cd7": {
 "asset": "P2025-0269__31f7a3c6__411_Liberty_Ave_Survey.pdf",
@@ -3430,7 +3445,8 @@
 "asset": "P2026-0067__3234d309__Resolution_-_Memorialized-RESO_P22-116_252_Central_Ave_B_4404_L_3-2026-05-01_v1.pdf",
 "case": "P2026-0067",
 "kind": "resolution",
-"size": 236397
+"size": 236397,
+"tag": "documents-2026"
 },
 "3235c731-47dd-4ca8-ba13-c6cd934f1401": {
 "asset": "P2025-0198__3235c731__Notice_Packet_-_Proof_of_Service-808_Pavonia_-_Newspaper_Publication_Affidavit_for_3.31.26-2026-03-31_v1.pdf",
@@ -3491,7 +3507,8 @@
 "asset": "P2026-0147__32ef05da__10-13-26_JCPB_-_09_-_P2026-0147_-_Master_Plan_Historic_Preservation_Element-_MINI.pdf",
 "case": "P2026-0147",
 "kind": "plans",
-"size": 142527
+"size": 142527,
+"tag": "documents-2026"
 },
 "3350ea18-290e-4fc0-9119-76598aa11568": {
 "asset": "P2025-0196__3350ea18__Principal_Points_Statement-Planning_and_zoning_report_260127-2026-02-02_v1.pdf",
@@ -3534,17 +3551,12 @@
 "size": 69733,
 "tag": "documents-2025"
 },
-"33a30696-5307-4957-a913-cba880dea0aa": {
-"asset": "Z2026-0019__33a30696__112_PALISADE_AVE_1ST_DRAFT_FEE_CALC_SHEET.pdf",
-"case": "Z2026-0019",
-"kind": "other:112 palisade ave 1st draft fee calc sheet",
-"size": 95415
-},
 "33a4f383-e80a-4e3a-9e00-d8252329bb8d": {
 "asset": "P2026-0079__33a4f383__10_Ownership_disclosure_form-10_disclosure_form_completed-2026-06-03_v1.pdf",
 "case": "P2026-0079",
 "kind": "other:10% ownership disclosure form 10% disclosure form completed ",
-"size": 89705
+"size": 89705,
+"tag": "documents-2026"
 },
 "33a86b82-586a-4d95-b50c-33a9b77c5b67": {
 "asset": "P2025-0253__33a86b82__Stormwater_Management_Report-1721-1723-kennedy_-drainage-report-2025-11-25_v1.pdf",
@@ -3571,7 +3583,8 @@
 "asset": "P2026-0035__33c75594__Cover_Letter-Letter_to_Planner_Re_Extension_30-40_Newport_-2026-03-12_v1.pdf",
 "case": "P2026-0035",
 "kind": "other:cover letter letter to planner re extension (30 40 newport) ",
-"size": 232031
+"size": 232031,
+"tag": "documents-2026"
 },
 "33e21534-c880-4e63-acff-d42505b8aa3c": {
 "asset": "Z2025-0083__33e21534__Transcript-Original_Transcript_Z22-053_88_Highway_139-2025-11-04_v1.pdf",
@@ -3692,7 +3705,8 @@
 "asset": "P2026-0049__357b4bd0__Property_Tax_Certificate-Tax_Certification_1.12.26_-_current-2026-03-24_v1.pdf",
 "case": "P2026-0049",
 "kind": "tax-cert",
-"size": 205645
+"size": 205645,
+"tag": "documents-2026"
 },
 "3591f7d8-ae58-4237-bd1e-6a011d36b81e": {
 "asset": "P2025-0250__3591f7d8__RESO_P2025-0250_Medical_District_Rezoning_PB_Rec_Ord_25-124.pdf",
@@ -3738,7 +3752,8 @@
 "asset": "P2026-0152__363e3c8d__Affidavit_of_Ownership-Affidavit_of_Ownership-2026-09-30_v1.pdf",
 "case": "P2026-0152",
 "kind": "notice",
-"size": 24194
+"size": 24194,
+"tag": "documents-2026"
 },
 "36cec793-bd08-4304-b26b-0a9ec1331dbc": {
 "asset": "Z2025-0054__36cec793__Affidavit_of_Ownership-Affidavit_of_Ownership_230_Fourth_-2025-07-15_v1.pdf",
@@ -3760,12 +3775,6 @@
 "kind": "forestry",
 "size": 12096,
 "tag": "documents-2025"
-},
-"36f203df-ebf1-465d-8acb-1b93b4e70739": {
-"asset": "P2026-0016__36f203df__Affidavit_of_Ownership-affidavit_of_ownership-2026-02-11_v1.pdf",
-"case": "P2026-0016",
-"kind": "notice",
-"size": 59946
 },
 "3706cff2-1eb5-4f3c-9f84-d4fff0d90bd0": {
 "asset": "Z2025-0070__3706cff2__Principal_Points_Statement-Statement_of_Principal_Points-2026-07-24_v1.pdf",
@@ -3798,7 +3807,8 @@
 "asset": "P2026-0044__3740b1d6__Property_Tax_Certificate-216_Palisade_Ave-2026-04-07_v2.pdf",
 "case": "P2026-0044",
 "kind": "tax-cert",
-"size": 206110
+"size": 206110,
+"tag": "documents-2026"
 },
 "374ef51a-93e9-41c8-81cd-ee612eb63ebf": {
 "asset": "Z2025-0095__374ef51a__Photos-IMG_9756-2026-05-22_v1.jpeg",
@@ -3852,19 +3862,22 @@
 "asset": "P2026-0043__382b86cc__Affidavit_of_Ownership-558_Communipaw_-_Affidavit_of_Ownership_-_Site_Plan_Amendment-2026-03-19_v1.pdf",
 "case": "P2026-0043",
 "kind": "plans",
-"size": 27682
+"size": 27682,
+"tag": "documents-2026"
 },
 "38587f25-44b8-4c8d-9f9f-125db3602f17": {
 "asset": "P2026-0071__38587f25__Green_Area_Ratio_GAR_table-10382-111_GAR_TABL_LOD_-2026-06-25_v1.pdf",
 "case": "P2026-0071",
 "kind": "other:green area ratio (gar) table 10382 111 gar tabl (lod) v1",
-"size": 31616
+"size": 31616,
+"tag": "documents-2026"
 },
 "385adedb-fa65-40f4-97bf-c57eb2964061": {
 "asset": "Z2026-0030__385adedb__ZDL-2025-001072_124_HIGHLAND.PDF",
 "case": "Z2026-0030",
 "kind": "other:zdl 2025 124 highland",
-"size": 190382
+"size": 190382,
+"tag": "documents-2026"
 },
 "38689b84-2ffa-4111-b053-eec013553132": {
 "asset": "P2025-0168__38689b84__Photos-silo_slab-2025-08-11_v1.JPG",
@@ -3877,7 +3890,8 @@
 "asset": "P2026-0095__386ea406__RESO_P2026-0095_Data_Center_Amendment_PB_Resolution.pdf",
 "case": "P2026-0095",
 "kind": "resolution",
-"size": 203033
+"size": 203033,
+"tag": "documents-2026"
 },
 "38762552-1a62-4c4f-9625-03dee9d775b6": {
 "asset": "Z2025-0057__38762552__Photos-IMG_7084-2025-07-28_v1.jpeg",
@@ -3890,7 +3904,8 @@
 "asset": "P2026-0090__3888befd__274-276_COLUMBIA_AVE.pdf",
 "case": "P2026-0090",
 "kind": "jcmua",
-"size": 152156
+"size": 152156,
+"tag": "documents-2026"
 },
 "388f12ba-0279-4e9d-8d3b-d859d4f20315": {
 "asset": "Z2025-0049__388f12ba__10_Ownership_disclosure_form-10_disclosure_form_Completed-2025-07-03_v1.pdf",
@@ -4067,7 +4082,8 @@
 "asset": "Z2026-0041__3ac4b808__Demolition_Determination_Memo-239_Central_Avenue_B-26-0005-2026-07-21_v1.pdf",
 "case": "Z2026-0041",
 "kind": "demolition",
-"size": 132932
+"size": 132932,
+"tag": "documents-2026"
 },
 "3ad5a7a8-3318-42df-a2c2-2a11fe0dbfab": {
 "asset": "Z2025-0082__3ad5a7a8__2-5-26_JCBOA_Z2025-0082_6_Stegman_Place.pdf",
@@ -4121,7 +4137,8 @@
 "asset": "P2026-0041__3becabb8__RESO_P2026-0041_165-169_and_173_Academy_EXT_b_12308_L_12_13.pdf",
 "case": "P2026-0041",
 "kind": "other:reso p2026 0041 165 169 and 173 academy ext b 12308 l 12 13",
-"size": 256836
+"size": 256836,
+"tag": "documents-2026"
 },
 "3bf9e3e9-6d03-4f30-867e-2bbffcd82cbd": {
 "asset": "Z2025-0055__3bf9e3e9__Architectural_Plans-Arch_Plans_3-2026_-_366_Fifth-2026-03-23_v1.pdf",
@@ -4271,17 +4288,12 @@
 "size": 1383438,
 "tag": "documents-2025"
 },
-"3e20c738-399b-4fae-a42d-b9d95222494f": {
-"asset": "P2026-0015__3e20c738__03-24-26_JCPB_-_07c_-_P2026-0015_-_344_Second_Street_-_MINI.pdf",
-"case": "P2026-0015",
-"kind": "other:jcpb 07c p2026 0015 344 second street mini",
-"size": 115516
-},
 "3e616209-d19a-430e-8faf-f66bea6fb9b1": {
 "asset": "Z2026-0045__3e616209__Determination_of_Significance_Memo-_Non-Historic_64_Sackett_Street_B-25-0498_1_-2026-08-18_v1.pdf",
 "case": "Z2026-0045",
 "kind": "other:determination of significance memo [non historic] 64 sackett",
-"size": 172429
+"size": 172429,
+"tag": "documents-2026"
 },
 "3e6ddcb1-77f5-4ac9-b3b4-fd8e05790980": {
 "asset": "P2025-0252__3e6ddcb1__Transcript-Transcript-2026-03-23_v1.pdf",
@@ -4370,7 +4382,8 @@
 "asset": "P2026-0056__3ff08b7f__215_Van_Vorst_St_P2026-0056_MUA_Review_001.pdf",
 "case": "P2026-0056",
 "kind": "other:215 van vorst st p2026 0056 (mua review)001",
-"size": 113687
+"size": 113687,
+"tag": "documents-2026"
 },
 "3ff64144-9bf5-4fcd-8741-bc8633224a63": {
 "asset": "P2025-0185__3ff64144__Stormwater_Management_Report-06081-0016_-_Stormwater_Report_Signed-2026-03-20_v1.pdf",
@@ -4392,12 +4405,6 @@
 "size": 263671,
 "tag": "documents-2025"
 },
-"40644d6d-b355-4d4a-a9c2-2616cca5961e": {
-"asset": "P2026-0001__40644d6d__RESO_P2026-0001_Jackson_Hill_RDP_Amendment_PB_Rec_May_2026.pdf",
-"case": "P2026-0001",
-"kind": "other:reso p2026 0001 jackson hill rdp amendment pb rec may 2026",
-"size": 241678
-},
 "4068579a-acf6-425b-ac0b-71e0d29c67cc": {
 "asset": "Z2026-0005__4068579a__Photos-Side-2002-2026-01-16_v1.png",
 "case": "Z2026-0005",
@@ -4408,7 +4415,8 @@
 "asset": "Z2026-0042__40b8683a__resolution_7.17.14.pdf",
 "case": "Z2026-0042",
 "kind": "resolution",
-"size": 246518
+"size": 246518,
+"tag": "documents-2026"
 },
 "40d47393-ccab-48b6-928b-8f39452b5d39": {
 "asset": "P2026-0026__40d47393__General_Development_Application-General_Development_Application-UPDATed_No_contact-2026-02-27_v1.pdf",
@@ -4434,7 +4442,8 @@
 "asset": "P2026-0104__410a8ec2__Cover_Letter-Request_for_a_1_year_extension-2026-07-02_v1.pdf",
 "case": "P2026-0104",
 "kind": "other:cover letter request for a 1 year extension v1",
-"size": 99009
+"size": 99009,
+"tag": "documents-2026"
 },
 "4162ff0b-de5e-481c-b44b-c34b8b35baef": {
 "asset": "P2026-0034__4162ff0b__Other-NJDCA_Cert_for_eplans-Landscape_v1.pdf",
@@ -4492,7 +4501,8 @@
 "asset": "P2026-0162__42d0f1ba__Affidavit_of_Ownership-982_Summit_Amendment_affidavit-2026-10-15_v1.pdf",
 "case": "P2026-0162",
 "kind": "notice",
-"size": 29966
+"size": 29966,
+"tag": "documents-2026"
 },
 "42f77df3-6c04-416e-90d6-a58706a4f0cc": {
 "asset": "P2025-0145__42f77df3__RESO_P2025-0118_535_Monmouth_St_B_6902_L_27.pdf",
@@ -4512,7 +4522,8 @@
 "asset": "P2026-0023__43203554__08-25-26_JCPB_-_17_-_P2026-0023_-_20_Long_Slip.pdf",
 "case": "P2026-0023",
 "kind": "other:jcpb 17 p2026 0023 20 long slip",
-"size": 186375
+"size": 186375,
+"tag": "documents-2026"
 },
 "4354b0b4-cfff-42b4-b8dc-da1ab92ef315": {
 "asset": "Z2025-0071__4354b0b4__Notice_Sample___Draft-42_Delmar_Rd_violation_notice09152025-2025-09-16_v1.pdf",
@@ -4571,7 +4582,8 @@
 "asset": "Z2026-0037__4422739e__Affidavit_of_Ownership-Affidavit_of_Ownership_577_Jackson_Amendment-2026-06-15_v1.pdf",
 "case": "Z2026-0037",
 "kind": "notice",
-"size": 44659
+"size": 44659,
+"tag": "documents-2026"
 },
 "443d013d-f24c-4be4-a7a6-952fff0c0925": {
 "asset": "P2025-0161__443d013d__Photos-146_Academy_photo-2025-08-06_v1.jpg",
@@ -4590,7 +4602,8 @@
 "asset": "Z2026-0048__44518d9d__Cover_Letter-Cover_Letter_-_32_Central-2026-10-07_v1.pdf",
 "case": "Z2026-0048",
 "kind": "other:cover letter cover letter 32 central v1",
-"size": 251143
+"size": 251143,
+"tag": "documents-2026"
 },
 "445b3187-9e91-44c1-8fd1-094b3bbf4c7f": {
 "asset": "P2025-0169__445b3187__Other-Zoning_Consistency_Memorandum_v1.pdf",
@@ -4610,7 +4623,8 @@
 "asset": "Z2026-0047__447e1d51__Waiver_Request-List_of_Submission_Waivers-2026-08-24_v1.pdf",
 "case": "Z2026-0047",
 "kind": "other:waiver request list of submission waivers v1",
-"size": 166043
+"size": 166043,
+"tag": "documents-2026"
 },
 "449259fb-fe09-444f-962c-c3a7a9bf7a0f": {
 "asset": "P2025-0186__449259fb__Transcript-08-25-26_JCPB_-_13_-_P2025-0186_-_130_Central_Avenue-2026-09-14_v1.pdf",
@@ -4623,7 +4637,8 @@
 "asset": "P2026-0077__449845f9__Property_Tax_Certificate-Taxes_paid_memo_34_Lalidlaw_05-12-26-2026-05-15_v1.pdf",
 "case": "P2026-0077",
 "kind": "tax-cert",
-"size": 65032
+"size": 65032,
+"tag": "documents-2026"
 },
 "44a04db4-25d6-4380-a060-dcd268b1544c": {
 "asset": "P2025-0158__44a04db4__Resolution_-_Memorialized-JCRA_Desigation_Lots_B_C-2026-10-28_v1.pdf",
@@ -4650,7 +4665,8 @@
 "asset": "P2026-0047__44ca3ab5__STAFF_MEMO_P2026-0047.pdf",
 "case": "P2026-0047",
 "kind": "staff-memo",
-"size": 193725
+"size": 193725,
+"tag": "documents-2026"
 },
 "44e4383b-19fb-4eb1-a7cf-2762a328ace4": {
 "asset": "P2025-0180__44e4383b__RESO_P2025-0180_113-115_Oak_St_B_19503_L_3.pdf",
@@ -4725,7 +4741,8 @@
 "asset": "P2026-0049__45aab6fe__P2026-0049_-_Forestry_Comments.docx",
 "case": "P2026-0049",
 "kind": "forestry",
-"size": 11744
+"size": 11744,
+"tag": "documents-2026"
 },
 "4655d006-129e-4bd3-a9fa-9ce7ac191bf9": {
 "asset": "Z2025-0095__4655d006__Other-NJDEP_NJ-GeoWeb_Flood_Hazard_w-climate_adjustment_v1.pdf",
@@ -4887,13 +4904,15 @@
 "asset": "P2026-0112__4837afcf__10_Ownership_disclosure_form-10_disclosure_form-2026-07-16_v1.pdf",
 "case": "P2026-0112",
 "kind": "other:10% ownership disclosure form 10 disclosure form v1",
-"size": 115999
+"size": 115999,
+"tag": "documents-2026"
 },
 "483f3e73-1021-4c86-8c12-cbdbe206c05d": {
 "asset": "P2026-0094__483f3e73__Cover_Letter-6.12.2026_Request_for_a_One_Year_Extension_Case_No._P21-163-2026-06-12_v1.pdf",
 "case": "P2026-0094",
 "kind": "other:cover letter request for a one year extension case no. p21 1",
-"size": 97360
+"size": 97360,
+"tag": "documents-2026"
 },
 "48465790-a1b3-49b2-bb0c-8cbbff867b56": {
 "asset": "P2025-0169__48465790__Other-Zoning_Consistency_Memorandum_rev._120525__v1.pdf",
@@ -4906,13 +4925,15 @@
 "asset": "P2026-0112__484bb6ed__Waiver_Request-List_of_Submission_Waivers-2026-07-16_v1.pdf",
 "case": "P2026-0112",
 "kind": "other:waiver request list of submission waivers v1",
-"size": 185120
+"size": 185120,
+"tag": "documents-2026"
 },
 "485b5db2-b31e-4627-83c2-7dbe6858cfab": {
 "asset": "P2026-0047__485b5db2__Principal_Points_Statement-26_0421_Bayfront_32_Site_Plan_Amendment_2_-_Statement_of_Principal_Points-2026-04-21_v1.pdf",
 "case": "P2026-0047",
 "kind": "plans",
-"size": 104370
+"size": 104370,
+"tag": "documents-2026"
 },
 "485c12db-159a-4709-8297-21cc327aae54": {
 "asset": "Z2026-0005__485c12db__Photos-Front-2023-2026-01-16_v1.png",
@@ -4944,7 +4965,8 @@
 "asset": "P2026-0023__489fa02c__General_Development_Application-General_Development_Application-20_Long_Slip_Administrative_Amendment_NO_contact-2026-02",
 "case": "P2026-0023",
 "kind": "application",
-"size": 144368
+"size": 144368,
+"tag": "documents-2026"
 },
 "489fa634-72e8-4e83-baec-f2afc14ea18b": {
 "asset": "P2025-0126__489fa634__Civil_Engineering_Plans-Revised_plans_Journal_Squared_Phase_3_Site_Plan_Amendment-2025-08-04_v1_SIGNED.pdf",
@@ -4971,13 +4993,15 @@
 "asset": "P2026-0093__4930e6a2__Affidavit_of_Ownership-Aff_Owner_215_Van_Vorst-2026-06-10_v1.pdf",
 "case": "P2026-0093",
 "kind": "notice",
-"size": 39336
+"size": 39336,
+"tag": "documents-2026"
 },
 "494bb46b-78e9-49f4-92c0-d6095e31c901": {
 "asset": "P2026-0109__494bb46b__10_Ownership_disclosure_form-10_disclosure_form-2026-07-16_v1.pdf",
 "case": "P2026-0109",
 "kind": "other:10% ownership disclosure form 10 disclosure form v1",
-"size": 100938
+"size": 100938,
+"tag": "documents-2026"
 },
 "494bc871-4215-4ea2-8fc2-66a8997ba60c": {
 "asset": "Z2026-0004__494bc871__Memorandum-32shermanplacdberado.Reportv2.0_12.5-2026-01-14_v1.pdf",
@@ -5009,7 +5033,8 @@
 "asset": "P2026-0077__4a378146__P2026-0077_-_Forestry_Comments.docx",
 "case": "P2026-0077",
 "kind": "forestry",
-"size": 11679
+"size": 11679,
+"tag": "documents-2026"
 },
 "4a4bfa81-ca1f-43ee-b214-837cb4c5fc70": {
 "asset": "P2025-0183__4a4bfa81__Other-Rider_to_GDA_rev._072926__v1.pdf",
@@ -5028,7 +5053,8 @@
 "asset": "P2026-0128__4a7311b2__10_Ownership_disclosure_form-Disclosure_-359_Central_8.6.26-2026-08-11_v1.pdf",
 "case": "P2026-0128",
 "kind": "other:10% ownership disclosure form disclosure 359 central v1",
-"size": 83353
+"size": 83353,
+"tag": "documents-2026"
 },
 "4a802681-b1f9-4427-bd80-1d151eea4c26": {
 "asset": "P2025-0259__4a802681__10_Ownership_disclosure_form-Ownership_Disclosure_-_127_Delaware_Ave_LLC-2025-12-09_v1.pdf",
@@ -5127,7 +5153,8 @@
 "asset": "P2026-0021__4c50bd45__04-14-26_JCPB_-_08_-_P2026-0021_-_17-25_Perrine_Avenue.pdf",
 "case": "P2026-0021",
 "kind": "other:jcpb 08 p2026 0021 17 25 perrine avenue",
-"size": 105252
+"size": 105252,
+"tag": "documents-2026"
 },
 "4c79773a-5ec4-491b-8f53-b69394ee0250": {
 "asset": "P2025-0127__4c79773a__Forestry_Comments_-_P2025-0127.docx",
@@ -5135,12 +5162,6 @@
 "kind": "forestry",
 "size": 11675,
 "tag": "documents-2025-2"
-},
-"4cac40c9-736e-4527-bb8a-726760c312e3": {
-"asset": "Z2026-0017__4cac40c9__Cover_Letter-Cover_Letter_Administrative_Amendment_1.30.26-2026-01-30_v1.pdf",
-"case": "Z2026-0017",
-"kind": "other:cover letter cover letter administrative amendment v1",
-"size": 28748
 },
 "4cc39b30-a326-414d-a53f-c331a22ca365": {
 "asset": "Z2025-0065__4cc39b30__Site_Plan-Layout1-2025-08-08_v1.pdf",
@@ -5153,13 +5174,15 @@
 "asset": "P2026-0091__4cdf0d3c__Property_Tax_Certificate-Tax_Clearance_Cert.-2026-06-08_v1.pdf",
 "case": "P2026-0091",
 "kind": "tax-cert",
-"size": 156428
+"size": 156428,
+"tag": "documents-2026"
 },
 "4ce1c52a-2fee-4c00-87c1-e73e0938ae8d": {
 "asset": "P2026-0024__4ce1c52a__Forestry_Comments_-_P2026-0024.docx",
 "case": "P2026-0024",
 "kind": "forestry",
-"size": 11778
+"size": 11778,
+"tag": "documents-2026"
 },
 "4cfbed3e-55cd-438c-b517-5275f2cd6344": {
 "asset": "P2025-0239__4cfbed3e__RESO_P2025-0239_197_Webster_Ave_SP_B_2904_L_18.pdf",
@@ -5206,7 +5229,8 @@
 "asset": "P2026-0125__4d52d1db__08-25-26_JCPB_-_08_-_P2026-0125_-_232-238_Sip_Avenue_-_MINI.pdf",
 "case": "P2026-0125",
 "kind": "other:jcpb 08 p2026 0125 232 238 sip avenue mini",
-"size": 123834
+"size": 123834,
+"tag": "documents-2026"
 },
 "4d5b7960-4c70-44cf-b4bc-3bd2e7a01422": {
 "asset": "P2025-0176__4d5b7960__10_Ownership_disclosure_form-Disclosure_statement-2025-08-22_v1.pdf",
@@ -5232,19 +5256,22 @@
 "asset": "P2026-0020__4e31702b__RESO_P19-194_632-652_Grand_St_20220614.pdf",
 "case": "P2026-0020",
 "kind": "other:reso p19 194 632 652 grand st",
-"size": 242673
+"size": 242673,
+"tag": "documents-2026"
 },
 "4e440fea-507b-4d79-a457-65354863af22": {
 "asset": "P2026-0133__4e440fea__Resolution_-_Memorialized-RESO_P23-072_381_Route_440-2026-08-19_v1.pdf",
 "case": "P2026-0133",
 "kind": "resolution",
-"size": 175514
+"size": 175514,
+"tag": "documents-2026"
 },
 "4e53589b-145e-4df2-b44e-1bb2c5847d50": {
 "asset": "Z2026-0021__4e53589b__Property_Tax_Certificate-Tax_Status_2-2026_-_290_Seventh-2026-02-13_v1.pdf",
 "case": "Z2026-0021",
 "kind": "tax-cert",
-"size": 209459
+"size": 209459,
+"tag": "documents-2026"
 },
 "4e61353f-4922-4a84-b7ff-0e6eb6e1fc00": {
 "asset": "Z2025-0084__4e61353f__Property_Tax_Certificate-March_23_2023_-_Extension-2025-11-07_v1.pdf",
@@ -5303,7 +5330,8 @@
 "asset": "P2026-0046__4f6e0c9f__Affidavit_of_Ownership-2122.00_Aff_of_Ownership-_signed-2026-03-20_v1.pdf",
 "case": "P2026-0046",
 "kind": "notice",
-"size": 40653
+"size": 40653,
+"tag": "documents-2026"
 },
 "4fccd55c-d4ab-42c1-b198-b5cb439a6c02": {
 "asset": "P2025-0143__4fccd55c__10_Ownership_disclosure_form-10_Disclosure-2025-07-18_v1.pdf",
@@ -5322,7 +5350,8 @@
 "asset": "Z2026-0025__4fdba87a__Survey-14_Survey_FS25-266_REV_2-Model_11-25-2025-2026-03-10_v1.pdf",
 "case": "Z2026-0025",
 "kind": "survey",
-"size": 241700
+"size": 241700,
+"tag": "documents-2026"
 },
 "5023c3c7-d920-49d5-b66b-dd3efc3ad9ab": {
 "asset": "P2025-0133__5023c3c7__Affordable_Housing_Checklist_Form-547_Summit_Ave_I_AF-2026-0071_I_Approved_AH_Checklist-2026-03-31_v1.pdf",
@@ -5355,7 +5384,8 @@
 "asset": "P2026-0114__51292ecc__Affordable_Housing_Checklist_Form-AHA_Checklist-2026-07-20_v1.pdf",
 "case": "P2026-0114",
 "kind": "affordable",
-"size": 148562
+"size": 148562,
+"tag": "documents-2026"
 },
 "5134c3cf-2f8b-49f0-98c5-cec6cec29088": {
 "asset": "P2025-0125__5134c3cf__Property_Tax_Certificate-127-133.5_Morgan_Street_Tax_Certifications_Lots_9-10-11-12-2025-06-23_v1.pdf",
@@ -5382,7 +5412,8 @@
 "asset": "P2026-0149__51b064ac__10_Ownership_disclosure_form-Disclosure_-_394_Summit-2026-10-16_v1.pdf",
 "case": "P2026-0149",
 "kind": "other:10% ownership disclosure form disclosure 394 summit v1",
-"size": 11683
+"size": 11683,
+"tag": "documents-2026"
 },
 "51b9777a-7edc-433d-97e8-a937d107be2c": {
 "asset": "P2025-0185__51b9777a__Forestry_Comments_P2025-0185.docx",
@@ -5449,7 +5480,8 @@
 "asset": "P2026-0099__52863f76__Notice_Sample___Draft-Notice_of_Hearing_-_364_5th-2026-09-30_v1.pdf",
 "case": "P2026-0099",
 "kind": "notice",
-"size": 101385
+"size": 101385,
+"tag": "documents-2026"
 },
 "529a9d93-b430-4e4d-8071-6265814bdcc4": {
 "asset": "P2025-0169__529a9d93__Notice_Packet_-_Proof_of_Service-Affidavit_of_Publication_Mailing_090826_-2026-09-08_v1.pdf",
@@ -5545,7 +5577,8 @@
 "asset": "P2026-0108__53948c1a__10-27-26_JCPB_-_15_-_P2026-0108_-_ROSI_-_MINI.pdf",
 "case": "P2026-0108",
 "kind": "other:jcpb 15 p2026 0108 rosi mini",
-"size": 146938
+"size": 146938,
+"tag": "documents-2026"
 },
 "5399248f-130b-4f71-ad4d-cd35d0ac7203": {
 "asset": "Z2026-0022__5399248f__2.5.2026_VIOLATION.PDF_Z2026-0022.PDF",
@@ -5557,19 +5590,22 @@
 "asset": "P2026-0018__53bd950d__Property_Tax_Certificate-200_Greene_Street_-_Tax_Certification-2026-02-17_v1.pdf",
 "case": "P2026-0018",
 "kind": "tax-cert",
-"size": 33497
+"size": 33497,
+"tag": "documents-2026"
 },
 "53e01762-bc88-4f9f-9b97-af3603436c9d": {
 "asset": "P2026-0019__53e01762__Property_Tax_Certificate-Tax_clearance--49_Fisk_2.26.26_-2026-05-07_v1.pdf",
 "case": "P2026-0019",
 "kind": "tax-cert",
-"size": 64456
+"size": 64456,
+"tag": "documents-2026"
 },
 "53e16eab-873b-47d2-b5af-7bbe195bfc49": {
 "asset": "P2026-0111__53e16eab__Notice_Sample___Draft-808_-_Public_Notice_DRAFT_-_NOT_FOR_PUBLICATION-2026-07-16_v1.pdf",
 "case": "P2026-0111",
 "kind": "notice",
-"size": 191476
+"size": 191476,
+"tag": "documents-2026"
 },
 "53ead307-b418-4a2a-8ca1-1d165edede2a": {
 "asset": "P2026-0120__53ead307__Let_s_Move_JC_-_Appendix_A_Recommendations_-_FINAL_2026-06-29.pdf",
@@ -5581,13 +5617,15 @@
 "asset": "P2026-0025__53faa769__Affidavit_of_Ownership-Affidavit_of_Ownership-2026-08-10_v1.pdf",
 "case": "P2026-0025",
 "kind": "notice",
-"size": 109355
+"size": 109355,
+"tag": "documents-2026"
 },
 "5400ac34-2a8a-4f33-a560-d213dd1195c9": {
 "asset": "P2026-0036__5400ac34__Affidavit_of_Ownership-AOO-_99_Arlington-2026-03-12_v1.pdf",
 "case": "P2026-0036",
 "kind": "notice",
-"size": 34684
+"size": 34684,
+"tag": "documents-2026"
 },
 "5404d246-93fd-4b09-a056-c050c7848514": {
 "asset": "P2025-0129__5404d246__Traffic_Assessment_Report-2026-02-09_Traffic_Impact_Study_2861_Kennedy_Blvd_v1.pdf",
@@ -5642,13 +5680,15 @@
 "asset": "P2026-0024__54bcf7da__Civil_Change_Memo-Civil_Engineering_Revision_Memo_021826_-2026-02-25_v1.pdf",
 "case": "P2026-0024",
 "kind": "engineering",
-"size": 42879
+"size": 42879,
+"tag": "documents-2026"
 },
 "54c3d56f-121e-44e1-8794-966b6734ea04": {
 "asset": "P2026-0070__54c3d56f__City_PB_JCRA-174_Newark_Ave._-_Letter_submitting_Original_Affidavit_of_Proof_of_Service_AS_SENT.pdf",
 "case": "P2026-0070",
 "kind": "notice",
-"size": 221430
+"size": 221430,
+"tag": "documents-2026"
 },
 "54cada40-357a-4a36-9289-3d891b50cebf": {
 "asset": "P2025-0252__54cada40__Property_Tax_Certificate-TAX_CERTIF_-_4Q_2025_-_12_12_25-2026-02-12_v1.pdf",
@@ -5702,7 +5742,8 @@
 "asset": "P2026-0085__556db8d9__Affidavit_of_Ownership-Signed_Aff_of_Ownership-2026-05-26_v1.pdf",
 "case": "P2026-0085",
 "kind": "notice",
-"size": 39969
+"size": 39969,
+"tag": "documents-2026"
 },
 "5570cf21-48c2-44f3-b8a4-2f6c61e9d6d2": {
 "asset": "P2025-0187__5570cf21__STAFF_MEMO_P2025-0187_165_Newark_Ave.pdf",
@@ -5715,7 +5756,8 @@
 "asset": "P2026-0073__5583fec7__10_Ownership_disclosure_form-Ownership_Disclosure_-_804_Newark-2026-05-06_v1.pdf",
 "case": "P2026-0073",
 "kind": "other:10% ownership disclosure form ownership disclosure 804 newar",
-"size": 116832
+"size": 116832,
+"tag": "documents-2026"
 },
 "55848b46-aec8-424d-869f-3ebee89ba985": {
 "asset": "P2025-0183__55848b46__Other-Final_DeSimone_Structural_Engineering_Report_re_ROW_080326_v1.pdf",
@@ -5735,7 +5777,8 @@
 "asset": "P2026-0077__55b229fd__10_Ownership_disclosure_form-10_Percent_Disclosure_34_Laidlaw-2026-05-11_v1.pdf",
 "case": "P2026-0077",
 "kind": "other:10% ownership disclosure form 10 percent disclosure 34 laidl",
-"size": 38880
+"size": 38880,
+"tag": "documents-2026"
 },
 "55cc0bc7-9d39-48e6-97d3-61ee0f566b32": {
 "asset": "P2025-0133__55cc0bc7__Demolition_Determination_Memo-547_Summit_-_Historic_-2025-07-01_v1.pdf",
@@ -5766,13 +5809,15 @@
 "asset": "P2026-0061__566eb96b__Water_Bill_Certificate-water_payment_confirmation-2026-04-17_v1.pdf",
 "case": "P2026-0061",
 "kind": "other:water bill certificate water payment confirmation v1",
-"size": 142148
+"size": 142148,
+"tag": "documents-2026"
 },
 "56849afe-2bcc-4d1d-b3d4-be2fafb19c8f": {
 "asset": "P2026-0046__56849afe__04-28-26_JCPB_-_08_-_P2026-0046_-_216_Academy_Street.pdf",
 "case": "P2026-0046",
 "kind": "other:jcpb 08 p2026 0046 216 academy street",
-"size": 101802
+"size": 101802,
+"tag": "documents-2026"
 },
 "568a3088-d633-4773-8d2a-6421085c8744": {
 "asset": "P2025-0135__568a3088__Property_Tax_Certificate-Taxes_paid_cert_167_and_173_academy_street-2025-07-16_v1.pdf",
@@ -5837,7 +5882,8 @@
 "asset": "Z2026-0044__5766a730__Cover_Letter-Request_for_a_Two_Year_Extension_8.17.2026-2026-08-17_v1.pdf",
 "case": "Z2026-0044",
 "kind": "other:cover letter request for a two year extension v1",
-"size": 100603
+"size": 100603,
+"tag": "documents-2026"
 },
 "57733244-d31c-47fc-9470-9f6febe69557": {
 "asset": "P2025-0216__57733244__Fee_calcluation_worksheet_P2025-0216.pdf",
@@ -5903,7 +5949,8 @@
 "asset": "P2026-0112__583c9c85__810_West_Side_Ave_P2026-0112_JCMUA_Review_.pdf",
 "case": "P2026-0112",
 "kind": "jcmua",
-"size": 160600
+"size": 160600,
+"tag": "documents-2026"
 },
 "58671dcc-20ed-4877-add9-851c3990b1d6": {
 "asset": "P2025-0124__58671dcc__Architectural_Plans-Architectural_Plans_rev._072525_-2025-07-30_v1.pdf",
@@ -5916,13 +5963,8 @@
 "asset": "Z2026-0045__58a419fa__Notice_Sample___Draft-Notice_of_Hearing_Sackett_St_-draft_10_02_2026-2026-10-02_v2.pdf",
 "case": "Z2026-0045",
 "kind": "notice",
-"size": 114944
-},
-"58e51328-c308-42c7-8c93-df124ac4e568": {
-"asset": "Z2026-0017__58e51328__REC-059379-2026_150.00_Fee_Payment_DEPOSIT_FEE.pdf",
-"case": "Z2026-0017",
-"kind": "other:rec 2026 ($150.00 fee payment) deposit fee",
-"size": 110006
+"size": 114944,
+"tag": "documents-2026"
 },
 "58ef6101-5e39-432b-ab4e-d026c155e4ae": {
 "asset": "Z2025-0076__58ef6101__AS_BUILT_Deviation_from_BOARD_APPROVAL_10.27Architectural_Plans-163_Delaware_Plans_10.9.25_-2025-10-15_v1_2_.pdf",
@@ -5949,7 +5991,8 @@
 "asset": "P2026-0127__597a16db__Resolution_-_Memorialized-RESO_7-2026_-_135_Monticello_Ave_B_16701_L_29-2026-08-10_v1.pdf",
 "case": "P2026-0127",
 "kind": "resolution",
-"size": 226362
+"size": 226362,
+"tag": "documents-2026"
 },
 "59ec5246-b680-4c05-8ad5-3f50072cfa8c": {
 "asset": "P2025-0166__59ec5246__Forestry_Comments_-_P2025-0166.docx",
@@ -5957,12 +6000,6 @@
 "kind": "forestry",
 "size": 13211,
 "tag": "documents-2025"
-},
-"59f2cef0-c584-4037-9820-1a7ebaa822f0": {
-"asset": "P2026-0009__59f2cef0__Zoning_Determination_Letter-ZDL-2025-001396_-_179_LIBERTY_AVE-2026-01-28_v1.pdf",
-"case": "P2026-0009",
-"kind": "other:zoning determination letter zdl 2025 179 liberty ave v1",
-"size": 164994
 },
 "59fc7cac-bcf7-4e96-8c71-642de55829d6": {
 "asset": "Z2026-0031__59fc7cac__Cover_Letter-Liberty_Storage_-_CJR_Ltr_to_Zoning_Officer_Secretary_Via_FedEx_4-6-26_-2026-04-07_v1.pdf",
@@ -5975,7 +6012,8 @@
 "asset": "P2026-0029__5a6e3b04__Forestry_Comments_-_P2026-0029.docx",
 "case": "P2026-0029",
 "kind": "forestry",
-"size": 11898
+"size": 11898,
+"tag": "documents-2026"
 },
 "5ab8f5b5-1d16-4e42-9450-e4fed2185d8e": {
 "asset": "P2025-0216__5ab8f5b5__10_Ownership_disclosure_form-10_ownership_Disclosure_203_Danforth-2025-10-30_v2.pdf",
@@ -5995,19 +6033,22 @@
 "asset": "P2026-0072__5afd44bb__Affidavit_of_Ownership-Affidavit_of_Ownership_169_Culver-2026-05-06_v1.pdf",
 "case": "P2026-0072",
 "kind": "notice",
-"size": 177220
+"size": 177220,
+"tag": "documents-2026"
 },
 "5afe9bb6-5016-4cde-bf10-474f8bd2b973": {
 "asset": "P2026-0051__5afe9bb6__Checklist-Fee_calcluation_worksheet_CURRENT-2026-04-09_v1.pdf",
 "case": "P2026-0051",
 "kind": "application",
-"size": 91710
+"size": 91710,
+"tag": "documents-2026"
 },
 "5b143fe1-16b3-4faf-8d42-26eeba298190": {
 "asset": "P2026-0111__5b143fe1__P2026-0111_808_WEST_SIDE_AVE_Jersey_City_NJ_07306_001.pdf",
 "case": "P2026-0111",
 "kind": "other:p2026 0111 (808 west side ave jersey city, nj 07306)001",
-"size": 171745
+"size": 171745,
+"tag": "documents-2026"
 },
 "5b19dca4-e567-439f-93f9-2bfd842e8316": {
 "asset": "P2025-0158__5b19dca4__Traffic_Assessment_Report-Dolan_Dean_Parking_Report_10.29.2026_v1.pdf",
@@ -6047,7 +6088,8 @@
 "asset": "Z2026-0025__5bd4e074__Forestry_Comments_-_Z2026-0025.docx",
 "case": "Z2026-0025",
 "kind": "forestry",
-"size": 12149
+"size": 12149,
+"tag": "documents-2026"
 },
 "5be7846a-b16f-4aae-96b8-5cba2e1259f2": {
 "asset": "P2025-0239__5be7846a__08-25-26_JCPB_-_18_19_-_P2025-0239_P2025-0240_-_197_199_Webster_Avenue_-_MINI.pdf",
@@ -6082,12 +6124,6 @@
 "kind": "resolution",
 "size": 551106
 },
-"5c5d2114-c95a-42e2-af22-68eb17c1a174": {
-"asset": "P2026-0012__5c5d2114__Resolution_-_Memorialized-RESO_P2024-0187_241_MLK_Drive_EXT_B_23404_L_30-2026-02-06_v1.pdf",
-"case": "P2026-0012",
-"kind": "resolution",
-"size": 248230
-},
 "5c601dcc-4819-47c7-ad84-bed4cbcc7520": {
 "asset": "P2025-0169__5c601dcc__Other-Comment_Letter_-1_v1.pdf",
 "case": "P2025-0169",
@@ -6119,7 +6155,8 @@
 "asset": "P2026-0025__5c9d3453__129_Yale_St-SAPP-0526-1510.pdf",
 "case": "P2026-0025",
 "kind": "other:129 yale st sapp 0526 1510",
-"size": 173560
+"size": 173560,
+"tag": "documents-2026"
 },
 "5cbd143c-58f1-46e5-a90d-d26b0930eea6": {
 "asset": "Z2025-0072__5cbd143c__Planning_Approved_Signature_Set-Arch_Plans_Z2025-0072.pdf",
@@ -6139,7 +6176,8 @@
 "asset": "Z2026-0041__5d10ea42__Property_Tax_Certificate-Tax_certification_4.15.26-2026-07-21_v1.pdf",
 "case": "Z2026-0041",
 "kind": "tax-cert",
-"size": 26882
+"size": 26882,
+"tag": "documents-2026"
 },
 "5d32fa32-54e8-4ae1-bf1f-33688174a57f": {
 "asset": "P2025-0262__5d32fa32__10_Ownership_disclosure_form-Ownership_Disclosure_--_Paho_Properties-2025-12-17_v1.pdf",
@@ -6185,12 +6223,6 @@
 "case": "P2026-0049",
 "kind": "plans",
 "size": 13605744
-},
-"5e0d4cac-1710-4e8b-98d5-c8477ac37737": {
-"asset": "P2026-0008__5e0d4cac__Property_Tax_Certificate-285_Liberty_Ave_Tax_Cert._8.14.24-2026-01-27_v1.pdf",
-"case": "P2026-0008",
-"kind": "tax-cert",
-"size": 123990
 },
 "5e380d9f-c940-45a7-ab40-4e71529904fa": {
 "asset": "P2025-0134__5e380d9f__Notice_Packet_-_Proof_of_Service-Proof_of_Service-391_Fairmount_Ave-2025-09-29_v1.pdf",
@@ -6329,7 +6361,8 @@
 "asset": "P2026-0063__5fe1cdb8__Waiver_Request-List_of_Submission_Waivers-2026-04-23_v1.pdf",
 "case": "P2026-0063",
 "kind": "other:waiver request list of submission waivers v1",
-"size": 196373
+"size": 196373,
+"tag": "documents-2026"
 },
 "601ce684-b43f-43fa-b5aa-4d9d4cfbbb8d": {
 "asset": "Z2025-0086__601ce684__Cover_Letter-2_Year_Extension_Request_Letter_-_11_14_25-2025-11-14_v1.pdf",
@@ -6337,12 +6370,6 @@
 "kind": "other:cover letter 2 year extension request letter 11 14 25 v1",
 "size": 100626,
 "tag": "documents-2025"
-},
-"6021be53-b3a4-40fe-8556-25df35eb3012": {
-"asset": "Z2026-0015__6021be53__Photos-Cinny_Rolls_con_t-2026-01-22_v1.png",
-"case": "Z2026-0015",
-"kind": "other:photos cinny rolls con't v1",
-"size": 81904
 },
 "60302db9-89b0-4867-bce3-ba7f518f2336": {
 "asset": "Z2025-0054__60302db9__Cover_Letter-Correspondence_to_City_Planning_re__Site_Plan_Extension-2025-07-15_v1.pdf",
@@ -6355,13 +6382,15 @@
 "asset": "P2026-0110__60435fd4__RESO_P20-102_804-810_West_Side_Avenue.pdf",
 "case": "P2026-0110",
 "kind": "other:reso p20 102 804 810 west side avenue",
-"size": 214273
+"size": 214273,
+"tag": "documents-2026"
 },
 "605cdc84-7f9e-4c13-a8db-aeeee6578489": {
 "asset": "P2026-0018__605cdc84__Other-200_Greene_Street_-_Zoning_Table_v1.pdf",
 "case": "P2026-0018",
 "kind": "application",
-"size": 39014
+"size": 39014,
+"tag": "documents-2026"
 },
 "60656d0b-96e8-4d7d-b1e7-40584e1ee1c8": {
 "asset": "Z2026-0004__60656d0b__Resolution_-_Memorialized-HPC_Resolution_To_Recommend_Denial_32_SHERMAN_PLACE_B-25-1002-2026-01-14_v1.pdf",
@@ -6387,7 +6416,8 @@
 "asset": "P2026-0053__60c62e93__10_Ownership_disclosure_form-Ownership_Disclosure-2026-03-31_v1.pdf",
 "case": "P2026-0053",
 "kind": "other:10% ownership disclosure form ownership disclosure v1",
-"size": 12566
+"size": 12566,
+"tag": "documents-2026"
 },
 "60c6cd46-d9d6-4cdc-adc1-005dee9ada39": {
 "asset": "P2025-0241__60c6cd46__Property_Tax_Certificate-Tax_Cert_9-19-25_lot_36-2025-11-07_v1.pdf",
@@ -6400,13 +6430,15 @@
 "asset": "Z2026-0032__60fd8c73__Water_Bill_Certificate-Water_Certificate_04-08-2026_-2026-04-09_v1.pdf",
 "case": "Z2026-0032",
 "kind": "other:water bill certificate water certificate ( ) v1",
-"size": 55717
+"size": 55717,
+"tag": "documents-2026"
 },
 "610f593f-6de0-476c-ab6e-7540057d033f": {
 "asset": "P2026-0118__610f593f__P2026-0118_-_151_West_Side_Avenue_Subdivision_-_Forestry_Comments.docx",
 "case": "P2026-0118",
 "kind": "forestry",
-"size": 21858
+"size": 21858,
+"tag": "documents-2026"
 },
 "612b0b46-dc4a-40a4-94b8-d55394d4bcf4": {
 "asset": "Z2026-0021__612b0b46__Affidavit_of_Ownership-Affidavit_of_Ownership-_290_7th-2026-02-13_v1.pdf",
@@ -6458,7 +6490,8 @@
 "asset": "P2026-0161__61f46f8d__10_Ownership_disclosure_form-Applicant_Disclosure_TFJ_Jersey_City_-_102226-2026-10-22_v1.pdf",
 "case": "P2026-0161",
 "kind": "other:10% ownership disclosure form applicant disclosure (tfj jers",
-"size": 107150
+"size": 107150,
+"tag": "documents-2026"
 },
 "61f7b8ae-38b9-4fa2-9dde-471052ec2725": {
 "asset": "P2025-0143__61f7b8ae__Planning_Approved_Signature_Set_civil_P2025-0143_.pdf",
@@ -6478,7 +6511,8 @@
 "asset": "Z2026-0021__622af3e6__10_Ownership_disclosure_form-10_disclosure_form-_290_7th-2026-02-13_v1.pdf",
 "case": "Z2026-0021",
 "kind": "other:10% ownership disclosure form 10 disclosure form 290 7th v1",
-"size": 95197
+"size": 95197,
+"tag": "documents-2026"
 },
 "622ec1c8-b89e-4702-a819-7d51bbbb8662": {
 "asset": "P2025-0124__622ec1c8__Certified_200-foot_list-200ft_List_2_-2025-07-30_v1.pdf",
@@ -6498,7 +6532,8 @@
 "asset": "P2026-0047__6246a389__Green_Area_Ratio_GAR_table-GAR_Worksheet-2026-03-23_v1.pdf",
 "case": "P2026-0047",
 "kind": "other:green area ratio (gar) table gar worksheet v1",
-"size": 15436
+"size": 15436,
+"tag": "documents-2026"
 },
 "624ba958-54bb-444d-aa8b-cf2e79035805": {
 "asset": "P2025-0143__624ba958__Memorandum-EngineeringReport-480WashingtonBlvdPrelimFinal-2025-07-18_v1.pdf",
@@ -6511,7 +6546,8 @@
 "asset": "P2026-0164__6256f596__RESO_P2023-0112_259_Baldwin_Ave_B_9606_L_5.pdf",
 "case": "P2026-0164",
 "kind": "other:reso p2023 0112 259 baldwin ave b 9606 l 5",
-"size": 251303
+"size": 251303,
+"tag": "documents-2026"
 },
 "625908b6-4f4a-4c34-87b8-be0a3787df4b": {
 "asset": "P2025-0168__625908b6__Traffic_Assessment_Report-Traffic_Report_v1.pdf",
@@ -6573,13 +6609,15 @@
 "asset": "P2026-0048__63214294__Zoning_Determination_Letter-ZDL-2026-000244_126_LOGAN_AVE-2026-03-23_v1.pdf",
 "case": "P2026-0048",
 "kind": "other:zoning determination letter zdl 2026 126 logan ave v1",
-"size": 174877
+"size": 174877,
+"tag": "documents-2026"
 },
 "63476b31-7814-47cd-9474-a866decf4903": {
 "asset": "P2026-0087__63476b31__Resolution_-_Memorialized-2025_Reso-2026-06-05_v1.pdf",
 "case": "P2026-0087",
 "kind": "resolution",
-"size": 236664
+"size": 236664,
+"tag": "documents-2026"
 },
 "637ed1ee-3fb0-402e-ad30-8c3fdbae7872": {
 "asset": "P2025-0123__637ed1ee__Certified_200-foot_list-6.25.25_POL_191-193_Academy_St-2025-06-30_v1.pdf",
@@ -6592,7 +6630,8 @@
 "asset": "P2026-0116__63cb4c57__10_Ownership_disclosure_form-Disclosure_Statements-2026-07-21_v1.pdf",
 "case": "P2026-0116",
 "kind": "other:10% ownership disclosure form disclosure statements v1",
-"size": 71832
+"size": 71832,
+"tag": "documents-2026"
 },
 "63e304d0-4799-4a1e-b138-f50b436ed64c": {
 "asset": "P2025-0175__63e304d0__Other-Evertrust_Plaza_-_SCS_Market_Study_dated_3-19-26_v1.pdf",
@@ -6665,13 +6704,15 @@
 "asset": "P2026-0016__65621178__03-24-26_JCPB_-_07b_-_P2026-0016_-_2_Sixth_Street.pdf",
 "case": "P2026-0016",
 "kind": "other:jcpb 07b p2026 0016 2 sixth street",
-"size": 110877
+"size": 110877,
+"tag": "documents-2026"
 },
 "657666b0-fb63-43c2-bd02-671248d08b9a": {
 "asset": "P2026-0121__657666b0__ZDL-2025-000798_14_OAKLAND_AVE_1_.pdf",
 "case": "P2026-0121",
 "kind": "other:zdl 2025 14 oakland ave",
-"size": 178649
+"size": 178649,
+"tag": "documents-2026"
 },
 "658d45a1-e860-4830-9ac0-65636b67edcb": {
 "asset": "P2025-0235__658d45a1__General_Development_Application-GDA_Current_9.1_-_248_Erie_Revised_6.9.26-2026-06-11_v1.pdf",
@@ -6734,18 +6775,6 @@
 "size": 232227,
 "tag": "documents-2025-2"
 },
-"6709a318-a28c-4d3a-ae66-5aaed727f1b4": {
-"asset": "P2026-0016__6709a318__Cover_Letter-NADC_filing_letter-2.11.2026-2026-02-11_v1.pdf",
-"case": "P2026-0016",
-"kind": "other:cover letter nadc filing letter v1",
-"size": 74791
-},
-"671d0f27-0f49-47c6-8768-dedf213c8a55": {
-"asset": "P2026-0004__671d0f27__Resolution_-_Memorialized-PB_Resolution-2026-01-21_v1.pdf",
-"case": "P2026-0004",
-"kind": "resolution",
-"size": 196169
-},
 "671e3024-775c-42c5-a5dd-93ecae3f0dbf": {
 "asset": "P2025-0154__671e3024__Affidavit_of_Submission-03_Aff_of_Submission_signed_v1.pdf",
 "case": "P2025-0154",
@@ -6771,7 +6800,8 @@
 "asset": "P2026-0159__673b3dac__Affidavit_of_Ownership-Affidavit_of_Ownership_-_80_Corbin-2026-10-12_v1.pdf",
 "case": "P2026-0159",
 "kind": "notice",
-"size": 218620
+"size": 218620,
+"tag": "documents-2026"
 },
 "674aaab2-166e-4b80-81aa-2c9b0e045b7e": {
 "asset": "P2026-0029__674aaab2__Other-2026-06-18_-_Garfield_Ave_-_Undersized_Lot_Exhibit_v1.pdf",
@@ -6797,7 +6827,8 @@
 "asset": "P2026-0082__678a8663__682_Route_440_-_review_letter.pdf",
 "case": "P2026-0082",
 "kind": "jcmua",
-"size": 82516
+"size": 82516,
+"tag": "documents-2026"
 },
 "67d7c2af-a123-4c5c-a1ce-f1cf4a992f5c": {
 "asset": "P2026-0019__67d7c2af__Subdivision_Plat-01-190364-00_MINOR_SUBD_REV1-2026-02-18_v1.pdf",
@@ -6823,13 +6854,15 @@
 "asset": "P2026-0038__67e87d62__10_Ownership_disclosure_form-10_disclosure_form-_West_Side_Even_Lots_Extension-2026-03-16_v1.pdf",
 "case": "P2026-0038",
 "kind": "other:10% ownership disclosure form 10 disclosure form west side e",
-"size": 112089
+"size": 112089,
+"tag": "documents-2026"
 },
 "68053943-de2c-4c94-b020-e76f3fd57bc3": {
 "asset": "P2026-0048__68053943__Demolition_Determination_Memo-126_Logan_Avenue_B-24-2204-2026-04-16_v1.pdf",
 "case": "P2026-0048",
 "kind": "demolition",
-"size": 123659
+"size": 123659,
+"tag": "documents-2026"
 },
 "680d2fe9-2ed7-429c-adb1-0b6d457e8a66": {
 "asset": "P2025-0178__680d2fe9__Notice_Packet_-_Proof_of_Service-11-18_650_Grand_Notice_Packet-2025-11-18_v1.pdf",
@@ -6889,7 +6922,8 @@
 "asset": "P2026-0063__68a84ceb__213_PACIFIC_PDF.pdf",
 "case": "P2026-0063",
 "kind": "jcmua",
-"size": 158884
+"size": 158884,
+"tag": "documents-2026"
 },
 "68ad929e-8cbd-4c92-83b5-7501c4f0c586": {
 "asset": "P2025-0137__68ad929e__822_PAVONIA_AVE_-_II.pdf",
@@ -6956,7 +6990,8 @@
 "asset": "P2026-0133__6962e381__Property_Tax_Certificate-extension_PALS_MALS_retail_pad_certs_tbp-2026-08-19_v1.pdf",
 "case": "P2026-0133",
 "kind": "tax-cert",
-"size": 36190
+"size": 36190,
+"tag": "documents-2026"
 },
 "697636e3-7a08-4e1f-8af4-4d034185ce9d": {
 "asset": "P2025-0152__697636e3__RESO_P2025-0152_PB_Route_139_Gateway_Master_Plan_Implementation_LDO_AMD_PB.pdf",
@@ -6969,7 +7004,8 @@
 "asset": "P2026-0039__69a2cb20__P2026-0039_-_Forestry_Comments.docx",
 "case": "P2026-0039",
 "kind": "forestry",
-"size": 11662
+"size": 11662,
+"tag": "documents-2026"
 },
 "69a9d8fb-0687-4579-8497-29a065708dbf": {
 "asset": "Z2025-0052__69a9d8fb__Certified_200-foot_list-200_List_7-2025_-_364.5_Fifth-2025-07-17_v1.pdf",
@@ -7113,7 +7149,8 @@
 "asset": "P2026-0094__6bb3ccac__Affidavit_of_Ownership-770_Washington_Request_for_Extension_Affidavit_of_Ownership-2026-06-12_v1.pdf",
 "case": "P2026-0094",
 "kind": "notice",
-"size": 28986
+"size": 28986,
+"tag": "documents-2026"
 },
 "6bbc14e0-d570-4561-a531-02aa3cc220dc": {
 "asset": "Z2025-0079__6bbc14e0__Property_Tax_Certificate-313_lEMBECK_Ave-2025-10-28_v1.PDF",
@@ -7132,7 +7169,8 @@
 "asset": "P2026-0063__6bfd8d4f__Property_Tax_Certificate-2179.04_Tax_Cert_Q1_2026-2026-04-24_v1.pdf",
 "case": "P2026-0063",
 "kind": "tax-cert",
-"size": 199028
+"size": 199028,
+"tag": "documents-2026"
 },
 "6c131dbe-816b-45d2-ad49-ecc4c7b2dd74": {
 "asset": "P2025-0253__6c131dbe__Waiver_Request-List_of_Submission_Waivers-2025-11-25_v1.pdf",
@@ -7186,7 +7224,8 @@
 "asset": "P2026-0114__6c4ee6bf__352_MARIN_BLVD_P2026-0114_MUA_REVIEW_01.pdf",
 "case": "P2026-0114",
 "kind": "other:352 marin blvd (p2026 0114) mua review 01",
-"size": 173354
+"size": 173354,
+"tag": "documents-2026"
 },
 "6c72293f-e9d4-417e-8414-d1e6d08ef7ed": {
 "asset": "Z2026-0041__6c72293f__Architectural_Plans-239_Central_Ave_-_2026-09-09-_Planning_Submission_Set-2026-09-10_v1.pdf",
@@ -7231,7 +7270,8 @@
 "asset": "P2026-0071__6cd18f9b__Property_Tax_Certificate-Property_Tax_Certificate-Letter_to_Planner_Re_Tax_Certificatin_30-40_Newport_-2026-03-11-2026-0",
 "case": "P2026-0071",
 "kind": "tax-cert",
-"size": 227460
+"size": 227460,
+"tag": "documents-2026"
 },
 "6cd82b22-0175-4c17-b5f3-9c8b2995543d": {
 "asset": "P2026-0001__6cd82b22__05-12-26_JCPB_-_14_-_P2026-0001_-_Jackson_Hill_RDP_Amendment_-_MINI.pdf",
@@ -7243,7 +7283,8 @@
 "asset": "P2026-0048__6cde97ce__10_Ownership_disclosure_form-126_Logan_10_per-2026-03-23_v1.pdf",
 "case": "P2026-0048",
 "kind": "other:10% ownership disclosure form 126 logan 10 per v1",
-"size": 38812
+"size": 38812,
+"tag": "documents-2026"
 },
 "6d0ba796-5d52-4b57-9844-91b049c6430d": {
 "asset": "P2026-0041__6d0ba796__General_Development_Application-GDA_-_02_23_26-2026-03-18_v1.pdf",
@@ -7276,13 +7317,15 @@
 "asset": "P2026-0082__6df0cd6b__Property_Tax_Certificate-Updated_Tax_Cert-2026-05-18_v1.pdf",
 "case": "P2026-0082",
 "kind": "tax-cert",
-"size": 204562
+"size": 204562,
+"tag": "documents-2026"
 },
 "6e071bbe-1e8d-445c-a202-71dc7c5b5953": {
 "asset": "P2026-0029__6e071bbe__Photos-718_Garfield_Photo-2026-05-22_v1.jpg",
 "case": "P2026-0029",
 "kind": "other:photos 718 garfield photo v1",
-"size": 91353
+"size": 91353,
+"tag": "documents-2026"
 },
 "6e1d202c-0dac-4509-8db2-84ee436ec0a8": {
 "asset": "Z2026-0052__6e1d202c__Photos-photo_1_93_Beacon-2026-10-05_v1.pdf",
@@ -7389,7 +7432,8 @@
 "asset": "P2026-0087__6fa7dfe3__Principal_Points_Statement-Statement_of_Principal_Points_7.15.2026-2026-07-15_v1.pdf",
 "case": "P2026-0087",
 "kind": "other:principal points statement statement of principal points v1",
-"size": 19583
+"size": 19583,
+"tag": "documents-2026"
 },
 "6fa9b950-8d2b-4aa2-b82b-4416e9d10db6": {
 "asset": "P2025-0198__6fa9b950__Other-Ninth_Amendment_to_RDA_for_808_Pavonia_v1.pdf",
@@ -7448,7 +7492,8 @@
 "asset": "P2026-0049__708b69e7__Cover_Letter-Revised_Submission_Memo_5.11.2026-2026-05-11_v1.pdf",
 "case": "P2026-0049",
 "kind": "other:cover letter revised submission memo v1",
-"size": 131730
+"size": 131730,
+"tag": "documents-2026"
 },
 "708ecc5c-d8c0-4e2d-b036-b7bf38096c27": {
 "asset": "P2025-0223__708ecc5c__Civil_Change_Memo-2026-05-29_Narrative_of_Changes-Civil-2026-06-05_v1.pdf",
@@ -7552,7 +7597,8 @@
 "asset": "P2026-0072__717d7db7__Cover_Letter-Site_Plan_Extension_Request_169_Culver_Avenue_P22-082-2026-05-06_v1.pdf",
 "case": "P2026-0072",
 "kind": "plans",
-"size": 91519
+"size": 91519,
+"tag": "documents-2026"
 },
 "719b575d-0223-411e-b51a-48babf0aa78e": {
 "asset": "P2025-0216__719b575d__Signature_James_Burke_10_16_2025.jpg",
@@ -7565,7 +7611,8 @@
 "asset": "P2026-0025__71a775db__Resolution_-_Memorialized-Resolution_P17.063-2026-02-25_v1.pdf",
 "case": "P2026-0025",
 "kind": "resolution",
-"size": 80553
+"size": 80553,
+"tag": "documents-2026"
 },
 "71c7077d-a9cc-4729-93ff-6b1f4c9f93fb": {
 "asset": "P2025-0176__71c7077d__Affordable_Housing_Checklist_Form-723_Grand_Street_I_AF-2025-0067_I_Approved_AH_Checklist-2025-11-17_v1.pdf",
@@ -7578,7 +7625,8 @@
 "asset": "Z2026-0032__71fe7faf__Notice_Sample___Draft-REVISED_DRAFT_Notice_of_Hearing-2026-10-06_v1.pdf",
 "case": "Z2026-0032",
 "kind": "notice",
-"size": 115708
+"size": 115708,
+"tag": "documents-2026"
 },
 "72626ee9-76a0-4ee4-9b8b-52d9f8c2ada9": {
 "asset": "P2025-0242__72626ee9__Forestry_Comments_P2025-0242.docx",
@@ -7618,7 +7666,8 @@
 "asset": "P2026-0110__7325f322__Waiver_Request-List_of_Submission_Waivers-2026-07-16_v1.pdf",
 "case": "P2026-0110",
 "kind": "other:waiver request list of submission waivers v1",
-"size": 185222
+"size": 185222,
+"tag": "documents-2026"
 },
 "7337bc82-bde5-424c-8ed3-869da0c1063c": {
 "asset": "Z2025-0070__7337bc82__Property_Tax_Certificate-Tax_Clearance_Certificate-2025-09-15_v1.pdf",
@@ -7698,7 +7747,8 @@
 "asset": "P2026-0114__7474155d__10_Ownership_disclosure_form-Ownership_Disclosure-2026-07-20_v1.pdf",
 "case": "P2026-0114",
 "kind": "other:10% ownership disclosure form ownership disclosure v1",
-"size": 28086
+"size": 28086,
+"tag": "documents-2026"
 },
 "747e1d07-fd58-4ee6-811b-6580f86d8853": {
 "asset": "P2025-0234__747e1d07__Resolution_P21-111_88_Romaine.pdf",
@@ -7751,7 +7801,8 @@
 "asset": "P2026-0111__74e756e5__Waiver_Request-List_of_Submission_Waivers-2026-07-16_v1.pdf",
 "case": "P2026-0111",
 "kind": "other:waiver request list of submission waivers v1",
-"size": 184691
+"size": 184691,
+"tag": "documents-2026"
 },
 "74f8dce9-1b7e-42f8-9044-a052d36a99c2": {
 "asset": "Z2026-0028__74f8dce9__Survey-12_Survey_8.20.2025-2026-03-24_v1.pdf",
@@ -7885,13 +7936,8 @@
 "asset": "P2026-0075__7781b996__Property_Tax_Certificate-Tax_Clearance_Cert_033126_1_-2026-05-11_v1.pdf",
 "case": "P2026-0075",
 "kind": "tax-cert",
-"size": 75688
-},
-"77a633ae-0e1e-4acc-9865-cdf1d817341e": {
-"asset": "P2026-0013__77a633ae__10_Ownership_disclosure_form-10_disclosure_-_627_Pavonia-2026-02-06_v1.pdf",
-"case": "P2026-0013",
-"kind": "other:10% ownership disclosure form 10% disclosure 627 pavonia v1",
-"size": 39690
+"size": 75688,
+"tag": "documents-2026"
 },
 "77c383be-4986-4146-98c2-f467f2a75f65": {
 "asset": "Z2025-0082__77c383be__03-05-26_JCBOA_-_10_-_Z2025-0082_-_6_Stegman_Place_-_MINI.pdf",
@@ -7911,25 +7957,15 @@
 "asset": "P2026-0050__77cb88b6__Determination_of_Significance_Memo-_Non-Historic_64_Sackett_Street_B-25-0498_1_-2026-03-25_v1.pdf",
 "case": "P2026-0050",
 "kind": "other:determination of significance memo [non historic] 64 sackett",
-"size": 172429
-},
-"77d52ca2-eb4f-4beb-b419-a539065279ae": {
-"asset": "P2026-0003__77d52ca2__Review_agent_Tax_Assessor.pdf",
-"case": "P2026-0003",
-"kind": "other:review agent tax assessor",
-"size": 192628
+"size": 172429,
+"tag": "documents-2026"
 },
 "77d9fe41-015f-4ead-8844-4586ad9ad0ff": {
 "asset": "P2026-0048__77d9fe41__Property_Tax_Certificate-Cert_Memo_Taxes_Paid_126_Logan-2026-03-26_v1.pdf",
 "case": "P2026-0048",
 "kind": "tax-cert",
-"size": 50637
-},
-"77f51988-0ece-4b23-b442-8469309c4443": {
-"asset": "Z2026-0004__77f51988__Determination_of_Significance_Memo-32_Sherman_Place_B-25-1002-2026-01-14_v1.pdf",
-"case": "Z2026-0004",
-"kind": "other:determination of significance memo 32 sherman place b 25 100",
-"size": 179322
+"size": 50637,
+"tag": "documents-2026"
 },
 "78314ae4-9085-4046-8075-74dd620d5fdc": {
 "asset": "Z2026-0025__78314ae4__260408_240_Fairmount_Ave_JCMUA.pdf",
@@ -7995,7 +8031,8 @@
 "asset": "P2026-0037__79248f27__Other-AT_T_-_2854_John_F_Kennedy_Blvd_-_Proposal_rooftop__v1.pdf",
 "case": "P2026-0037",
 "kind": "other:other at&t 2854 john f kennedy blvd proposal (rooftop) v1",
-"size": 141660
+"size": 141660,
+"tag": "documents-2026"
 },
 "792ff37f-5a9a-4da7-95aa-57a602f4873c": {
 "asset": "P2025-0185__792ff37f__Green_Area_Ratio_GAR_table-2025-11-24_-_GAR_Spreadsheet-2025-12-11_v1.pdf",
@@ -8077,13 +8114,15 @@
 "asset": "Z2026-0048__79e02f12__Affidavit_of_Performance-AoP_-_32_Central_Extension-2026-09-24_v1.pdf",
 "case": "Z2026-0048",
 "kind": "plans",
-"size": 257718
+"size": 257718,
+"tag": "documents-2026"
 },
 "79eb236b-0d1c-48bc-b5e3-d2f2f40ceaeb": {
 "asset": "P2026-0025__79eb236b__Stormwater_Management_Report-Stormwater_Memo_Phase_2B-2026-02-25_v1.pdf",
 "case": "P2026-0025",
 "kind": "stormwater",
-"size": 170044
+"size": 170044,
+"tag": "documents-2026"
 },
 "79ffc186-90d5-4e24-959f-163ab5a5e1c4": {
 "asset": "P2026-0003__79ffc186__STAFF_MEMO_P2026-0003.pdf",
@@ -8102,7 +8141,8 @@
 "asset": "P2026-0037__7a11e3d0__Water_Bill_Certificate-AT_T_-_2854_John_F_Kennedy_Blvd_-_Water_Clearance-2026-03-13_v1.pdf",
 "case": "P2026-0037",
 "kind": "other:water bill certificate at&t 2854 john f kennedy blvd water c",
-"size": 48413
+"size": 48413,
+"tag": "documents-2026"
 },
 "7a2eaae2-8da6-4aa9-8835-a5b3b8b37567": {
 "asset": "P2025-0157__7a2eaae2__Property_Tax_Certificate-310_Washington_Street_-_Taxes_Paid_Certs-2025-07-31_v1.pdf",
@@ -8136,13 +8176,15 @@
 "asset": "P2026-0116__7a7ee7d7__Cover_Letter-Cover_LTR_10-6-26_62_Montgomery_Street-2026-10-06_v1.pdf",
 "case": "P2026-0116",
 "kind": "other:cover letter cover ltr , 62 montgomery street v1",
-"size": 47006
+"size": 47006,
+"tag": "documents-2026"
 },
 "7a983973-3ae7-4824-bc32-16522b3e5a07": {
 "asset": "P2026-0018__7a983973__Other-200_Greene_Street_-_Signage_Calculations_v1.pdf",
 "case": "P2026-0018",
 "kind": "other:other 200 greene street signage calculations v1",
-"size": 20249
+"size": 20249,
+"tag": "documents-2026"
 },
 "7abbcd88-eba1-4395-a988-ac3583bc53a8": {
 "asset": "P2026-0075__7abbcd88__Photos-130Bay_MCAP_007-2026-05-11_v1.jpg",
@@ -8168,13 +8210,15 @@
 "asset": "P2026-0036__7aee64e2__Property_Tax_Certificate-Tax_Cert_3-2026_-_99_Arlington-2026-03-13_v1.pdf",
 "case": "P2026-0036",
 "kind": "tax-cert",
-"size": 26532
+"size": 26532,
+"tag": "documents-2026"
 },
 "7b42658b-b6c5-4a1a-95f1-5cbe2a3deba5": {
 "asset": "P2026-0095__7b42658b__P2026-0095_Data_Center_Amendment_Text.pdf",
 "case": "P2026-0095",
 "kind": "other:p2026 0095 data center amendment text",
-"size": 128826
+"size": 128826,
+"tag": "documents-2026"
 },
 "7b60dd89-77df-4e95-a027-b11f9cb080e1": {
 "asset": "Z2026-0042__7b60dd89__Planning_Approved_Signature_Set_-_arch_Z2026-0042_.pdf",
@@ -8234,19 +8278,8 @@
 "asset": "P2026-0037__7bf44816__Zoning_Determination_Letter-AT_T_-_2854_John_F_Kennedy_Blvd_-_ZDL-2026-000256-2026-03-13_v1.pdf",
 "case": "P2026-0037",
 "kind": "other:zoning determination letter at&t 2854 john f kennedy blvd zd",
-"size": 182049
-},
-"7bf80702-a956-4d39-baf6-649d494e5c85": {
-"asset": "Z2026-0020__7bf80702__03-05-26_JCBOA_-_09_-_Z2026-0020_-_64_Harmon_Street_-_MINI.pdf",
-"case": "Z2026-0020",
-"kind": "other:jcboa 09 z2026 0020 64 harmon street mini",
-"size": 118130
-},
-"7c18b0ce-c82c-4679-a2e2-406b81d7d992": {
-"asset": "P2026-0003__7c18b0ce__05-12-26_JCPB_-_20_-_P2026-0003_-_210-212_Bergen_Avenue_-_MINI.pdf",
-"case": "P2026-0003",
-"kind": "other:jcpb 20 p2026 0003 210 212 bergen avenue mini",
-"size": 120290
+"size": 182049,
+"tag": "documents-2026"
 },
 "7c1a3b20-7c0f-4c5d-ab4a-fada0ffe4264": {
 "asset": "P2025-0239__7c1a3b20__P2025-0239_P2025-0240_197-199-Webster-Ave_Staff-Report.pdf",
@@ -8293,13 +8326,15 @@
 "asset": "P2026-0126__7cd65206__10_Ownership_disclosure_form-10_DISCLOSURE_FORM_-_107_Morgan-2026-09-15_v1.pdf",
 "case": "P2026-0126",
 "kind": "other:10% ownership disclosure form 10% disclosure form 107 morgan",
-"size": 43132
+"size": 43132,
+"tag": "documents-2026"
 },
 "7cfdaeec-bbb1-4f20-82a3-ae4e16e74745": {
 "asset": "P2026-0124__7cfdaeec__Cover_Letter-Cover_Letter_Filing_Application-2026-07-31_v1.pdf",
 "case": "P2026-0124",
 "kind": "application",
-"size": 95973
+"size": 95973,
+"tag": "documents-2026"
 },
 "7d0ba8e5-e240-4795-b451-227df97ec6e2": {
 "asset": "P2026-0038__7d0ba8e5__Property_Tax_Certificate-Tax_Status-_784-88_West_Side_and_445_Fairmount-2026-03-16_v1.pdf",
@@ -8311,7 +8346,8 @@
 "asset": "P2026-0018__7d2b3ff5__Notice_Packet_-_Proof_of_Service-P2026-0018_200_Greene_Street_Affidavit_of_Publication-2026-06-09_v1.pdf",
 "case": "P2026-0018",
 "kind": "notice",
-"size": 108761
+"size": 108761,
+"tag": "documents-2026"
 },
 "7d5ad1ed-9267-4b6e-8277-b5fe54888fe1": {
 "asset": "P2025-0184__7d5ad1ed__P2025-0184_P2025-0185_235-16th-St_Staff-Report.pdf",
@@ -8357,7 +8393,8 @@
 "asset": "P2026-0130__7dddb19c__08-25-26_JCPB_-_10_-_P2026-0130_-_Fees.pdf",
 "case": "P2026-0130",
 "kind": "other:jcpb 10 p2026 0130 fees",
-"size": 108418
+"size": 108418,
+"tag": "documents-2026"
 },
 "7dfa259b-2ec1-48cb-b1bc-55f8bb465761": {
 "asset": "P2026-0099__7dfa259b__Survey_6-2026_-_364_Fifth.pdf",
@@ -8397,7 +8434,8 @@
 "asset": "P2026-0124__7e63f39e__Engineering_4.14.22_1_.pdf",
 "case": "P2026-0124",
 "kind": "engineering",
-"size": 206097
+"size": 206097,
+"tag": "documents-2026"
 },
 "7e662c0e-8640-403b-a65a-258364b14b76": {
 "asset": "Z2025-0061__7e662c0e__1051_Garfield_Ave_Demo_Denial_Reso.pdf",
@@ -8457,7 +8495,8 @@
 "asset": "P2026-0063__7ee7ec16__p2026-0063_-_Forestry_Comments.docx",
 "case": "P2026-0063",
 "kind": "forestry",
-"size": 11869
+"size": 11869,
+"tag": "documents-2026"
 },
 "7ee82cba-3d96-4dce-8253-9ada8bd30a63": {
 "asset": "P2025-0253__7ee82cba__1306JC-I_2_.pdf",
@@ -8498,7 +8537,8 @@
 "asset": "P2026-0148__7f3f70c7__Cover_Letter-Request_for_one_year_Extension_-_76-82_Liberty_Avenue_9.18.26-2026-09-28_v1.pdf",
 "case": "P2026-0148",
 "kind": "other:cover letter request for one year extension 76 82 liberty av",
-"size": 97927
+"size": 97927,
+"tag": "documents-2026"
 },
 "7f419985-ed77-43d0-9934-9c0f3f2194ef": {
 "asset": "P2025-0257__7f419985__RESO_P2025-0257_147_Academy_St_AMD_B_12309_L_3.01.pdf",
@@ -8543,7 +8583,8 @@
 "asset": "P2026-0071__7f5e8c5e__Other-2198_001_v1.pdf",
 "case": "P2026-0071",
 "kind": "other:other 2198 001 v1",
-"size": 55993
+"size": 55993,
+"tag": "documents-2026"
 },
 "7f88c811-4f9e-4787-98f8-b95d0c34d7e0": {
 "asset": "P2025-0158__7f88c811__Other-Updated_Addendum_to_GDA_4.15.26_v1.pdf",
@@ -8556,7 +8597,8 @@
 "asset": "Z2026-0044__7f9e87a4__Resolution_-_Memorialized-Resolution-2026-08-17_v1.pdf",
 "case": "Z2026-0044",
 "kind": "resolution",
-"size": 183081
+"size": 183081,
+"tag": "documents-2026"
 },
 "7fac81da-7f6e-4c47-abc1-a53780347bc8": {
 "asset": "P2025-0258__7fac81da__Principal_Points_Statement-MINOR_SUBDIVISION_Statement_of_Principal_Points_183-193_Bayview_Avenue-2026-01-06_v1.pdf",
@@ -8604,7 +8646,8 @@
 "asset": "P2026-0035__800f31c4__04-28-26_JCPB_-_09_-_P2026-0035_-_30_Newport_Parkway.pdf",
 "case": "P2026-0035",
 "kind": "other:jcpb 09 p2026 0035 30 newport parkway",
-"size": 107357
+"size": 107357,
+"tag": "documents-2026"
 },
 "8022f2e5-452e-4ffa-b938-313325aae040": {
 "asset": "P2025-0168__8022f2e5__P2025-0168_-_Forestry_Comments_-_111_Thomas_McGovern_Dr.docx",
@@ -8716,7 +8759,8 @@
 "asset": "P2026-0144__825749d1__Affidavit_of_Ownership-AoO_-_776_West_Side-2026-09-24_v1.pdf",
 "case": "P2026-0144",
 "kind": "notice",
-"size": 241051
+"size": 241051,
+"tag": "documents-2026"
 },
 "825e7a1e-6a9a-406b-8c68-bd8f056254c1": {
 "asset": "P2026-0108__825e7a1e__2_ROSI_for_Submission___20261016.pdf",
@@ -8735,7 +8779,8 @@
 "asset": "P2026-0038__82a5a92c__Cover_Letter-Extension_Letter_3-2026_-_West_Side_Even_Lots-2026-03-16_v1.pdf",
 "case": "P2026-0038",
 "kind": "other:cover letter extension letter (3 2026) west side even lots v",
-"size": 231509
+"size": 231509,
+"tag": "documents-2026"
 },
 "82ce6f8c-e114-4d7d-b933-bef424a908ba": {
 "asset": "P2025-0187__82ce6f8c__Water_Bill_Certificate-Water_Cert-2025-09-04_v1.pdf",
@@ -8762,25 +8807,21 @@
 "asset": "Z2026-0055__82f2b7ee__Affidavit_of_Submission-03_Aff_of_Submission_signed_v1.pdf",
 "case": "Z2026-0055",
 "kind": "notice",
-"size": 213823
+"size": 213823,
+"tag": "documents-2026"
 },
 "830243a5-3f97-4eaa-9c83-4dc93abe0345": {
 "asset": "P2026-0071__830243a5__P2026-0071_-_Forestry_Comments.docx",
 "case": "P2026-0071",
 "kind": "forestry",
-"size": 11921
+"size": 11921,
+"tag": "documents-2026"
 },
 "83046d83-9fd3-40b6-99ee-773408b08784": {
 "asset": "P2026-0146__83046d83__420_Central_Ave_-_Plan_Review_Response.pdf",
 "case": "P2026-0146",
 "kind": "plans",
 "size": 641149
-},
-"8323cb00-1b8c-44a5-95e0-421af9240556": {
-"asset": "P2026-0009__8323cb00__Affidavit_of_Ownership-Aff_Ownership-2026-01-28_v1.pdf",
-"case": "P2026-0009",
-"kind": "notice",
-"size": 55410
 },
 "8349c953-7922-4a09-b5b3-f470e4ddf122": {
 "asset": "Z2025-0086__8349c953__12-11-25_JCBOA_Z2025-0086_847_Communipaw_Avenue.pdf",
@@ -8793,7 +8834,8 @@
 "asset": "P2026-0089__835cef7b__10-27-26_JCPB_-_20_21_-_P2026-0089_P2026-0090_-_274-276_Columbia_Avenue.pdf",
 "case": "P2026-0089",
 "kind": "other:jcpb 20, 21 p2026 0089, p2026 0090 274 276 columbia avenue",
-"size": 207429
+"size": 207429,
+"tag": "documents-2026"
 },
 "83813aa0-852e-4a61-87f2-d776f703907f": {
 "asset": "Z2026-0031__83813aa0__RESO_FINAL_P21-020_80_and_112_Thomas_McGovern_Dr_Remand_Proceedings_21506_l_3_4.pdf",
@@ -8943,12 +8985,6 @@
 "size": 607859,
 "tag": "documents-2026"
 },
-"85e43687-5bc0-420c-888c-4f1172ebf8f5": {
-"asset": "Z2026-0015__85e43687__Principal_Points_Statement-NOT_APPLICABLE_II-2026-01-22_v1.pdf",
-"case": "Z2026-0015",
-"kind": "other:principal points statement not applicable ii v1",
-"size": 27808
-},
 "85ed9a80-b0ed-4d71-847f-d78ca62d7851": {
 "asset": "P2025-0235__85ed9a80__Civil_Change_Memo-2026-06-08_Response_Letter-2026-08-24_v1.pdf",
 "case": "P2025-0235",
@@ -9001,7 +9037,8 @@
 "asset": "P2026-0100__8657420f__Other-01B_6.21.23_HLW_letter_v1.pdf",
 "case": "P2026-0100",
 "kind": "other:other 01b hlw letter v1",
-"size": 30995
+"size": 30995,
+"tag": "documents-2026"
 },
 "86598e8f-558e-4d2e-9d71-89fdda5fb7e4": {
 "asset": "P2026-0124__86598e8f__Survey-Survey-2026-07-31_v1.pdf",
@@ -9014,12 +9051,6 @@
 "case": "P2026-0048",
 "kind": "plans",
 "size": 17223532
-},
-"86692ce8-e184-4b8c-8b25-32220c2ed3c3": {
-"asset": "P2026-0009__86692ce8__Other-179_Liberty_-_Cert_for_eplans_v1.pdf",
-"case": "P2026-0009",
-"kind": "other:other 179 liberty cert for eplans v1",
-"size": 134058
 },
 "8680a014-b73e-48d8-8779-4bafa1249d35": {
 "asset": "Z2025-0067__8680a014__07-09-26_JCBOA_-_11_-_Z2025-0067_-_238_New_York_Avenue.pdf",
@@ -9052,13 +9083,15 @@
 "asset": "P2026-0093__86cc373c__Property_Tax_Certificate-Taxes_Paid_Cert_Memo_215_Van_Vorst_03-27-2026-2026-06-10_v1.pdf",
 "case": "P2026-0093",
 "kind": "tax-cert",
-"size": 98270
+"size": 98270,
+"tag": "documents-2026"
 },
 "86d6c97d-ddd2-4f34-a71a-bf39e6b30e81": {
 "asset": "P2026-0041__86d6c97d__Property_Tax_Certificate-To_Be_Provided_1-2026-03-18_v1.pdf",
 "case": "P2026-0041",
 "kind": "tax-cert",
-"size": 39885
+"size": 39885,
+"tag": "documents-2026"
 },
 "86f603bd-efae-4741-a127-a76308c78920": {
 "asset": "P2026-0127__86f603bd__P2026-0127_-_135_Monticello_-_Forestry_Comments.pdf",
@@ -9070,7 +9103,8 @@
 "asset": "P2026-0062__871bae8b__Property_Tax_Certificate-Tax_Cert-2026-04-20_v1.pdf",
 "case": "P2026-0062",
 "kind": "tax-cert",
-"size": 217235
+"size": 217235,
+"tag": "documents-2026"
 },
 "871c494a-8ac3-4558-97a0-0fc465c6986e": {
 "asset": "Z2025-0065__871c494a__Z2025-0065_117_NORTH_ST_STAFF_REPORT.pdf",
@@ -9085,12 +9119,6 @@
 "kind": "plans",
 "size": 463456,
 "tag": "documents-2026"
-},
-"8761cb30-3319-4823-b318-9c9de8d52231": {
-"asset": "P2026-0015__8761cb30__RESO_P2026-0015_344_Second_St_EXT_B_11107_L_6.pdf",
-"case": "P2026-0015",
-"kind": "resolution",
-"size": 203984
 },
 "8763d304-4ef9-48b6-9fba-47e1f042d788": {
 "asset": "P2025-0143__8763d304__02-10-26_JCPB_-_28_-_P2025-0143_-_480_Washington_Boulevard_-_MINI.pdf",
@@ -9130,7 +9158,8 @@
 "asset": "P2026-0101__880553d4__Arch_Change_Memo-415-417_PALISADE-_REVISON_7_NARATIVE_2026-10-20_rgSEAL-2026-10-21_v1.pdf",
 "case": "P2026-0101",
 "kind": "other:arch change memo 415 417 palisade revison 7 narative rgseal ",
-"size": 173804
+"size": 173804,
+"tag": "documents-2026"
 },
 "880646b0-7496-4215-8095-5ff3c8b61513": {
 "asset": "Z2025-0096__880646b0__Other-Arch_Certification_of_EPlans_2-2026_-138-140_Glenwood_v1.pdf",
@@ -9182,7 +9211,8 @@
 "asset": "P2026-0129__88f400e4__261008_377_7th_St_JCMUA_Review.pdf",
 "case": "P2026-0129",
 "kind": "jcmua",
-"size": 235757
+"size": 235757,
+"tag": "documents-2026"
 },
 "890cb311-018b-4ac6-aca4-95c209b67d12": {
 "asset": "P2025-0158__890cb311__Other-DEP_Land_Use_Approval_v1.pdf",
@@ -9223,7 +9253,8 @@
 "asset": "P2026-0047__89e6c58c__08-25-26_JCPB_-_14_-_P2026-0047_-_100_Kellogg_Street_-_MINI.pdf",
 "case": "P2026-0047",
 "kind": "other:jcpb 14 p2026 0047 100 kellogg street mini",
-"size": 186931
+"size": 186931,
+"tag": "documents-2026"
 },
 "89e9bd85-a92b-42e0-b330-01ccdbcab986": {
 "asset": "P2025-0225__89e9bd85__General_Development_Application-GDA-_55-59_Cator_Subdivision_12-2025_-2025-12-15_v1.pdf",
@@ -9243,7 +9274,8 @@
 "asset": "P2026-0093__8a3d5558__Resolution_-_Memorialized-RESOMEM_P2023-0039_215_Van_Vorst_St_B_14205_L_9-2026-06-10_v1.pdf",
 "case": "P2026-0093",
 "kind": "resolution",
-"size": 257019
+"size": 257019,
+"tag": "documents-2026"
 },
 "8a625f03-788c-4162-a6d7-fdc11fe368ce": {
 "asset": "P2025-0239__8a625f03__10_Ownership_disclosure_form-197_Ownership_Disclosure-2025-11-06_v1.pdf",
@@ -9263,7 +9295,8 @@
 "asset": "P2026-0123__8a760f75__Water_Bill_Certificate-09_Water_Clearance_Cert_8.18.2025_2728_JFK_Blvd-2026-07-31_v1.pdf",
 "case": "P2026-0123",
 "kind": "other:water bill certificate 09 water clearance cert 2728 jfk blvd",
-"size": 45374
+"size": 45374,
+"tag": "documents-2026"
 },
 "8a7fbbf5-dc01-448f-8f4e-caa7578103f0": {
 "asset": "P2025-0130__8a7fbbf5__Forestry_Comments_P2025-0130.docx",
@@ -9302,7 +9335,8 @@
 "asset": "P2026-0071__8aeac024__10_Ownership_disclosure_form-NC_200_-_Disclosure_Executed_6-10-2026-2026-06-25_v1.pdf",
 "case": "P2026-0071",
 "kind": "other:10% ownership disclosure form nc 200 disclosure executed v1",
-"size": 122538
+"size": 122538,
+"tag": "documents-2026"
 },
 "8b19e2b2-02e0-49c1-94be-3b5fac76b2a1": {
 "asset": "P2025-0130__8b19e2b2__Cover_Letter-FedEx-Shipping-Label-2025-08-18_v1.pdf",
@@ -9315,7 +9349,8 @@
 "asset": "P2026-0025__8b2ecae2__10_Ownership_disclosure_form-Owner_Disclosure_Statement_Water_Phase_2-2026-02-25_v1.pdf",
 "case": "P2026-0025",
 "kind": "other:10% ownership disclosure form owner disclosure statement wat",
-"size": 24407
+"size": 24407,
+"tag": "documents-2026"
 },
 "8b5b890b-3ac9-48e2-8a70-5a861fb62f91": {
 "asset": "P2025-0255__8b5b890b__Planning_Approved_Signature_Set-Arch_Plans_P2025-0255.pdf",
@@ -9433,7 +9468,8 @@
 "asset": "Z2026-0031__8c856b6b__07-09-26_JCBOA_-_12_-_Z2026-0031_-_58_Thomas_McGovern_Drive_-_MINI.pdf",
 "case": "Z2026-0031",
 "kind": "other:jcboa 12 z2026 0031 58 thomas mcgovern drive mini",
-"size": 167885
+"size": 167885,
+"tag": "documents-2026"
 },
 "8c8e363a-25c2-47a3-afee-584a771ecfb0": {
 "asset": "Z2025-0061__8c8e363a__Other-Updated_Affidavit_of_Notice_Package_v1.pdf",
@@ -9487,7 +9523,8 @@
 "asset": "P2026-0067__8cd46176__Property_Tax_Certificate-Tax_Cert_3-26-26-2026-04-28_v1.pdf",
 "case": "P2026-0067",
 "kind": "tax-cert",
-"size": 94269
+"size": 94269,
+"tag": "documents-2026"
 },
 "8d155ae8-4b51-4095-b499-66700f7bb24a": {
 "asset": "P2026-0024__8d155ae8__20_Carbon_Pl_Transportation_Comments.pdf",
@@ -9526,7 +9563,8 @@
 "asset": "P2026-0130__8db3f8a8__JC_Planning_STAFF_MEMO.pdf",
 "case": "P2026-0130",
 "kind": "staff-memo",
-"size": 100628
+"size": 100628,
+"tag": "documents-2026"
 },
 "8dcede51-671f-4b41-b21d-7fbc6351ec5b": {
 "asset": "P2026-0150__8dcede51__Certified_200-foot_list-200ft_list_for_96-108_Monticello_Ave_17-21_Brinkerhoff_St-2026-09-29_v1.pdf",
@@ -9538,7 +9576,8 @@
 "asset": "Z2026-0024__8ded4ffa__10_Ownership_disclosure_form-312_Fairmount_10_Disclosure-2026-03-04_v1.pdf",
 "case": "Z2026-0024",
 "kind": "other:10% ownership disclosure form 312 fairmount 10 disclosure v1",
-"size": 88282
+"size": 88282,
+"tag": "documents-2026"
 },
 "8dfc906a-b709-4497-b212-19e757dfa10b": {
 "asset": "P2025-0169__8dfc906a__Civil_Change_Memo-Civil_Engineering_Response_Memo_120525_-2025-12-05_v1.pdf",
@@ -9626,7 +9665,8 @@
 "asset": "P2026-0044__8ff01be3__RESO_P2026-0044_216_Palisade_Ave_EXT_B_6001_L_8.pdf",
 "case": "P2026-0044",
 "kind": "other:reso p2026 0044 216 palisade ave ext b 6001 l 8",
-"size": 193542
+"size": 193542,
+"tag": "documents-2026"
 },
 "9003a7ee-558e-4333-a0d5-85547580ab5c": {
 "asset": "P2025-0175__9003a7ee__Notice_Packet_-_Proof_of_Service-Affidavit_of_Service-2026-11-09_v1.pdf",
@@ -9708,7 +9748,8 @@
 "asset": "P2026-0127__9114223b__Fee_calcluation_worksheet_CURRENT.pdf",
 "case": "P2026-0127",
 "kind": "other:fee calcluation worksheet current",
-"size": 226034
+"size": 226034,
+"tag": "documents-2026"
 },
 "91209004-42e9-4cd8-9277-92707e78571d": {
 "asset": "P2025-0246__91209004__250_Fairmount_Ave_Transportation_Comments.pdf",
@@ -9763,7 +9804,8 @@
 "asset": "P2026-0026__923bb738__10_Ownership_disclosure_form-Hernandez_Disclosure_Form-2026-02-26_v1.pdf",
 "case": "P2026-0026",
 "kind": "other:10% ownership disclosure form hernandez disclosure form v1",
-"size": 122207
+"size": 122207,
+"tag": "documents-2026"
 },
 "926fec3a-47a6-4c32-b979-eb1da4ec5e4f": {
 "asset": "P2025-0133__926fec3a__Notice_Packet_-_Proof_of_Service-Summit_Affidavit_of_Service-2026-07-20_v1.pdf",
@@ -9783,7 +9825,8 @@
 "asset": "P2026-0099__92b44c29__10-13-26_JCPB_-_15_-_P2026-0099_-_364_Fifth_Street-_MINI.pdf",
 "case": "P2026-0099",
 "kind": "other:jcpb 15 p2026 0099 364 fifth street mini",
-"size": 219251
+"size": 219251,
+"tag": "documents-2026"
 },
 "92c8e600-ef43-46ff-8833-227bb4e5f4f1": {
 "asset": "P2026-0037__92c8e600__Other-AT_T_-_2854_John_F_Kennedy_Blvd_-_FCC_Compliance_Report_07.22.2025_v1.pdf",
@@ -9827,7 +9870,8 @@
 "asset": "P2026-0070__938e3562__Other-Resolution_-_Memorialized_v1.pdf",
 "case": "P2026-0070",
 "kind": "resolution",
-"size": 57421
+"size": 57421,
+"tag": "documents-2026"
 },
 "939f5bab-e93a-4660-9dcb-5c4524a2fc07": {
 "asset": "P2025-0144__939f5bab__Other-04_-_NJDCA_Cert_for_ePlans_rev_031226_v1.pdf",
@@ -9907,7 +9951,8 @@
 "asset": "P2026-0082__94900591__Arch_Change_Memo-Change_Memo-2026-05-18_v1.pdf",
 "case": "P2026-0082",
 "kind": "other:arch change memo change memo v1",
-"size": 131373
+"size": 131373,
+"tag": "documents-2026"
 },
 "94923503-ac36-4cf1-8245-d4d4e1ad7d0b": {
 "asset": "P2025-0228__94923503__Zoning_Determination_Letter-ZDL-2026-000259_62-74_SACKETT_ST-2026-03-25_v1.pdf",
@@ -9940,7 +9985,8 @@
 "asset": "P2026-0087__952b31c2__10-27-26_JCPB_-_23_-_P2026-0087_-_54_Jones_Street.pdf",
 "case": "P2026-0087",
 "kind": "other:jcpb 23 p2026 0087 54 jones street",
-"size": 143261
+"size": 143261,
+"tag": "documents-2026"
 },
 "953797b4-c34a-4a06-80ab-cf78af25caff": {
 "asset": "Z2025-0058__953797b4__Property_Tax_Certificate-25-0305_35_Orchard_Tax_Cert-2025-07-30_v1.pdf",
@@ -10019,7 +10065,8 @@
 "asset": "P2026-0050__96d7af0f__Determination_of_Significance_Memo-_NonHistoric_62_Sackett_Street_B-25-0499-2026-03-25_v1.pdf",
 "case": "P2026-0050",
 "kind": "other:determination of significance memo [nonhistoric] 62 sackett ",
-"size": 172708
+"size": 172708,
+"tag": "documents-2026"
 },
 "96d91af3-17f7-4309-8e44-dc89bd4360c0": {
 "asset": "P2025-0228__96d91af3__Property_Tax_Certificate-10_-_Payment_of_Taxes_-_Exempt-2025-10-27_v1.pdf",
@@ -10032,7 +10079,8 @@
 "asset": "P2026-0101__96e67ac3__Resolution_-_Memorialized-P20-087_415-417_Palisade_Resolution_of_Approval.pdf-2026-06-23_v1.pdf",
 "case": "P2026-0101",
 "kind": "resolution",
-"size": 202714
+"size": 202714,
+"tag": "documents-2026"
 },
 "96ef081c-d9dc-413c-af15-bccdf32e5e04": {
 "asset": "P2025-0254__96ef081c__Other-Cert_for_eplans_-_63_Cottage_St_-_JC_-SS-02-10-26_v1.pdf",
@@ -10047,12 +10095,6 @@
 "kind": "plans",
 "size": 11715112,
 "tag": "documents-2025"
-},
-"970cf3c0-6d62-4227-90a0-fe9c998733a6": {
-"asset": "P2026-0005__970cf3c0__Other-2026-01-09_107-Morgan-LandscapeSubmissionNarrative-ResponseToZoningComment_v1.pdf",
-"case": "P2026-0005",
-"kind": "other:other 107 morgan landscapesubmissionnarrative responsetozoni",
-"size": 100570
 },
 "971fd823-8be7-40b9-b618-00c69ac999d9": {
 "asset": "P2025-0129__971fd823__Notice_Sample___Draft-2861_JFK_public_notice_3.31.26_-2026-04-02_v1.pdf",
@@ -10100,7 +10142,8 @@
 "asset": "P2026-0084__97aa4403__260917_52_Aetna_St_JCMUA_Review_Letter.pdf",
 "case": "P2026-0084",
 "kind": "jcmua",
-"size": 208867
+"size": 208867,
+"tag": "documents-2026"
 },
 "97b6b5f3-bf9f-4aeb-8964-fee55366c5c9": {
 "asset": "P2025-0128__97b6b5f3__STAFF_MEMO_P2025-0128_-_231_New_York.pdf",
@@ -10127,7 +10170,8 @@
 "asset": "P2026-0158__97ebabaa__Affidavit_of_Ownership-Affidavit_of_Ownership_Executed-2026-10-06_v1.pdf",
 "case": "P2026-0158",
 "kind": "notice",
-"size": 43820
+"size": 43820,
+"tag": "documents-2026"
 },
 "97f357e6-1cea-49ed-90bb-062c77f10c50": {
 "asset": "P2025-0127__97f357e6__Notice_Packet_-_Proof_of_Service-Notice_Package_7-2026_-_30_Waverly-2026-07-10_v1.pdf",
@@ -10172,7 +10216,8 @@
 "asset": "P2026-0116__987be6c1__10-27-26_JCPB_-_16_-_P2026-0116_-_62_72_Montgomery_Street.pdf",
 "case": "P2026-0116",
 "kind": "other:jcpb 16 p2026 0116 62 & 72 montgomery street",
-"size": 157983
+"size": 157983,
+"tag": "documents-2026"
 },
 "989897d1-9cda-4bcf-b305-3f8ef42ee9ae": {
 "asset": "P2025-0179__989897d1__Affidavit_of_Ownership-Planning_Board_Application_Block_6003_Affidavit_of_Ownership-2025-08-25_v1.pdf",
@@ -10219,7 +10264,8 @@
 "asset": "P2026-0113__99332968__10_Ownership_disclosure_form-10_disclosure_form-2026-07-20_v1.pdf",
 "case": "P2026-0113",
 "kind": "other:10% ownership disclosure form 10 disclosure form v1",
-"size": 175548
+"size": 175548,
+"tag": "documents-2026"
 },
 "994c5d0c-5054-4136-8c30-86bfb995c48a": {
 "asset": "P2026-0028__994c5d0c__Property_Tax_Certificate-Tax_Status_3-2026_-_538_Palisade-2026-03-02_v1.pdf",
@@ -10244,7 +10290,8 @@
 "asset": "P2026-0104__997ebf62__09-08-26_JCPB_-_08_-_P2026-0104_-_212-230_Culver_Avenue_-_MINI.pdf",
 "case": "P2026-0104",
 "kind": "other:jcpb 08 p2026 0104 212 230 culver avenue mini",
-"size": 126748
+"size": 126748,
+"tag": "documents-2026"
 },
 "99857f2a-2144-411b-8ea7-7cb41a9677c9": {
 "asset": "P2025-0163__99857f2a__Resolution_-_Memorialized-RESO_P2023-0085_155_Newark_Ave_B_11405_L_6-2025-08-06_v1.pdf",
@@ -10312,7 +10359,8 @@
 "asset": "P2026-0061__9a9ca2b2__10_Ownership_disclosure_form-10_disclosure_form-2026-04-17_v1.pdf",
 "case": "P2026-0061",
 "kind": "other:10% ownership disclosure form 10 disclosure form v1",
-"size": 90578
+"size": 90578,
+"tag": "documents-2026"
 },
 "9adbe1db-306a-40be-b1a9-e93c7157fe41": {
 "asset": "P2026-0156__9adbe1db__Certifed_Letter_Package.pdf",
@@ -10344,7 +10392,8 @@
 "asset": "P2026-0113__9b1d2235__Affidavit_of_Ownership-affidavit_of_ownership_-_signed-2026-07-20_v1.pdf",
 "case": "P2026-0113",
 "kind": "notice",
-"size": 45110
+"size": 45110,
+"tag": "documents-2026"
 },
 "9b223b57-3105-4564-a94c-3e2cd69d8272": {
 "asset": "P2025-0249__9b223b57__Resolution_-_Memorialized-PRIOR_-_P20-155_-_Preliminary_and_Final_Major_Site_Plan_Approval_w_C_Deviations_Resolution_-_0",
@@ -10360,17 +10409,12 @@
 "size": 78848,
 "tag": "documents-2025"
 },
-"9b78dc96-a282-46d4-afb6-cf3e5036938f": {
-"asset": "P2026-0003__9b78dc96__RESO_P2026-0003_210-212_Bergen_Ave_B_23405_L_6.pdf",
-"case": "P2026-0003",
-"kind": "other:reso p2026 0003 210 212 bergen ave b 23405 l 6",
-"size": 237712
-},
 "9b8186cc-9f43-498a-9edb-04e70f45f715": {
 "asset": "Z2026-0025__9b8186cc__Principal_Points_Statement-PRINCIPAL_POINTS_STATEMENT_240_Fairmount_Ave-2026-06-03_v1.pdf",
 "case": "Z2026-0025",
 "kind": "other:principal points statement principal points statement 240 fa",
-"size": 77732
+"size": 77732,
+"tag": "documents-2026"
 },
 "9b8cc748-1ade-475a-9c1b-9382c19434fb": {
 "asset": "P2026-0111__9b8cc748__Staff_report_804-810_West_2026.pdf",
@@ -10410,7 +10454,8 @@
 "asset": "P2026-0085__9c20eb37__Resolution_-_Memorialized-RESO_P2023-0059_36_McAdoo_Ave_aka_5_MLK_B_27001_L_13-2026-05-27_v1.pdf",
 "case": "P2026-0085",
 "kind": "resolution",
-"size": 217266
+"size": 217266,
+"tag": "documents-2026"
 },
 "9c40ff28-04f9-4b6f-bb3f-5fb248c66a75": {
 "asset": "Z2025-0064__9c40ff28__Affidavit_of_Ownership-AoO-_90_Bright-2025-08-08_v1.pdf",
@@ -10426,17 +10471,12 @@
 "size": 257313,
 "tag": "documents-2025"
 },
-"9ca2c206-023e-415a-9de4-074262ecf732": {
-"asset": "P2026-0004__9ca2c206__Affidavit_of_Ownership-Affidavit_of_ownership-2026-01-21_v1.pdf",
-"case": "P2026-0004",
-"kind": "notice",
-"size": 171030
-},
 "9ca5729a-48d3-4877-bd1f-443992311c30": {
 "asset": "P2026-0121__9ca5729a__10_Ownership_disclosure_form-10_disclosure_form-2026-07-29_v1.pdf",
 "case": "P2026-0121",
 "kind": "other:10% ownership disclosure form 10 disclosure form v1",
-"size": 91165
+"size": 91165,
+"tag": "documents-2026"
 },
 "9ca7458b-1298-43c6-b443-7087dc7afec8": {
 "asset": "P2026-0111__9ca7458b__Shadow_Study___Visual_Impact_Assessment-2026-03-31_-_VIA_-Shadow_Study_-_804-810_West_Side_Ave-2026-07-16_v1.pdf",
@@ -10449,12 +10489,6 @@
 "case": "P2026-0024",
 "kind": "plans",
 "size": 15450924
-},
-"9cdbd321-2e53-449e-93b2-c29b6a5962e8": {
-"asset": "P2026-0009__9cdbd321__Property_Tax_Certificate-Taxes_Paid_Memo-2026-01-28_v1.pdf",
-"case": "P2026-0009",
-"kind": "tax-cert",
-"size": 46239
 },
 "9cf7958a-a06d-431a-83ed-3bea2781c881": {
 "asset": "P2025-0159__9cf7958a__General_Development_Application-GDA-_279_Communipaw_Extension-2025-08-01_v1.pdf",
@@ -10479,13 +10513,15 @@
 "asset": "Z2026-0021__9dd183a8__Resolution_-_Memorialized-RESO_Z2026-0021_290_7th_Street_Ext_B_10006_L_42-2026-05-18_v1.pdf",
 "case": "Z2026-0021",
 "kind": "resolution",
-"size": 218070
+"size": 218070,
+"tag": "documents-2026"
 },
 "9df0d565-a9d1-4a5e-8d4b-0a7c591c6af0": {
 "asset": "P2026-0133__9df0d565__Cover_Letter-Request_for_one_year_Extension_Prelim_-_retail_Pad_381_Route_440_8.18.26_18434536.1_-2026-08-19_v1.pdf",
 "case": "P2026-0133",
 "kind": "other:cover letter request for one year extension prelim retail pa",
-"size": 97526
+"size": 97526,
+"tag": "documents-2026"
 },
 "9e5b8689-44de-431d-b5ab-ae76ef812577": {
 "asset": "P2025-0269__9e5b8689__General_Development_Application-GDA_No_contact.pdf",
@@ -10537,7 +10573,8 @@
 "asset": "P2026-0053__9ef5fe6c__Notice_Sample___Draft-Sample_Notice_of_Hearing_4.29.2026-2026-04-29_v1.pdf",
 "case": "P2026-0053",
 "kind": "notice",
-"size": 16264
+"size": 16264,
+"tag": "documents-2026"
 },
 "9f0971d9-4df2-4e1c-9624-02291fb8fd2e": {
 "asset": "P2025-0228__9f0971d9__ZDL-2026-000270_468_MANILA.pdf",
@@ -10726,13 +10763,8 @@
 "asset": "Z2026-0040__a1c01cac__10_Ownership_disclosure_form-10_disclosure_form_626_Palisade-2026-07-20_v1.pdf",
 "case": "Z2026-0040",
 "kind": "other:10% ownership disclosure form 10 disclosure form 626 palisad",
-"size": 89279
-},
-"a1c4e40d-e0ff-418b-945b-5c516ccc5e0b": {
-"asset": "P2026-0001__a1c4e40d__Resolution_-_Memorialized-City_Council_Reso_Directing_Planning_Board_to_Amend_RDP-2026-01-21_v1.pdf",
-"case": "P2026-0001",
-"kind": "resolution",
-"size": 137138
+"size": 89279,
+"tag": "documents-2026"
 },
 "a1d619dc-12b6-42a0-b76c-86acdac62d0a": {
 "asset": "P2025-0233__a1d619dc__10_Ownership_disclosure_form-Owner_Disclosure_Statement-2026-02-11_v1.pdf",
@@ -10832,7 +10864,8 @@
 "asset": "P2026-0021__a331461d__Property_Tax_Certificate-17-25_Perrine_Certificate_of_Taxes-2026-02-20_v1.pdf",
 "case": "P2026-0021",
 "kind": "tax-cert",
-"size": 203984
+"size": 203984,
+"tag": "documents-2026"
 },
 "a3492ffd-9c27-4595-a5d4-6d0eb2c5b23f": {
 "asset": "Z2025-0056__a3492ffd__Photos-PHOTOS_-_COMBINED-2025-09-03_v1.pdf",
@@ -10879,13 +10912,15 @@
 "asset": "P2026-0128__a466c5d9__Affidavit_of_Ownership-Affidavit_of_Ownership_-_359_Central-2026-08-11_v1.pdf",
 "case": "P2026-0128",
 "kind": "notice",
-"size": 173405
+"size": 173405,
+"tag": "documents-2026"
 },
 "a47c8ac2-0c4c-42a5-9e98-387b817f4a25": {
 "asset": "P2026-0100__a47c8ac2__Cover_Letter-00_Cover_letter-2026-06-23_v1.pdf",
 "case": "P2026-0100",
 "kind": "other:cover letter 00 cover letter v1",
-"size": 200346
+"size": 200346,
+"tag": "documents-2026"
 },
 "a4909ce9-be5d-47e3-8d6b-78854f305df9": {
 "asset": "Z2025-0094__a4909ce9__Resolution_-_Memorialized-RESO_Z20-043_201_Newark_Ave_B_12702_L_5-2025-12-29_v1.pdf",
@@ -11079,12 +11114,6 @@
 "size": 4283754,
 "tag": "documents-2025"
 },
-"a7bb54fa-d051-400e-9918-340dbc209bbb": {
-"asset": "P2026-0013__a7bb54fa__Photos-Image_1-2026-03-18_v1.jpeg",
-"case": "P2026-0013",
-"kind": "other:photos image 1 v1",
-"size": 202423
-},
 "a7c768de-8791-4e6f-9376-763a6b079d07": {
 "asset": "P2025-0188__a7c768de__Cover_Letter-Request_for_one_year_Extension_-_394_Summit_Avenue-2025-09-04_v1.pdf",
 "case": "P2025-0188",
@@ -11110,7 +11139,8 @@
 "asset": "P2026-0071__a8257e01__Other-Fee_calcluation_worksheet_CURRENT2_v1.pdf",
 "case": "P2026-0071",
 "kind": "other:other fee calcluation worksheet current2 v1",
-"size": 226611
+"size": 226611,
+"tag": "documents-2026"
 },
 "a8551370-469c-4e3a-ac59-21fe295d8985": {
 "asset": "Z2025-0074__a8551370__10_Ownership_disclosure_form-Disclosure_Statement-2025-10-03_v1.pdf",
@@ -11150,7 +11180,8 @@
 "asset": "P2026-0037__a8a6d2f0__04-14-26_JCPB_-_11_-_P2026-0037_-_2854_JFK_Blvd_-_MINI.pdf",
 "case": "P2026-0037",
 "kind": "other:jcpb 11 p2026 0037 2854 jfk blvd mini",
-"size": 104647
+"size": 104647,
+"tag": "documents-2026"
 },
 "a8c29485-7dc3-404e-9bab-410ef53c9d08": {
 "asset": "P2025-0172__a8c29485__Architectural_Plans-Arch_Plans_2-15-2026_-_219_Freeman-2026-02-15_v1.pdf",
@@ -11175,7 +11206,8 @@
 "asset": "P2026-0070__a8f32034__Principal_Points_Statement-02._City_PB_-_Principal_Points_Statement-2026-05-05_v1.pdf",
 "case": "P2026-0070",
 "kind": "other:principal points statement 02. city pb principal points stat",
-"size": 7417
+"size": 7417,
+"tag": "documents-2026"
 },
 "a914c485-a726-4c4a-97ef-b9d683818275": {
 "asset": "P2025-0214__a914c485__Architectural_Plans-712-718_Grand_PB-2026-06-15_v1.pdf",
@@ -11188,7 +11220,8 @@
 "asset": "P2026-0147__a91ca203__Attachment_B_-_List_of_Sites_for_Adoption_into_Inventory_Black_Heritage.pdf",
 "case": "P2026-0147",
 "kind": "other:attachment b list of sites for adoption into inventory black",
-"size": 96272
+"size": 96272,
+"tag": "documents-2026"
 },
 "a9447cf9-577d-4eca-9f3e-c6ffceb0413f": {
 "asset": "P2025-0183__a9447cf9__Stormwater_Management_Report-Stormwater_Management_Engineers_Report_052026_-2026-05-21_v1.pdf",
@@ -11221,7 +11254,8 @@
 "asset": "P2026-0114__aa1a4671__Property_Tax_Certificate-Certification_of_Taxes-2026-07-20_v1.pdf",
 "case": "P2026-0114",
 "kind": "tax-cert",
-"size": 31312
+"size": 31312,
+"tag": "documents-2026"
 },
 "aa2830d1-965c-413d-bbd8-7a12f3e8ca25": {
 "asset": "P2025-0255__aa2830d1__Stormwater_Management_Report-26-bright_-drainage-report-2025-12-05_v1.pdf",
@@ -11248,7 +11282,8 @@
 "asset": "P2026-0050__aa898b9d__Zoning_Determination_Letter-ZDL-2026-000259_62-74_SACKETT_ST-2026-03-25_v1.pdf",
 "case": "P2026-0050",
 "kind": "other:zoning determination letter zdl 2026 62 74 sackett st v1",
-"size": 176683
+"size": 176683,
+"tag": "documents-2026"
 },
 "aaba1d53-9d0c-4d83-be27-c3a19e9970df": {
 "asset": "P2025-0185__aaba1d53__RESO_P2025-0184_and_P2025-0185_235_16th_St_SP_SUB_B_7101_L_1.pdf",
@@ -11267,7 +11302,8 @@
 "asset": "Z2026-0040__aaccb3fd__Resolution_-_Memorialized-RESO_Z2024-0011_626_Palisade_Ave_B_1703_L_51-2026-09-24_v1.pdf",
 "case": "Z2026-0040",
 "kind": "resolution",
-"size": 211557
+"size": 211557,
+"tag": "documents-2026"
 },
 "aaeed3a7-5c52-4517-967e-7effc738d6fd": {
 "asset": "P2025-0172__aaeed3a7__General_Development_Application-GDA_219_Freeman_-_No_Contacts-2026-03-30_v2.pdf",
@@ -11294,7 +11330,8 @@
 "asset": "P2026-0126__ab56106e__Arch_Change_Memo-107M_260716_-_Increased_Building_Height_Revised_Units-Counts_-_Narrative-2026-08-07_v1.pdf",
 "case": "P2026-0126",
 "kind": "other:arch change memo 107m increased building height + revised un",
-"size": 180499
+"size": 180499,
+"tag": "documents-2026"
 },
 "ab748f7e-437a-4a1e-a452-edbf92b4b6b6": {
 "asset": "P2026-0070__ab748f7e__Survey-11._Boundary_Survey_for_Subdivision_Application_2026-02-20_25-0659_174_NEWARK_JC_BOUND_SURVEY-2026-05-11_v1.pdf",
@@ -11455,7 +11492,8 @@
 "asset": "P2026-0075__ad1dad76__10_Ownership_disclosure_form-Disclosure_Statement_2026.04.14-2026-05-11_v1.pdf",
 "case": "P2026-0075",
 "kind": "other:10% ownership disclosure form disclosure statement v1",
-"size": 39397
+"size": 39397,
+"tag": "documents-2026"
 },
 "ad20ef11-8d3e-4013-acc7-eead539cedcf": {
 "asset": "P2025-0255__ad20ef11__10_Ownership_disclosure_form-10_disclosure_form-2025-12-03_v1.pdf",
@@ -11489,7 +11527,8 @@
 "asset": "P2026-0110__ad51334c__Notice_Sample___Draft-806_-_Public_Notice_DRAFT_-_NOT_FOR_PUBLICATION-2026-07-16_v1.pdf",
 "case": "P2026-0110",
 "kind": "notice",
-"size": 191475
+"size": 191475,
+"tag": "documents-2026"
 },
 "ad57add3-8ecf-40f4-bcbb-265ec9c31689": {
 "asset": "P2025-0232__ad57add3__Other-Harborside_4_Ownership_Disclosure_-_Harborside_PLaza_4_Associates_LLC_v1.pdf",
@@ -11502,7 +11541,8 @@
 "asset": "P2026-0149__ad749579__Affidavit_of_Performance-Affidavit_of_Performance_-_394_Summit-2026-10-16_v1.pdf",
 "case": "P2026-0149",
 "kind": "plans",
-"size": 15526
+"size": 15526,
+"tag": "documents-2026"
 },
 "ad80d38f-a928-44c7-81f7-f3c7acf5e12c": {
 "asset": "P2025-0175__ad80d38f__Traffic_Assessment_Report-Dolan_Dean_Parking_Report_10.29.2026_v1.pdf",
@@ -11528,7 +11568,8 @@
 "asset": "P2026-0103__add3f998__P2026-0103_-_120_Storms_Ave_-_Forestry_Comments.docx",
 "case": "P2026-0103",
 "kind": "forestry",
-"size": 11839
+"size": 11839,
+"tag": "documents-2026"
 },
 "adf7194b-d451-4c66-9c79-ef9d3a7c4b82": {
 "asset": "Z2025-0081__adf7194b__Survey-Survey-_285.5_Third-2025-12-30_v1.pdf",
@@ -11610,7 +11651,8 @@
 "asset": "P2026-0024__afe655f0__RESO_P2024-0036_20_Carbon_Pl_B_22103_L_12.pdf",
 "case": "P2026-0024",
 "kind": "other:reso p2024 0036 20 carbon pl b 22103 l 12",
-"size": 245262
+"size": 245262,
+"tag": "documents-2026"
 },
 "aff17b9b-da3a-4beb-841c-ee1dfbfb814f": {
 "asset": "Z2025-0074__aff17b9b__5-7-26_JCBOA_Z2025-0074_1072-1075_West_Side_Avenue.pdf",
@@ -11623,7 +11665,8 @@
 "asset": "P2026-0079__affaf0b4__RESO_P2025-0136_178_Monticello_Ave_B_16802_L_67.pdf",
 "case": "P2026-0079",
 "kind": "other:reso p2025 0136 178 monticello ave b 16802 l 67",
-"size": 211570
+"size": 211570,
+"tag": "documents-2026"
 },
 "b017a26b-fc0d-435e-83ab-75adb1a08f2b": {
 "asset": "P2025-0250__b017a26b__Medical_Overlay_District_Rezoning_-_Greenville_20251118_2_.pdf",
@@ -11643,7 +11686,8 @@
 "asset": "P2026-0127__b0534d57__Arch_Change_Memo-Arch_Change_Memo_7-2026_-_135_Monticello-2026-08-10_v1.pdf",
 "case": "P2026-0127",
 "kind": "other:arch change memo arch change memo (7 2026) 135 monticello v1",
-"size": 135607
+"size": 135607,
+"tag": "documents-2026"
 },
 "b05e779b-cc4c-40d2-a665-a0176d859835": {
 "asset": "P2026-0169__b05e779b__Affidavit_of_Ownership-Affidavit_of_Ownership_-_SIGNED-2026-10-27_v1.pdf",
@@ -11751,7 +11795,8 @@
 "asset": "P2026-0131__b14f6475__Demolition_Determination_Memo-Demo_Determination_-_B-26-0897-2026-08-17_v1.pdf",
 "case": "P2026-0131",
 "kind": "demolition",
-"size": 151990
+"size": 151990,
+"tag": "documents-2026"
 },
 "b14fbf4c-21a0-4763-9b1a-c9bdd2f1065b": {
 "asset": "P2025-0157__b14fbf4c__Notice_Packet_-_Proof_of_Service-Affidavit_of_Service_157-2026-11-09_v1.pdf",
@@ -11777,7 +11822,8 @@
 "asset": "P2026-0125__b1b52f46__10_Ownership_disclosure_form-10_Disclosure_-_07_29_26_1_-2026-08-04_v1.pdf",
 "case": "P2026-0125",
 "kind": "other:10% ownership disclosure form 10 disclosure 07 29 26 v1",
-"size": 97402
+"size": 97402,
+"tag": "documents-2026"
 },
 "b1c12af9-3a0a-423c-a79e-ee790b044bd8": {
 "asset": "P2025-0197__b1c12af9__County_Notice.pdf",
@@ -11829,7 +11875,8 @@
 "asset": "Z2026-0029__b258d239__Cover_Letter-Extension_of_Time_request_MannPropertyGroup-2026-03-31_v1.pdf",
 "case": "Z2026-0029",
 "kind": "other:cover letter extension of time request mannpropertygroup v1",
-"size": 160835
+"size": 160835,
+"tag": "documents-2026"
 },
 "b27902f4-db61-4bf2-a54f-3eaba54e0a74": {
 "asset": "P2025-0142__b27902f4__Planning_Approved_Signature_Set_-_arch_-_P21-120_.pdf",
@@ -11849,7 +11896,8 @@
 "asset": "P2026-0113__b2b49ea0__Property_Tax_Certificate-Tax_Cert_4-10-26-2026-07-20_v1.pdf",
 "case": "P2026-0113",
 "kind": "tax-cert",
-"size": 49980
+"size": 49980,
+"tag": "documents-2026"
 },
 "b2bc4a34-2cbe-430f-a600-aded6c21a622": {
 "asset": "P2025-0232__b2bc4a34__Forestry_Comments_P2025-0232.docx",
@@ -11894,7 +11942,8 @@
 "asset": "P2026-0065__b33ee705__Property_Tax_Certificate-TAX_CERTIF_-_1Q_2026_-_04_27_26-2026-04-27_v1.pdf",
 "case": "P2026-0065",
 "kind": "tax-cert",
-"size": 188725
+"size": 188725,
+"tag": "documents-2026"
 },
 "b358c569-147b-4e43-a0d1-e54e9b0de30a": {
 "asset": "P2025-0218__b358c569__Affidavit_of_Ownership-34VR_-_Affidavit_of_Ownership-_34_Van_Reipen_Ave_NJ-2025-12-02_v1.PDF",
@@ -11907,19 +11956,22 @@
 "asset": "P2026-0077__b366a9c6__34_LAIDLAW_AVE_-_I.pdf",
 "case": "P2026-0077",
 "kind": "jcmua",
-"size": 143961
+"size": 143961,
+"tag": "documents-2026"
 },
 "b36884e4-fbe2-4acb-ac5d-a4dd7cb35400": {
 "asset": "P2026-0109__b36884e4__Waiver_Request-List_of_Submission_Waivers-2026-07-16_v1.pdf",
 "case": "P2026-0109",
 "kind": "other:waiver request list of submission waivers v1",
-"size": 185189
+"size": 185189,
+"tag": "documents-2026"
 },
 "b371553a-2058-46b4-b413-20820241df42": {
 "asset": "P2026-0159__b371553a__10_Ownership_disclosure_form-Disclosure_-_80_Corbin-2026-10-12_v1.pdf",
 "case": "P2026-0159",
 "kind": "other:10% ownership disclosure form disclosure 80 corbin v1",
-"size": 201133
+"size": 201133,
+"tag": "documents-2026"
 },
 "b3a45d06-0992-4fac-8ccf-0f20f57b623e": {
 "asset": "P2025-0224__b3a45d06__RESO_P2025-0224_16_Van_Reipen_Ave_B_7903_L_32.01.pdf",
@@ -12016,7 +12068,8 @@
 "asset": "P2026-0111__b4ec76db__10_Ownership_disclosure_form-10_disclosure_form-2026-07-16_v1.pdf",
 "case": "P2026-0111",
 "kind": "other:10% ownership disclosure form 10 disclosure form v1",
-"size": 110981
+"size": 110981,
+"tag": "documents-2026"
 },
 "b4f1fd28-d7db-4150-aa50-c4c966321163": {
 "asset": "Z2026-0005__b4f1fd28__Memorandum-Memorandum-2026-01-16_v1.pdf",
@@ -12049,7 +12102,8 @@
 "asset": "P2026-0018__b598bf77__Civil_Engineering_Plans-Civil_Plans_Holder_-_No_Plans-2026-02-13_v1.pdf",
 "case": "P2026-0018",
 "kind": "plans",
-"size": 3359
+"size": 3359,
+"tag": "documents-2026"
 },
 "b59b8ad3-a120-4c98-aefa-3ec0ccc16612": {
 "asset": "P2025-0248__b59b8ad3__Cover_Letter-364_Sixth_Street_-_P21-035_Second_Request_for_Extension_-11.12.25-2025-11-13_v1.pdf",
@@ -12108,7 +12162,8 @@
 "asset": "P2026-0026__b6017b98__13-17_Bostwick_Ave.pdf",
 "case": "P2026-0026",
 "kind": "other:13 17 bostwick ave",
-"size": 146155
+"size": 146155,
+"tag": "documents-2026"
 },
 "b6201a84-18d9-49a6-9dcd-27e740883537": {
 "asset": "P2025-0233__b6201a84__3_New_York_Ave_Transportation_Comments.pdf",
@@ -12183,7 +12238,8 @@
 "asset": "P2026-0090__b77fbc67__Demolition_Determination_Memo-12_30_25_-_274-276_Columbia_Avenue_B-25-2304-2026-06-08_v1.pdf",
 "case": "P2026-0090",
 "kind": "demolition",
-"size": 215997
+"size": 215997,
+"tag": "documents-2026"
 },
 "b78639bd-799c-4edb-9082-c252c5f61b67": {
 "asset": "P2025-0175__b78639bd__Civil_Engineering_Plans-Phase_I_Site_Plan_10.28.2026-2026-10-28_v1.pdf",
@@ -12222,7 +12278,8 @@
 "asset": "P2026-0026__b7ddde17__P2026-0026_-_forestry_comments.docx",
 "case": "P2026-0026",
 "kind": "forestry",
-"size": 11882
+"size": 11882,
+"tag": "documents-2026"
 },
 "b7e727df-04ee-48f5-8cbb-72691b8e12a0": {
 "asset": "Z2025-0095__b7e727df__260202_976_West_Side_Ave.pdf",
@@ -12262,25 +12319,8 @@
 "asset": "P2026-0156__b84cc8f4__Public_Notice_176_Palisade.pdf",
 "case": "P2026-0156",
 "kind": "notice",
-"size": 138850
-},
-"b85748ec-ed89-46a2-8fcf-e5c6862c94dc": {
-"asset": "P2026-0004__b85748ec__Affordable_Housing_Checklist_Form-Affordable_Housing-2026-01-21_v1.pdf",
-"case": "P2026-0004",
-"kind": "affordable",
-"size": 154218
-},
-"b876e596-4462-42e3-9a44-f0c9b9ab85bc": {
-"asset": "Z2026-0004__b876e596__Principal_Points_Statement-Principal_Points_Statement_-_32_Sherman_HPC_-2026-01-14_v1.pdf",
-"case": "Z2026-0004",
-"kind": "other:principal points statement principal points statement 32 she",
-"size": 77786
-},
-"b879164d-be31-4132-9707-3176f32ec767": {
-"asset": "Z2026-0003__b879164d__Resolution_-_Memorialized-RESO_Z21-085_166_Hancock_Ave_b_2205-2026-01-09_v1.pdf",
-"case": "Z2026-0003",
-"kind": "resolution",
-"size": 241511
+"size": 138850,
+"tag": "documents-2026"
 },
 "b8b7b0f6-e03a-4730-bcf4-c9714dec22aa": {
 "asset": "P2025-0228__b8b7b0f6__P2025-0228_468_Manila_Staff_Report.pdf",
@@ -12293,7 +12333,8 @@
 "asset": "P2026-0051__b8bfef7b__05-12-26_JCPB_-_09_-_P2026-0051_-_35_Fairview_Avenue_-_MINI.pdf",
 "case": "P2026-0051",
 "kind": "other:jcpb 09 p2026 0051 35 fairview avenue mini",
-"size": 123880
+"size": 123880,
+"tag": "documents-2026"
 },
 "b8d05f3e-bb8e-4093-9f65-77cbc8c47c86": {
 "asset": "P2025-0144__b8d05f3e__03-24-26_JCPB_-_13_-_P2025-0144_-_500_Washington_Boulevard.pdf",
@@ -12359,7 +12400,8 @@
 "asset": "P2026-0116__b9d10ceb__Affordable_Housing_Checklist_Form-Affordable_Housing_Checklist-2026-07-21_v1.pdf",
 "case": "P2026-0116",
 "kind": "affordable",
-"size": 164338
+"size": 164338,
+"tag": "documents-2026"
 },
 "ba15abe1-f957-488c-9dd3-28f0a9eb8a1d": {
 "asset": "P2026-0041__ba15abe1__Notice_Packet_-_Proof_of_Service-Vasant_Properties_-_Mailing_packet_sans_Aff_of_Publication-2026-05-01_v1.pdf",
@@ -12479,7 +12521,8 @@
 "asset": "P2026-0050__bb1a0d67__Water_Bill_Certificate-Water_62_Sackett-2026-04-28_v1.pdf",
 "case": "P2026-0050",
 "kind": "other:water bill certificate water 62 sackett v1",
-"size": 96409
+"size": 96409,
+"tag": "documents-2026"
 },
 "bb27caca-aac8-4950-8e94-68d910aaa21e": {
 "asset": "P2025-0143__bb27caca__Memorandum-2025-09-12_Utility_Memo-2025-09-17_v1.pdf",
@@ -12506,7 +12549,8 @@
 "asset": "P2026-0149__bb859f98__Cover_Letter-Second_Request_for_one_year_Extension_-_394_Summit_Avenue_9.17.26_1_-2026-10-20_v1.pdf",
 "case": "P2026-0149",
 "kind": "other:cover letter second request for one year extension 394 summi",
-"size": 144854
+"size": 144854,
+"tag": "documents-2026"
 },
 "bb8718df-de06-45d3-9bd3-9a4566e09920": {
 "asset": "P2025-0256__bb8718df__RESO_P2025-0011_135_Greene_St_B_11607_L_1.pdf",
@@ -12526,7 +12570,8 @@
 "asset": "P2026-0124__bb93644b__10_Ownership_disclosure_form-Ownership_Disclosure_Statement-2026-07-31_v1.pdf",
 "case": "P2026-0124",
 "kind": "other:10% ownership disclosure form ownership disclosure statement",
-"size": 6867
+"size": 6867,
+"tag": "documents-2026"
 },
 "bb9a88bc-4109-4b2f-9fe9-a95ef6577e69": {
 "asset": "P2025-0129__bb9a88bc__Other-KBA_and_Loews_Loading_Coordination_Agreement_SH_2.18.26__v1.docx",
@@ -12541,12 +12586,6 @@
 "kind": "other:10% ownership disclosure form 10 disclosure form 2 v1",
 "size": 139389,
 "tag": "documents-2025"
-},
-"bbc34ed6-b69e-43ed-8ce8-a085401e2fab": {
-"asset": "P2026-0012__bbc34ed6__Affidavit_of_Ownership-Aff_Ownership_241_ML_King-2026-02-06_v1.pdf",
-"case": "P2026-0012",
-"kind": "notice",
-"size": 51750
 },
 "bc0b6138-f029-48c4-ad95-ed89550960d4": {
 "asset": "P2025-0138__bc0b6138__General_Development_Application-GDA_12-2025_-_292-294_Van_Horne-2025-12-05_v1.pdf",
@@ -12586,7 +12625,8 @@
 "asset": "P2026-0033__bcafa3fc__Affidavit_of_Ownership-Affidavit_-_Zoning_Extension_Affidavit_-_659_Grove_Street_Grove_Street_Partners_LLC_-_Extension_A",
 "case": "P2026-0033",
 "kind": "notice",
-"size": 18736
+"size": 18736,
+"tag": "documents-2026"
 },
 "bcbb8f47-b1d0-4b30-a65d-d416884ea53a": {
 "asset": "Z2026-0028__bcbb8f47__10_Ownership_disclosure_form-04B_10_disclosure_form_FINAL-2026-03-24_v1.pdf",
@@ -12598,7 +12638,8 @@
 "asset": "P2026-0126__bcc3791b__Transcript-10-13-26_JCPB_-_13_-_P2026-0126_-_107_Morgan_Street-2026-10-26_v1.pdf",
 "case": "P2026-0126",
 "kind": "other:transcript jcpb 13 p2026 0126 107 morgan street v1",
-"size": 151566
+"size": 151566,
+"tag": "documents-2026"
 },
 "bce79e8e-08cb-4bcd-8137-279e9cd2118f": {
 "asset": "P2026-0047__bce79e8e__Resolution_-_Memorialized-RESO_P22-057_Kellogg_Route_440_B_21909.01_L_6.01_fka_L_6-2026-03-23_v1.pdf",
@@ -12616,7 +12657,8 @@
 "asset": "P2026-0071__bd7455ca__Shadow_Study___Visual_Impact_Assessment-30-40_Newport_Parkway_BD_DR_Visual_Impact_Assessment_11-12-2025-2026-05-05_v1.pd",
 "case": "P2026-0071",
 "kind": "other:shadow study visual impact assessment 30 40 newport parkway ",
-"size": 107757
+"size": 107757,
+"tag": "documents-2026"
 },
 "bd7b71a1-7c54-4fb5-9331-31edd5bfbbff": {
 "asset": "P2025-0127__bd7b71a1__Other-ConRail_Easement_Deed_and_Map_-_32_Waverly_v1.pdf",
@@ -12629,13 +12671,15 @@
 "asset": "P2026-0051__bd96835a__Property_Tax_Certificate-2132.00_Tax_Cert-2026-03-26_v1.pdf",
 "case": "P2026-0051",
 "kind": "tax-cert",
-"size": 208300
+"size": 208300,
+"tag": "documents-2026"
 },
 "bda88707-66d0-4da2-a9be-228896235845": {
 "asset": "P2026-0085__bda88707__RESO_P2026-0085_36_McAdoo_Ave_B_27001_L_13.pdf",
 "case": "P2026-0085",
 "kind": "other:reso p2026 0085 36 mcadoo ave b 27001 l 13",
-"size": 211164
+"size": 211164,
+"tag": "documents-2026"
 },
 "bdb9855b-5e39-4fee-8bb3-1953e299aa88": {
 "asset": "P2025-0150__bdb9855b__Property_Tax_Certificate-Tax_Certification_6.2.25-2025-07-28_v1.pdf",
@@ -12648,7 +12692,8 @@
 "asset": "P2026-0056__bdbf7e92__p2026-0056_Forestry_Comments.docx",
 "case": "P2026-0056",
 "kind": "forestry",
-"size": 12002
+"size": 12002,
+"tag": "documents-2026"
 },
 "bdc9fb7d-7b14-4ba2-9827-fecc1be17e8a": {
 "asset": "P2026-0037__bdc9fb7d__Cover_Letter-AT_T_-_2854_John_F_Kennedy_Blvd_-_Application_Cover_ltr.-2026-03-13_v1.pdf",
@@ -12674,7 +12719,8 @@
 "asset": "P2026-0035__bef4a9d7__RESO_P2026-0035_30_40_Newport_Pkwy_EXT_B_7302_L_60.pdf",
 "case": "P2026-0035",
 "kind": "other:reso p2026 0035 30 40 newport pkwy ext b 7302 l 60",
-"size": 204855
+"size": 204855,
+"tag": "documents-2026"
 },
 "bf09a220-6dac-4960-8bdf-daf952a1f2c1": {
 "asset": "P2025-0250__bf09a220__11-25-25_JCPB_-_13_-_P2025-0250_-_M_District_Amendment_-_Ordinance_25-124.pdf",
@@ -12733,7 +12779,8 @@
 "asset": "P2026-0112__bfea1469__Notice_Sample___Draft-810_-_Public_Notice_DRAFT_-_NOT_FOR_PUBLICATION-2026-07-16_v1.pdf",
 "case": "P2026-0112",
 "kind": "notice",
-"size": 191447
+"size": 191447,
+"tag": "documents-2026"
 },
 "bff06dae-37db-47d9-9d44-ca7357b2dd5b": {
 "asset": "Z2025-0064__bff06dae__General_Development_Application-GDA-_88-90_Bright_Amendment-2025-08-08_v1.pdf",
@@ -12746,7 +12793,8 @@
 "asset": "P2026-0126__c022b159__10-13-26_JCPB_-_13_-_P2026-0126_-_107_Morgan_Street_-_MINI.pdf",
 "case": "P2026-0126",
 "kind": "other:jcpb 13 p2026 0126 107 morgan street mini",
-"size": 162813
+"size": 162813,
+"tag": "documents-2026"
 },
 "c058f492-f41a-44e4-9609-35ce03b3ff74": {
 "asset": "P2025-0232__c058f492__Architectural_Plans-1673-251031-SITE_PLAN_AMD-BB-S_S_-_Revised-2025-11-14_v1.pdf",
@@ -12810,12 +12858,6 @@
 "size": 770761,
 "tag": "documents-2026"
 },
-"c16f4122-210e-4479-a439-01608d8e0cc4": {
-"asset": "P2026-0004__c16f4122__10_Ownership_disclosure_form-Ownership_Disclosure-2026-01-21_v1.pdf",
-"case": "P2026-0004",
-"kind": "other:10% ownership disclosure form ownership disclosure v1",
-"size": 99644
-},
 "c19da14f-e10c-4fe1-88be-fc985d1f7064": {
 "asset": "P2025-0132__c19da14f__RESO_P2023-0006_421_Central_B_2805_L_29_30.pdf",
 "case": "P2025-0132",
@@ -12830,29 +12872,26 @@
 "size": 455441,
 "tag": "documents-2025-2"
 },
-"c1de16b9-0d45-4088-9f74-bca12e8daf96": {
-"asset": "P2026-0013__c1de16b9__Property_Tax_Certificate-627_Palisade_Paid_to_Date-2026-02-12_v1.pdf",
-"case": "P2026-0013",
-"kind": "tax-cert",
-"size": 217535
-},
 "c26f17cb-5f63-452b-b036-5a16932053e3": {
 "asset": "P2026-0082__c26f17cb__674_440_-_P2026-0082_-_Forestry_Comments.docx",
 "case": "P2026-0082",
 "kind": "forestry",
-"size": 11892
+"size": 11892,
+"tag": "documents-2026"
 },
 "c2794400-f787-4ada-9763-2922f6fe326d": {
 "asset": "P2026-0127__c2794400__Property_Tax_Certificate-Tax_certificate_forthcoming-2026-08-10_v1.pdf",
 "case": "P2026-0127",
 "kind": "tax-cert",
-"size": 16483
+"size": 16483,
+"tag": "documents-2026"
 },
 "c27e8c8f-46e7-4c1c-b557-8cb145413c08": {
 "asset": "Z2026-0031__c27e8c8f__10_Ownership_disclosure_form-Liberty_10_ownership-2026-04-06_v1.PDF",
 "case": "Z2026-0031",
 "kind": "other:10% ownership disclosure form liberty 10% ownership v1",
-"size": 53638
+"size": 53638,
+"tag": "documents-2026"
 },
 "c2849cc3-7216-4bbd-82ef-d725cca47eec": {
 "asset": "P2025-0142__c2849cc3__PLANNING_APPROVED_SIGNATURE_SET_-_CIVIL_-_P21-120_1_1_.PDF",
@@ -12865,7 +12904,8 @@
 "asset": "P2026-0044__c2c1bfcf__Cover_Letter-3.18.2026_Request_for_a_One_Year_Extension-2026-03-19_v1.pdf",
 "case": "P2026-0044",
 "kind": "other:cover letter request for a one year extension v1",
-"size": 102279
+"size": 102279,
+"tag": "documents-2026"
 },
 "c2c7853b-a645-41c6-9514-ba6380c65063": {
 "asset": "P2025-0203__c2c7853b__Cover_Letter-Initial_Submission_Letter_-_10_03_25-2025-10-03_v1.pdf",
@@ -12885,7 +12925,8 @@
 "asset": "P2026-0094__c2e996df__Property_Tax_Certificate-770_Washington_Request_for_Extension_Certification_of_Taxes-2026-06-12_v1.pdf",
 "case": "P2026-0094",
 "kind": "tax-cert",
-"size": 196107
+"size": 196107,
+"tag": "documents-2026"
 },
 "c31c1718-85cd-4798-a810-ef38d763c564": {
 "asset": "P2025-0269__c31c1718__Subdivision_Plat-BSA-20216_-_Subdivision_v2__Signed_Seal-2025-12-30_v1.pdf",
@@ -12938,12 +12979,6 @@
 "kind": "other:arch change memo 14 letter to planning 85 87 monitor v1",
 "size": 903289,
 "tag": "documents-2025-2"
-},
-"c3d0645d-d073-4725-b13e-783a34a04556": {
-"asset": "P2026-0013__c3d0645d__Demolition_Determination_Memo-Historic_Memo_627_Palisade-2026-02-06_v1.pdf",
-"case": "P2026-0013",
-"kind": "demolition",
-"size": 214832
 },
 "c401bb50-de06-4b19-814e-f531d8156e52": {
 "asset": "Z2025-0086__c401bb50__General_Development_Application-GDA_-_11_02_25-2025-11-14_v1.pdf",
@@ -13022,13 +13057,15 @@
 "asset": "P2026-0100__c506d888__09-29-26_JCPB_-_07b_-_P2026-0100_-_535_Monmouth_Street.pdf",
 "case": "P2026-0100",
 "kind": "other:jcpb 07b p2026 0100 535 monmouth street",
-"size": 102106
+"size": 102106,
+"tag": "documents-2026"
 },
 "c5384614-15b8-40f3-983c-cf57aee65e5c": {
 "asset": "Z2026-0045__c5384614__Principal_Points_Statement-2026-08-25_-_SPP_-_64-74_Sackett_St-2026-08-27_v1.pdf",
 "case": "Z2026-0045",
 "kind": "other:principal points statement spp 64 74 sackett st v1",
-"size": 198898
+"size": 198898,
+"tag": "documents-2026"
 },
 "c54ce2a4-19c8-4dc9-af4f-c14b0847d615": {
 "asset": "P2025-0254__c54ce2a4__Affidavit_of_Ownership-affidavit_of_ownership-2025-12-01_v1.pdf",
@@ -13068,7 +13105,8 @@
 "asset": "Z2026-0052__c593aa7d__10_Ownership_disclosure_form-10_Percent_Disclosure_93_Beacon-2026-10-05_v1.pdf",
 "case": "Z2026-0052",
 "kind": "other:10% ownership disclosure form 10 percent disclosure 93 beaco",
-"size": 39734
+"size": 39734,
+"tag": "documents-2026"
 },
 "c5a61443-0986-48dd-9f99-01c70d15e50d": {
 "asset": "P2025-0269__c5a61443__411_Liberty_Staff_Report_5.6.26.pdf",
@@ -13149,12 +13187,6 @@
 "case": "P2026-0120",
 "kind": "other:jctp community meeting ppt final",
 "size": 8345581
-},
-"c672f973-643a-43e1-b0fa-be1b87615521": {
-"asset": "Z2026-0020__c672f973__Cover_Letter-Cover_Letter_Extension_02.20.26-2026-02-20_v1.pdf",
-"case": "Z2026-0020",
-"kind": "other:cover letter cover letter extension v1",
-"size": 30283
 },
 "c6d90180-2e68-469d-80f6-7fa0948695dd": {
 "asset": "P2025-0176__c6d90180__General_Development_Application-GDA_No_Contacts-2026-03-30_v2.pdf",
@@ -13263,7 +13295,8 @@
 "asset": "Z2026-0025__c86bf1ee__10_Ownership_disclosure_form-06B_10_percent_Disclosure_completed-2026-03-10_v1.pdf",
 "case": "Z2026-0025",
 "kind": "other:10% ownership disclosure form 06b 10 percent disclosure comp",
-"size": 21457
+"size": 21457,
+"tag": "documents-2026"
 },
 "c882f3de-474e-486a-a575-1ce7c7c2c59f": {
 "asset": "P2025-0134__c882f3de__Property_Tax_Certificate-Tax_Cert_391_Fairmount-2025-07-07_v1.pdf",
@@ -13290,7 +13323,8 @@
 "asset": "P2026-0023__c8ec1ad9__Engineering_Site_8A_4.12.24_.pdf",
 "case": "P2026-0023",
 "kind": "engineering",
-"size": 178437
+"size": 178437,
+"tag": "documents-2026"
 },
 "c914d54c-9254-4b36-a3c5-8710903ce051": {
 "asset": "P2025-0218__c914d54c__10_Ownership_disclosure_form-Ownership_Disclosure_-_34-46_Van_Reipen-2025-10-17_v1.pdf",
@@ -13332,12 +13366,6 @@
 "size": 133160,
 "tag": "documents-2025"
 },
-"c953e7f3-c507-4da8-9dd4-86b9f05a7699": {
-"asset": "P2026-0001__c953e7f3__Principal_Points_Statement-Revised_Planner_Report-2026-03-29_v1.pdf",
-"case": "P2026-0001",
-"kind": "other:principal points statement revised planner report v1",
-"size": 232365
-},
 "c9579abe-55f7-4285-bfbb-4f4ae0929cb8": {
 "asset": "P2025-0269__c9579abe__demo_pics.pdf",
 "case": "P2025-0269",
@@ -13369,7 +13397,8 @@
 "asset": "P2026-0033__ca168566__Cover_Letter-Grove_Street_Partners_LLC_-_LTR_requesting_3rd_extension_of_approval-2026-03-09_v1.pdf",
 "case": "P2026-0033",
 "kind": "other:cover letter grove street partners llc ltr requesting 3rd ex",
-"size": 66567
+"size": 66567,
+"tag": "documents-2026"
 },
 "ca180bef-8b2f-44f5-88d3-7f3656ab9f9d": {
 "asset": "P2025-0166__ca180bef__186_Terrace_Transportation_Comments.pdf",
@@ -13395,7 +13424,8 @@
 "asset": "P2026-0033__ca48913d__Property_Tax_Certificate-659_Grove_Taxes_Paid_Cert-2026-03-09_v1.pdf",
 "case": "P2026-0033",
 "kind": "tax-cert",
-"size": 45466
+"size": 45466,
+"tag": "documents-2026"
 },
 "ca6391cc-5977-46e6-ab82-b316116849d5": {
 "asset": "P2025-0216__ca6391cc__Edited_-_GENERAL_DEVELOPMENT_APPLICATION-GDA.203_DANFORTH-2025-10-16_V1.PDF",
@@ -13408,7 +13438,8 @@
 "asset": "P2026-0077__ca792345__10-13-26_JCPB_-_12_-_P2026-0077_-_34_Laidlaw_Avenue-_MINI.pdf",
 "case": "P2026-0077",
 "kind": "other:jcpb 12 p2026 0077 34 laidlaw avenue mini",
-"size": 202307
+"size": 202307,
+"tag": "documents-2026"
 },
 "ca859a4e-c728-40bb-a72e-e90c8f0a93ad": {
 "asset": "P2025-0259__ca859a4e__Affidavit_of_Ownership-127_Delaware_Affidavit_of_Ownership-2025-12-09_v1.pdf",
@@ -13489,7 +13520,8 @@
 "asset": "P2026-0093__cb5d06ac__10_Ownership_disclosure_form-a_10_Percent_Disclosure_215_Van_Vorst-2026-06-10_v1.pdf",
 "case": "P2026-0093",
 "kind": "other:10% ownership disclosure form a 10 percent disclosure 215 va",
-"size": 35030
+"size": 35030,
+"tag": "documents-2026"
 },
 "cb5f0ba9-1b2a-4d78-a0df-bb56a618a30d": {
 "asset": "Z2026-0025__cb5f0ba9__Traffic_Assessment_Report-TrafficRpt_240FairmountAvJC_040926-KLEIN_v1.pdf",
@@ -13508,7 +13540,8 @@
 "asset": "P2026-0049__cbc5ed14__Demolition_Determination_Memo-206_Olean_Avenue_B-25-1663_Historic-2026-03-24_v1.pdf",
 "case": "P2026-0049",
 "kind": "demolition",
-"size": 127294
+"size": 127294,
+"tag": "documents-2026"
 },
 "cbf08c42-71e5-40af-9274-d675ba711e4a": {
 "asset": "P2026-0110__cbf08c42__Architectural_Plans-2025093.00_-_806_West_Side_Avenue_-_Revised_Planning_Board_Set_-_260914-2026-09-15_v1.pdf",
@@ -13520,7 +13553,8 @@
 "asset": "P2026-0134__cc100ce7__Proof_of_Posting_on_the_City_s_Website_-_Public_Notice_Tab_-_Hudson_County_Plaza_Study_Area.pdf",
 "case": "P2026-0134",
 "kind": "notice",
-"size": 85543
+"size": 85543,
+"tag": "documents-2026"
 },
 "cc18a616-26dc-46f0-a961-c8ce62be32e7": {
 "asset": "P2025-0176__cc18a616__Property_Tax_Certificate-Tax_Cert-2025-09-08_v1.pdf",
@@ -13594,7 +13628,8 @@
 "asset": "P2026-0021__cd47d8c8__04-14-26_JCPB_-_08_-_P2026-0021_-_17-25_Perrine_Avenue_-_MINI.pdf",
 "case": "P2026-0021",
 "kind": "other:jcpb 08 p2026 0021 17 25 perrine avenue mini",
-"size": 118621
+"size": 118621,
+"tag": "documents-2026"
 },
 "cd4a5084-6c6d-4bcb-ad16-b7f5436b39de": {
 "asset": "Z2026-0045__cd4a5084__General_Development_Application-GDA_Sackett_St_ZBA_draft_06182026_TY_FILLED_-2026-09-02_v1.pdf",
@@ -13634,7 +13669,8 @@
 "asset": "P2026-0120__cda79882__09-29-26_JCPB_-_10_-_P2026-0120_-_Lets_Move_JC.pdf",
 "case": "P2026-0120",
 "kind": "other:jcpb 10 p2026 0120 lets move jc",
-"size": 246574
+"size": 246574,
+"tag": "documents-2026"
 },
 "cda90984-3d4a-4027-98b2-29a333ba511c": {
 "asset": "P2025-0253__cda90984__Planning_Approved_Signature_Set_-_arch_P2025-0253_.pdf",
@@ -13674,7 +13710,8 @@
 "asset": "P2026-0083__ce379cf2__Fee_calcluation_worksheet_CURRENT.pdf",
 "case": "P2026-0083",
 "kind": "other:fee calcluation worksheet current",
-"size": 137377
+"size": 137377,
+"tag": "documents-2026"
 },
 "ce583692-8108-43da-8cb1-92def6be1aa2": {
 "asset": "Z2025-0096__ce583692__Arch_Change_Memo-Arch_Change_Memo_2-2026_-_138-140_Glenwood-2026-02-17_v1.pdf",
@@ -13769,7 +13806,8 @@
 "asset": "P2026-0026__cf37ecb8__AF-2025-0069_I_13_BOSTWICK_AVE_I_APPROVED_AH_CHECKLIST.PDF",
 "case": "P2026-0026",
 "kind": "affordable",
-"size": 195157
+"size": 195157,
+"tag": "documents-2026"
 },
 "cf4773d9-7eb9-4341-a841-90358abe7190": {
 "asset": "P2025-0175__cf4773d9__Cover_Letter-One_EVT_LLC_cover_letter_app-2025-08-21_v1.pdf",
@@ -13794,7 +13832,8 @@
 "asset": "Z2026-0037__cf8c62db__Resolution_-_Memorialized-RESO-_Z2024-0003_573-577_Jackson_Ave_B_17902_L_15_16-2026-06-15_v1.pdf",
 "case": "Z2026-0037",
 "kind": "resolution",
-"size": 134918
+"size": 134918,
+"tag": "documents-2026"
 },
 "cff72b7c-eeaa-4cc6-87be-f15e7a81c72b": {
 "asset": "P2025-0124__cff72b7c__Cover_Letter-Correspondence_to_City_Planning_re__Revised_Submission_073025_-2025-07-30_v1.pdf",
@@ -13847,7 +13886,8 @@
 "asset": "P2026-0035__d10bc995__Property_Tax_Certificate-Letter_to_Planner_Re_Tax_Certificatin_30-40_Newport_-2026-03-11_v1.pdf",
 "case": "P2026-0035",
 "kind": "tax-cert",
-"size": 227447
+"size": 227447,
+"tag": "documents-2026"
 },
 "d1512727-315c-4279-9c3d-9eef62f1bc9c": {
 "asset": "P2025-0244__d1512727__Civil_Change_Memo-Narrative_Changes_8.11.2026_Civil-2026-08-11_v1.pdf",
@@ -13867,7 +13907,8 @@
 "asset": "P2026-0152__d1c52b55__10_Ownership_disclosure_form-Not_Applicable-2026-09-30_v1.pdf",
 "case": "P2026-0152",
 "kind": "other:10% ownership disclosure form not applicable v1",
-"size": 60204
+"size": 60204,
+"tag": "documents-2026"
 },
 "d1d0984a-820b-41b1-bebc-a5c9fc02f543": {
 "asset": "Z2025-0059__d1d0984a__Principal_Points_Statement-Letter_to_HEDC_Regarding_240_and_250_Newark_Avenue_7.7.25_for_hearing-2025-07-31_v1.pdf",
@@ -13889,17 +13930,12 @@
 "size": 205721,
 "tag": "documents-2025-2"
 },
-"d22d00da-330b-47bf-a14a-a90042dc6cbe": {
-"asset": "P2026-0013__d22d00da__Photos-Image_3-2026-03-18_v1.jpeg",
-"case": "P2026-0013",
-"kind": "other:photos image 3 v1",
-"size": 183440
-},
 "d25e9a49-55a0-4c73-a12a-8a6d463abf51": {
 "asset": "P2026-0125__d25e9a49__Affidavit_of_Ownership-Affidavit_of_Ownership_-_SIGNED-2026-08-04_v1.pdf",
 "case": "P2026-0125",
 "kind": "notice",
-"size": 167422
+"size": 167422,
+"tag": "documents-2026"
 },
 "d29e44a2-06ef-4dc4-8a4f-e0fee0b26a1f": {
 "asset": "P2025-0214__d29e44a2__Arch_Change_Memo-26-0615_712-714_Grand_Cover-2026-06-15_v1.pdf",
@@ -13987,13 +14023,15 @@
 "asset": "P2026-0084__d395648b__Forestry_Plan_Response_52_Aetna_St.docx",
 "case": "P2026-0084",
 "kind": "plans",
-"size": 237438
+"size": 237438,
+"tag": "documents-2026"
 },
 "d3f62deb-696e-46c8-ab8a-461e7f19c7f3": {
 "asset": "P2026-0080__d3f62deb__Cover_Letter-5.14.2026_Cover_Letter_Encl._Application-2026-05-14_v1.pdf",
 "case": "P2026-0080",
 "kind": "application",
-"size": 69016
+"size": 69016,
+"tag": "documents-2026"
 },
 "d3fb1b8d-b932-4e51-a36b-1a28d36bcbd6": {
 "asset": "P2026-0084__d3fb1b8d__forestry_standard_2023_1_.pdf",
@@ -14036,17 +14074,12 @@
 "size": 77527,
 "tag": "documents-2025"
 },
-"d493a54c-a288-40cc-84d9-8c4e5b09b5c6": {
-"asset": "Z2026-0003__d493a54c__10_Ownership_disclosure_form-10_disclosure_form-_166_Hancock-2026-01-09_v1.pdf",
-"case": "Z2026-0003",
-"kind": "other:10% ownership disclosure form 10 disclosure form 166 hancock",
-"size": 94752
-},
 "d4b25419-b314-47d5-a443-6df72d789177": {
 "asset": "Z2026-0041__d4b25419__Principal_Points_Statement-2026-07-21_-_Statement_of_Principal_Points_-_239_Central_Avenue_v2-2026-07-21_v1.pdf",
 "case": "Z2026-0041",
 "kind": "other:principal points statement statement of principal points 239",
-"size": 255507
+"size": 255507,
+"tag": "documents-2026"
 },
 "d4b282f8-eeef-497d-a349-845ed9533f32": {
 "asset": "P2026-0049__d4b282f8__260504_206_Olean_Ave_JCMUA.pdf",
@@ -14078,7 +14111,8 @@
 "asset": "P2026-0041__d5107b5c__05-12-26_JCPB_-_08_-_P2026-0041_-_167_Academy_Street_-_MINI.pdf",
 "case": "P2026-0041",
 "kind": "other:jcpb 08 p2026 0041 167 academy street mini",
-"size": 124491
+"size": 124491,
+"tag": "documents-2026"
 },
 "d54018e4-8c97-4db8-a8f5-79a6e3e21c45": {
 "asset": "P2025-0133__d54018e4__Shadow_Study___Visual_Impact_Assessment-547-555_Summit_Avenue_UPDATED_Visual_Impact_Statement_20260515-2026-05-20_v1.pdf",
@@ -14119,7 +14153,8 @@
 "asset": "P2026-0130__d56d5277__Proposed_FEES_Amendment_Chapters_160_and_345_P2026-0130.pdf",
 "case": "P2026-0130",
 "kind": "other:proposed fees amendment chapters 160 and 345 p2026 0130",
-"size": 135711
+"size": 135711,
+"tag": "documents-2026"
 },
 "d5a4d336-b2fc-4a97-a981-d7f74ef42bac": {
 "asset": "P2026-0090__d5a4d336__Architectural_Plans-274-276_Columbia_Ave_-Architectural_Zoning_Set_City_Planning_Cmts_6-24-2026_r_2_-2026-07-02_v1.pdf",
@@ -14155,12 +14190,6 @@
 "size": 9919309,
 "tag": "documents-2025"
 },
-"d5ff5156-8edd-4e63-9d20-266e56a78add": {
-"asset": "P2026-0014__d5ff5156__209_16TH_ST_P2025-0014_MUA_Review_001.pdf",
-"case": "P2026-0014",
-"kind": "other:209 16th st(p2025 0014 mua review)001",
-"size": 116789
-},
 "d6056a0d-ebc5-4837-91d1-9c92112b51fd": {
 "asset": "P2026-0037__d6056a0d__Certified_200-foot_list-AT_T_-_2854_John_F_Kennedy_Blvd_-_200_ft._list_date_2.4.26-2026-03-13_v1.pdf",
 "case": "P2026-0037",
@@ -14185,7 +14214,8 @@
 "asset": "P2026-0024__d6689a4a__260401_20_Carbon_JCMUA_Review_Letter.pdf",
 "case": "P2026-0024",
 "kind": "jcmua",
-"size": 217058
+"size": 217058,
+"tag": "documents-2026"
 },
 "d67303b4-1e5a-4172-b526-358fb33e19b5": {
 "asset": "P2025-0154__d67303b4__Arch_Change_Memo-2025-07-31-_NARRATIVE_OF_CHANGES_-_85-87_MONITOR-2025-07-31_v1.pdf",
@@ -14193,12 +14223,6 @@
 "kind": "other:arch change memo narrative of changes 85 87 monitor v1",
 "size": 629218,
 "tag": "documents-2025-2"
-},
-"d6897cf4-4161-4760-a407-618808cdb3f0": {
-"asset": "P2026-0001__d6897cf4__10_Ownership_disclosure_form-Terry_Developments_Disclosure-2026-01-06_v1.pdf",
-"case": "P2026-0001",
-"kind": "other:10% ownership disclosure form terry developments disclosure ",
-"size": 7100
 },
 "d6bf38ba-cd7a-4078-9a49-8dadb4e610f4": {
 "asset": "P2025-0212__d6bf38ba__Water_Bill_Certificate-09_Ltr_to_Veolia_re_water_clearance-2025-10-10_v1.pdf",
@@ -14266,7 +14290,8 @@
 "asset": "P2026-0025__d769300b__Forestry_Comments_-_P2026-0025.docx",
 "case": "P2026-0025",
 "kind": "forestry",
-"size": 11904
+"size": 11904,
+"tag": "documents-2026"
 },
 "d771b232-83cf-476a-ab42-bb4bc432441e": {
 "asset": "P2025-0160__d771b232__Fee_calcluation_worksheet_P2025-0160.pdf",
@@ -14360,13 +14385,15 @@
 "asset": "P2026-0078__d84769b8__260612_239_Montgomery_St_JCMUA.pdf",
 "case": "P2026-0078",
 "kind": "jcmua",
-"size": 227210
+"size": 227210,
+"tag": "documents-2026"
 },
 "d84af31e-e32e-42d4-8d5a-6c59cd84846d": {
 "asset": "P2026-0073__d84af31e__Affidavit_of_Ownership-Affidavit_of_Ownership_-_804_Newark-2026-05-06_v1.pdf",
 "case": "P2026-0073",
 "kind": "notice",
-"size": 88290
+"size": 88290,
+"tag": "documents-2026"
 },
 "d85385b1-3acf-4098-8aa8-deee76cb56c9": {
 "asset": "P2025-0154__d85385b1__Photos-11_85-87_MONITOR_-_EXISTING_PHOTO_-_07-15-2025_-_002-2025-07-29_v1.jpg",
@@ -14385,13 +14412,8 @@
 "asset": "P2026-0048__d8631dfc__Notice_of_Hearing_126_Logan_NOVEMBER_10_2026.pdf",
 "case": "P2026-0048",
 "kind": "notice",
-"size": 112299
-},
-"d873aa7b-44c5-4305-8f89-c8d9bdafd06a": {
-"asset": "P2026-0004__d873aa7b__Cover_Letter-1.21.2026_Cover_Letter_Submitting_Rev_Application_for_Admin_Amendment-2026-01-21_v1.pdf",
-"case": "P2026-0004",
-"kind": "application",
-"size": 67962
+"size": 112299,
+"tag": "documents-2026"
 },
 "d88793f0-5952-4b15-be97-387e88ab2895": {
 "asset": "Z2025-0067__d88793f0__Resolution_-_Memorialized-Memorialized_Resolution_Requirement-2026-04-16_v1.pdf",
@@ -14431,7 +14453,8 @@
 "asset": "P2026-0018__d92d3ffa__Other-Fee_calcluation_worksheet_CURRENT_v1.pdf",
 "case": "P2026-0018",
 "kind": "other:other fee calcluation worksheet current v1",
-"size": 227043
+"size": 227043,
+"tag": "documents-2026"
 },
 "d952b571-cd73-4679-9206-127761fbf89b": {
 "asset": "P2025-0251__d952b571__377_4th_St_Transportation_Comments.pdf",
@@ -14451,7 +14474,8 @@
 "asset": "Z2026-0047__d994e5f7__Demolition_Determination_Memo-4_10_26_-_30_Harmon_Street_B-26-0302_1_-2026-08-24_v1.pdf",
 "case": "Z2026-0047",
 "kind": "demolition",
-"size": 124710
+"size": 124710,
+"tag": "documents-2026"
 },
 "d9bd4778-fa33-4be5-bd65-e0ca2042d2a9": {
 "asset": "P2025-0242__d9bd4778__676_Summit_Ave_P2025-0242_MUA_Review_001.pdf",
@@ -14478,7 +14502,8 @@
 "asset": "P2026-0080__da09336d__Affidavit_of_Ownership-Affidavit_Ownership-2026-05-14_v1.pdf",
 "case": "P2026-0080",
 "kind": "notice",
-"size": 67628
+"size": 67628,
+"tag": "documents-2026"
 },
 "da0e4a4a-2f1b-418c-9283-b68a185d1bff": {
 "asset": "P2025-0262__da0e4a4a__Property_Tax_Certificate-454_Taxes_Cert.-2025-12-22_v1.pdf",
@@ -14491,7 +14516,8 @@
 "asset": "P2026-0061__da2d68cc__Affidavit_of_Ownership-Affidavit_of_Ownership_Signed-2026-04-17_v1.pdf",
 "case": "P2026-0061",
 "kind": "notice",
-"size": 25382
+"size": 25382,
+"tag": "documents-2026"
 },
 "da78dd8f-ab94-47fb-89ba-9ebccc9f9f30": {
 "asset": "P2025-0235__da78dd8f__RESO_P2024-0019_248_Erie_St_209-215_15th_st_B_7105_L_1_2_3.pdf",
@@ -14531,7 +14557,8 @@
 "asset": "P2026-0037__dab55d2b__Property_Tax_Certificate-AT_T_-_2854_John_F_Kennedy_Blvd_-_Payment_of_Property_Taxes_3.12.26-2026-03-13_v1.pdf",
 "case": "P2026-0037",
 "kind": "tax-cert",
-"size": 54900
+"size": 54900,
+"tag": "documents-2026"
 },
 "daba9088-55d6-4a4a-90e7-2427bc07ec66": {
 "asset": "P2026-0043__daba9088__Property_Tax_Certificate-558_Communipaw_Property_Tax-2026-03-19_v1.pdf",
@@ -14562,7 +14589,8 @@
 "asset": "P2026-0049__db419664__10_Ownership_disclosure_form-10_disclosure_form-2026-03-24_v1.pdf",
 "case": "P2026-0049",
 "kind": "other:10% ownership disclosure form 10 disclosure form v1",
-"size": 90032
+"size": 90032,
+"tag": "documents-2026"
 },
 "db5db62f-5d93-4da5-8149-c7717674a1ba": {
 "asset": "P2026-0121__db5db62f__General_Development_Application-GDA_Current-2026-07-29_v1.pdf",
@@ -14574,13 +14602,15 @@
 "asset": "P2026-0113__db630719__Utility___Infrastructure___Refuse_Form-L2A_Utility_Infrastructure_Checklist-2026-07-20_v1.pdf",
 "case": "P2026-0113",
 "kind": "application",
-"size": 101913
+"size": 101913,
+"tag": "documents-2026"
 },
 "db765e3e-9503-449b-8ab8-2c43fbd8738d": {
 "asset": "P2026-0067__db765e3e__Affidavit_of_Ownership-affidavit_of_ownership__11_-2026-04-28_v1.pdf",
 "case": "P2026-0067",
 "kind": "notice",
-"size": 189745
+"size": 189745,
+"tag": "documents-2026"
 },
 "db8ab03b-2450-4fdb-8d54-3561760d3efe": {
 "asset": "P2025-0199__db8ab03b__STAFF_MEMO_P2025-0199.pdf",
@@ -14621,7 +14651,8 @@
 "asset": "P2026-0035__dbb8bdc6__04-28-26_JCPB_-_09_-_P2026-0035_-_30_Newport_Parkway_-_MINI.pdf",
 "case": "P2026-0035",
 "kind": "other:jcpb 09 p2026 0035 30 newport parkway mini",
-"size": 121125
+"size": 121125,
+"tag": "documents-2026"
 },
 "dbbf4b7c-95d2-402a-9e00-9b32df4ef1a2": {
 "asset": "P2025-0198__dbbf4b7c__Other-Confirmatory_Deed_v1.pdf",
@@ -14634,7 +14665,8 @@
 "asset": "Z2026-0032__dbc40e33__Determination_of_Significance_Memo-322_Webster_-_Historic_Determination_Letter_06-28-2024_-2026-04-09_v1.pdf",
 "case": "Z2026-0032",
 "kind": "other:determination of significance memo 322 webster historic dete",
-"size": 136200
+"size": 136200,
+"tag": "documents-2026"
 },
 "dbda00ee-e4a5-40e6-b1e2-652502821e61": {
 "asset": "P2025-0228__dbda00ee__Architectural_Plans-2025_Munoz_Marin_RDP_Lot_1Signed-2025-12-15_v2.pdf",
@@ -14660,7 +14692,8 @@
 "asset": "P2026-0064__dc0d6f72__Cover_Letter-Site_Plan_Extension_Request_LTR-2026-04-23_v1.pdf",
 "case": "P2026-0064",
 "kind": "plans",
-"size": 84420
+"size": 84420,
+"tag": "documents-2026"
 },
 "dc1c694b-2628-4ebc-8186-3624ebbbd7b7": {
 "asset": "Z2025-0095__dc1c694b__Traffic_Assessment_Report-Traffic_Engineering_Eval_Rpt_976WestSideAvJC_090624-KLEIN_v1.pdf",
@@ -14768,7 +14801,8 @@
 "asset": "P2026-0089__dda0b590__Demolition_Determination_Memo-12_30_25_-_274-276_Columbia_Avenue_B-25-2304-2026-06-08_v1.pdf",
 "case": "P2026-0089",
 "kind": "demolition",
-"size": 215997
+"size": 215997,
+"tag": "documents-2026"
 },
 "ddb9a981-1717-4f99-9515-8ebc2a4718f6": {
 "asset": "P2025-0259__ddb9a981__General_Development_Application-GDA_127_Delaware_Ave_LLC_v2-2026-03-10_v1.pdf",
@@ -14895,7 +14929,8 @@
 "asset": "P2026-0071__df984e20__Affidavit_of_Performance-NC_200_-_Affidavit_of_Performance_Executed_6-10-2026-2026-06-25_v1.pdf",
 "case": "P2026-0071",
 "kind": "notice",
-"size": 38069
+"size": 38069,
+"tag": "documents-2026"
 },
 "dfae2c82-0fb6-42c7-9a8c-e8909a2c55d5": {
 "asset": "P2025-0164__dfae2c82__Planning_Approved_Signature_Plans_-_Amended_Arch_P2025-0164.pdf",
@@ -14920,13 +14955,15 @@
 "asset": "P2026-0111__e033a882__Property_Tax_Certificate-808_Tax_Cert-2026-07-16_v1.pdf",
 "case": "P2026-0111",
 "kind": "tax-cert",
-"size": 36782
+"size": 36782,
+"tag": "documents-2026"
 },
 "e037598a-58ab-4105-9a88-148d2ecc39ce": {
 "asset": "P2026-0150__e037598a__Zoning_Determination_Letter-Additional_Documentation-ZDL-2025-000607_-_106_Monticello_Ave_-_6-4-25-2025-06-05_v1_2_-2026",
 "case": "P2026-0150",
 "kind": "other:zoning determination letter additional documentation zdl 202",
-"size": 143769
+"size": 143769,
+"tag": "documents-2026"
 },
 "e037ae2a-5a3e-4063-b6b3-90a700e3ed16": {
 "asset": "P2026-0063__e037ae2a__Other-NJDCA_Cert_for_eplans_bsl_dsig_v1.pdf",
@@ -14938,7 +14975,8 @@
 "asset": "P2026-0120__e04c5a38__Planning_Board_09-29_-_Transportation_Master_Plan_-_Muncipality_Notice.pdf",
 "case": "P2026-0120",
 "kind": "plans",
-"size": 206597
+"size": 206597,
+"tag": "documents-2026"
 },
 "e0561ae1-3d21-45cf-8215-252fdebc8f2d": {
 "asset": "P2025-0246__e0561ae1__Survey-3_Topo_1270_4-18-22-2025-11-12_v1.pdf",
@@ -14957,7 +14995,8 @@
 "asset": "P2026-0100__e0b1eaf2__Corrective_RESO_P2026-0100_535_Monmouth_St_aka_354_10th_St_EXT_B_6902_L_27_1_.pdf",
 "case": "P2026-0100",
 "kind": "other:corrective reso p2026 0100 535 monmouth st aka 354 10th st e",
-"size": 185511
+"size": 185511,
+"tag": "documents-2026"
 },
 "e0cc4815-6478-4bf7-925d-1127f55e07d8": {
 "asset": "P2025-0224__e0cc4815__Cover_Letter-Letter_--_Request_to_Extend_Protection_for_Site_Plan_Approval_--_14-18_Van_Reipen-2025-10-27_v1.pdf",
@@ -14970,7 +15009,8 @@
 "asset": "P2026-0144__e0e38abd__10_Ownership_disclosure_form-10_Disclosure_-_776_West_Side-2026-09-24_v1.pdf",
 "case": "P2026-0144",
 "kind": "other:10% ownership disclosure form 10 disclosure 776 west side v1",
-"size": 186858
+"size": 186858,
+"tag": "documents-2026"
 },
 "e0fe6771-7490-4588-b259-78801a9c48b9": {
 "asset": "P2025-0241__e0fe6771__10_Ownership_disclosure_form-10_disclosure_form-2025-11-07_v1.pdf",
@@ -14995,7 +15035,8 @@
 "asset": "P2026-0041__e14e3fdc__Cover_Letter-1_Year_Extension_Request_Letter_-_03_18_26-2026-03-18_v1.pdf",
 "case": "P2026-0041",
 "kind": "other:cover letter 1 year extension request letter 03 18 26 v1",
-"size": 107053
+"size": 107053,
+"tag": "documents-2026"
 },
 "e1531fc9-3b84-4fa9-aac1-7a7b2065de62": {
 "asset": "P2025-0128__e1531fc9__04-28-26_JCPB_-_16_-_P2025-0128_-_231_New_York_Avenue_-_MINI.pdf",
@@ -15036,7 +15077,8 @@
 "asset": "P2026-0110__e1c06840__10_Ownership_disclosure_form-10_disclosure_form-2026-07-16_v1.pdf",
 "case": "P2026-0110",
 "kind": "other:10% ownership disclosure form 10 disclosure form v1",
-"size": 105955
+"size": 105955,
+"tag": "documents-2026"
 },
 "e1f48f39-096a-4044-9914-cf036fb2d4d0": {
 "asset": "P2025-0168__e1f48f39__General_Development_Application-General_Development_Application_NEW-2026-10-20_v1.pdf",
@@ -15063,19 +15105,15 @@
 "asset": "P2026-0045__e233a181__122_OCEAN_AVE_-_REVIEW_LETTER.pdf",
 "case": "P2026-0045",
 "kind": "jcmua",
-"size": 184177
-},
-"e240813d-07b9-4ecc-89fd-40be81240845": {
-"asset": "P2026-0003__e240813d__Property_Tax_Certificate-Tax_Cert_2-2026_-_210-212_Bergen-2026-03-06_v1.pdf",
-"case": "P2026-0003",
-"kind": "tax-cert",
-"size": 25001
+"size": 184177,
+"tag": "documents-2026"
 },
 "e256b443-a972-45c3-8331-6ba29d689939": {
 "asset": "P2026-0065__e256b443__10_Ownership_disclosure_form-10_Disclosure_Form_-_11_04_24-2026-04-24_v1.pdf",
 "case": "P2026-0065",
 "kind": "other:10% ownership disclosure form 10 disclosure form 11 04 24 v1",
-"size": 98816
+"size": 98816,
+"tag": "documents-2026"
 },
 "e282b3e8-c00e-4c48-b4d5-b64272c8b42e": {
 "asset": "P2025-0248__e282b3e8__Property_Tax_Certificate-PAY_TO_DATE_364_6th_street-2025-11-25_v1.pdf",
@@ -15107,7 +15145,8 @@
 "asset": "P2026-0065__e2d35a89__Affidavit_of_Ownership-Affidavit_of_Ownership_04-09-26_-_SIGNED-2026-04-24_v1.pdf",
 "case": "P2026-0065",
 "kind": "notice",
-"size": 22281
+"size": 22281,
+"tag": "documents-2026"
 },
 "e2ef284b-5e0f-43a9-9f72-d97e7e8e293a": {
 "asset": "P2025-0134__e2ef284b__Survey-391_Fairmount_-_Survey-2025-07-07_v1.pdf",
@@ -15194,7 +15233,8 @@
 "asset": "P2026-0074__e3af3b4d__10_Ownership_disclosure_form-124_Highland_-_10_percent_disclosure_form-2026-05-09_v1.pdf",
 "case": "P2026-0074",
 "kind": "other:10% ownership disclosure form 124 highland 10 percent disclo",
-"size": 105021
+"size": 105021,
+"tag": "documents-2026"
 },
 "e3d7782d-9d0d-4f26-a8ac-9bda5ea85ef6": {
 "asset": "P2026-0043__e3d7782d__P2026-0043_5558-Communipaw-Ave_Arch-Plans_Planning-Approved-Signature-Set.pdf",
@@ -15219,13 +15259,15 @@
 "asset": "P2026-0090__e412065f__10_Ownership_disclosure_form-10_disclosure_form-2026-06-08_v1.pdf",
 "case": "P2026-0090",
 "kind": "other:10% ownership disclosure form 10 disclosure form v1",
-"size": 175835
+"size": 175835,
+"tag": "documents-2026"
 },
 "e430bb28-17c6-47e5-b1a6-37cdcbcf09be": {
 "asset": "P2026-0087__e430bb28__Affordable_Housing_Checklist_Form-Affordable_Housing-2026-06-05_v1.pdf",
 "case": "P2026-0087",
 "kind": "affordable",
-"size": 170480
+"size": 170480,
+"tag": "documents-2026"
 },
 "e44dd31f-833c-4c3c-9208-075b60afad45": {
 "asset": "P2025-0169__e44dd31f__Stormwater_Management_Report-Stormwater_Management_Engineers_Report-2025-08-13_v1.pdf",
@@ -15238,7 +15280,8 @@
 "asset": "P2026-0075__e459ee0b__10-27-26_JCPB_-_24_-_P2026-0075_-_130_Bay_Street.pdf",
 "case": "P2026-0075",
 "kind": "other:jcpb 24 p2026 0075 130 bay street",
-"size": 177943
+"size": 177943,
+"tag": "documents-2026"
 },
 "e45bafa6-2ca1-4675-9885-75c5a3d4de81": {
 "asset": "P2025-0171__e45bafa6__RESO_P2025-0171_50_Dey_St_Condo_1_EXTEND_B_7701_L_5_C0001.pdf",
@@ -15291,7 +15334,8 @@
 "asset": "Z2026-0044__e51a1798__Affidavit_of_Ownership-Executed_Affidavit_of_Ownership-2026-08-17_v1.pdf",
 "case": "Z2026-0044",
 "kind": "notice",
-"size": 206378
+"size": 206378,
+"tag": "documents-2026"
 },
 "e526a776-b8af-4981-ad1e-e53ff1b8b2e7": {
 "asset": "Z2025-0082__e526a776__Principal_Points_Statement-Principal_Points_26_0122-2026-01-23_v1.pdf",
@@ -15396,12 +15440,6 @@
 "kind": "application",
 "size": 2302529
 },
-"e662955a-32ff-40aa-99f0-2b7a1e94f533": {
-"asset": "P2026-0008__e662955a__RESO_P2024-0139_285_Liberty_Ave_B_3304_L_46.pdf",
-"case": "P2026-0008",
-"kind": "other:reso p2024 0139 285 liberty ave b 3304 l 46",
-"size": 196362
-},
 "e66d63d7-9ae5-4ad3-8bc0-77898a0edfce": {
 "asset": "P2026-0123__e66d63d7__Photos-17_front_pic-2026-07-31_v1.pdf",
 "case": "P2026-0123",
@@ -15447,7 +15485,8 @@
 "asset": "P2026-0113__e6b4df9c__Demolition_Determination_Memo-819_Tonnele_Avenue_B-26-0515-2026-07-20_v1.pdf",
 "case": "P2026-0113",
 "kind": "demolition",
-"size": 153692
+"size": 153692,
+"tag": "documents-2026"
 },
 "e6b599c8-a60c-4d8d-b082-d81e3ecdc839": {
 "asset": "Z2025-0063__e6b599c8__General_Development_Application-GDA-_445_Jersey_Amendment-2025-08-08_v1.pdf",
@@ -15474,7 +15513,8 @@
 "asset": "P2026-0028__e6d4ac64__10_Ownership_disclosure_form-10_Disclosure_-_538_Palisade-2026-03-02_v1.pdf",
 "case": "P2026-0028",
 "kind": "other:10% ownership disclosure form 10 disclosure 538 palisade v1",
-"size": 88556
+"size": 88556,
+"tag": "documents-2026"
 },
 "e6d6c2e9-de58-42f4-be65-06d5b9b942d2": {
 "asset": "P2026-0127__e6d6c2e9__Certified_200-foot_list-200ft_List_for_135_Monticello_Ave-2026-08-13_v1.pdf",
@@ -15538,13 +15578,8 @@
 "asset": "P2026-0072__e7596448__RESO_P2026-0072_169_Culver_Ave_EXT_B_22102_L_16.pdf",
 "case": "P2026-0072",
 "kind": "other:reso p2026 0072 169 culver ave ext b 22102 l 16",
-"size": 216467
-},
-"e776b772-3720-4945-954b-a6f56fccbc40": {
-"asset": "P2026-0012__e776b772__Cover_Letter-GDA_cover_letter_02062026_241_ML_King-2026-02-06_v1.pdf",
-"case": "P2026-0012",
-"kind": "other:cover letter gda cover letter 241 ml king v1",
-"size": 120316
+"size": 216467,
+"tag": "documents-2026"
 },
 "e77c4ded-4f76-43f9-b6bf-2bd1046273ea": {
 "asset": "Z2025-0062__e77c4ded__General_Development_Application-63_Hutton_Application-2025-08-04_v1.pdf",
@@ -15615,12 +15650,6 @@
 "size": 101543,
 "tag": "documents-2025-2"
 },
-"e8435de2-6789-4aa5-bdcf-8b9efef3c901": {
-"asset": "P2026-0009__e8435de2__Demolition_Determination_Memo-Historic_Determ_Memo_179-181_Liberty_Avenue_B-26-0127-2026-04-29_v1.pdf",
-"case": "P2026-0009",
-"kind": "demolition",
-"size": 127907
-},
 "e845678e-fece-44e4-95d5-a409db60994c": {
 "asset": "P2025-0209__e845678e__Planning_Approved_Signature_Plans_-_ARCH_P2025-0209.pdf",
 "case": "P2025-0209",
@@ -15632,7 +15661,8 @@
 "asset": "P2026-0092__e84d959a__Affidavit_of_Ownership-06_Newport_NJ_Hotel_Associates_LLC_Ownership_Affidavit-2026-06-10_v1.pdf",
 "case": "P2026-0092",
 "kind": "notice",
-"size": 132672
+"size": 132672,
+"tag": "documents-2026"
 },
 "e85818b3-6073-406f-a7ed-86c065c4e497": {
 "asset": "Z2025-0087__e85818b3__Property_Tax_Certificate-Tax_Status-_79_Romaine_11.2025-2025-11-18_v1.pdf",
@@ -15664,7 +15694,8 @@
 "asset": "P2026-0044__e8fb6f16__04-28-26_JCPB_-_11_-_P2026-0044_-_216_Palisade_Avenue_-_MINI.pdf",
 "case": "P2026-0044",
 "kind": "other:jcpb 11 p2026 0044 216 palisade avenue mini",
-"size": 118752
+"size": 118752,
+"tag": "documents-2026"
 },
 "e904889d-6708-4ac8-b986-9c8e9ac632f6": {
 "asset": "Z2025-0058__e904889d__ARCHITECTURAL_PLANS-25-0730_35_ORCHARD_PBA-MODEL-2025-07-30_V1.PDF",
@@ -15710,7 +15741,8 @@
 "asset": "P2026-0050__ea573962__10_Ownership_disclosure_form-10_Percent_62-74_Sackett-2026-03-25_v1.pdf",
 "case": "P2026-0050",
 "kind": "other:10% ownership disclosure form 10 percent 62 74 sackett v1",
-"size": 40844
+"size": 40844,
+"tag": "documents-2026"
 },
 "ea5b8def-5b04-4717-bbe5-f2a09ff86b1f": {
 "asset": "P2026-0120__ea5b8def__Let_s_Move_JC_-_Appendix_B_Community_Outreach_-_FINAL_2026_07_01.pdf",
@@ -15728,7 +15760,8 @@
 "asset": "P2026-0037__ea7bd61d__Waiver_Request-AT_T_-_2854_John_F_Kennedy_Blvd_-_Design_Waiver_Request_Letter_3.12.26-2026-03-13_v1.pdf",
 "case": "P2026-0037",
 "kind": "other:waiver request at&t 2854 john f kennedy blvd design waiver r",
-"size": 169645
+"size": 169645,
+"tag": "documents-2026"
 },
 "eaab09d0-195f-44af-a670-0a045edb272a": {
 "asset": "P2025-0143__eaab09d0__Property_Tax_Certificate-tax_certif_lot_54-2025-07-18_v1.pdf",
@@ -15762,7 +15795,8 @@
 "asset": "P2026-0108__eb844f1a__JC_planning_Staff_Memo_P2026-0108.pdf",
 "case": "P2026-0108",
 "kind": "staff-memo",
-"size": 119518
+"size": 119518,
+"tag": "documents-2026"
 },
 "eb8f3c00-f56b-4891-94c3-e4a60235c315": {
 "asset": "P2025-0134__eb8f3c00__Resolution_-_Draft-Resolution_of_Board_P2025-0070_28-30_Winfield-2026-02-16_v1.pdf",
@@ -15796,7 +15830,8 @@
 "asset": "P2026-0025__ebbe1745__Civil_Change_Memo-Civil_Change_Memo-2026-02-25_v1.pdf",
 "case": "P2026-0025",
 "kind": "other:civil change memo civil change memo v1",
-"size": 79727
+"size": 79727,
+"tag": "documents-2026"
 },
 "ebd3d250-3a28-47a3-9e66-88381d58d8f2": {
 "asset": "Z2026-0028__ebd3d250__Affidavit_of_Ownership-04A_Affidavit_of_Ownership_FINAL-2026-03-24_v1.pdf",
@@ -15875,7 +15910,8 @@
 "asset": "Z2026-0055__ed2558c2__10_Ownership_disclosure_form-05_10_Ownership_Disclosure_form-2026-10-30_v1.pdf",
 "case": "Z2026-0055",
 "kind": "other:10% ownership disclosure form 05 10% ownership disclosure fo",
-"size": 49338
+"size": 49338,
+"tag": "documents-2026"
 },
 "ed5a1a8c-e2fd-4941-abc0-9818fb68ec4c": {
 "asset": "P2025-0212__ed5a1a8c__Other-14_Ordinance_v1.pdf",
@@ -15916,7 +15952,8 @@
 "asset": "P2026-0075__ee07bbe7__Affidavit_of_Ownership-Affidavit_of_Ownership_3_-2026-05-11_v1.pdf",
 "case": "P2026-0075",
 "kind": "notice",
-"size": 38259
+"size": 38259,
+"tag": "documents-2026"
 },
 "ee3df8a6-2f13-4d55-989f-4fccfef111b6": {
 "asset": "P2025-0228__ee3df8a6__Shadow_Study___Visual_Impact_Assessment-1b_-_2025-10-14_Munoz_Marin_RDP_Lot_1_Shadow_Study-2025-10-27_v1.pdf",
@@ -16010,7 +16047,8 @@
 "asset": "P2026-0173__ef65f004__Cafe_and_Gun_Amendment.docx",
 "case": "P2026-0173",
 "kind": "other:cafe and gun amendment",
-"size": 29245
+"size": 29245,
+"tag": "documents-2026"
 },
 "efb65f73-3a37-4a72-a3f6-0635161aa279": {
 "asset": "P2025-0179__efb65f73__Property_Tax_Certificate-Confirmation_of_taxes_paid_from_Jersey_City_Tax_Collector-2025-10-16_v2.pdf",
@@ -16023,7 +16061,8 @@
 "asset": "Z2026-0025__efcc9ce0__Other-05_No_Historic_Significance_letter_v1.pdf",
 "case": "Z2026-0025",
 "kind": "other:other 05 no historic significance letter v1",
-"size": 71542
+"size": 71542,
+"tag": "documents-2026"
 },
 "efe47494-b786-4607-a1c3-c462d77d92b0": {
 "asset": "P2025-0131__efe47494__Subdivision_Plat-2501-10_TOPO-SUBDIVISION_REV3-2025-12-16_v1.pdf",
@@ -16109,7 +16148,8 @@
 "asset": "P2026-0019__f13d9ae9__Principal_Points_Statement-2026-02-11_-_Statement_of_Principal_Points_-_Subdivision_-_49_Fisk_Street-2026-05-07_v1.pdf",
 "case": "P2026-0019",
 "kind": "other:principal points statement statement of principal points sub",
-"size": 135301
+"size": 135301,
+"tag": "documents-2026"
 },
 "f14f88e9-c518-4b2f-9485-f6c8e01146f6": {
 "asset": "P2025-0176__f14f88e9__STAFF_MEMO_P2025-0176_-_723_GRAND_ST.pdf",
@@ -16122,7 +16162,8 @@
 "asset": "P2026-0101__f165ca5f__Property_Tax_Certificate-415_Palisade_taxes_paid_7.7.26-2026-07-07_v1.pdf",
 "case": "P2026-0101",
 "kind": "tax-cert",
-"size": 68667
+"size": 68667,
+"tag": "documents-2026"
 },
 "f1664733-d318-4a68-a766-74bc7216f3d2": {
 "asset": "P2026-0090__f1664733__General_Development_Application-General_Development_Application-GDA_no_contact-2026-06-10_v1.pdf",
@@ -16134,7 +16175,8 @@
 "asset": "P2026-0093__f16d7db4__260729_215_Van_Vorst_St.pdf",
 "case": "P2026-0093",
 "kind": "jcmua",
-"size": 210873
+"size": 210873,
+"tag": "documents-2026"
 },
 "f1729942-f273-4491-8a4e-93f220bb81a6": {
 "asset": "Z2025-0052__f1729942__Z2025-0052_364.5_Fifth_Staff_Report.pdf",
@@ -16149,12 +16191,6 @@
 "kind": "notice",
 "size": 438262,
 "tag": "documents-2025"
-},
-"f199cd33-822d-4e3f-b58e-da5352e09f7f": {
-"asset": "P2026-0012__f199cd33__Property_Tax_Certificate-Taxes_Paid_Cert_01-16-2026_241_ML_King-2026-02-06_v1.pdf",
-"case": "P2026-0012",
-"kind": "tax-cert",
-"size": 60455
 },
 "f19a30b8-bda6-4d60-b388-790d6403f3af": {
 "asset": "P2025-0264__f19a30b8__Resolution_-_Memorialized-Amended_Prelim_Final_Site_Plan_Resolution_P19-078_102919_1_-2025-12-19_v1.pdf",
@@ -16194,13 +16230,15 @@
 "asset": "Z2026-0025__f20c4004__Water_Bill_Certificate-Ltr_to_Veolia_240_Fairmount_Ave_6.5.2026-2026-06-05_v1.pdf",
 "case": "Z2026-0025",
 "kind": "other:water bill certificate ltr to veolia 240 fairmount ave v1",
-"size": 238352
+"size": 238352,
+"tag": "documents-2026"
 },
 "f2138d83-b33d-4b6f-b243-4eb9eb8b55dc": {
 "asset": "P2026-0063__f2138d83__Demolition_Determination_Memo-176_Halladay_Street_B-26-0041-2026-04-23_v1.pdf",
 "case": "P2026-0063",
 "kind": "demolition",
-"size": 125125
+"size": 125125,
+"tag": "documents-2026"
 },
 "f22cbcdb-6385-4f76-94de-dcd146932093": {
 "asset": "P2025-0161__f22cbcdb__Traffic_Assessment_Report-Traffic_Report_146_academy_street_v1.pdf",
@@ -16254,7 +16292,8 @@
 "asset": "Z2026-0042__f365781a__Cover_Letter-3235_JFK_Site_Plan_Amendment_Cover_Letter-2026-07-28_v1.pdf",
 "case": "Z2026-0042",
 "kind": "other:cover letter 3235 jfk site plan amendment cover letter v1",
-"size": 2985
+"size": 2985,
+"tag": "documents-2026"
 },
 "f3669ac8-9a8e-44e6-b452-ae854eaa6b49": {
 "asset": "P2025-0255__f3669ac8__09-29-26_JCPB_-_12_-_P2025-0255_-_26_Bright_Street.pdf",
@@ -16267,7 +16306,8 @@
 "asset": "P2026-0041__f371ff4a__10_Ownership_disclosure_form-10_Disclosure_Form_-_03_02_26-2026-03-18_v1.pdf",
 "case": "P2026-0041",
 "kind": "other:10% ownership disclosure form 10 disclosure form 03 02 26 v1",
-"size": 111789
+"size": 111789,
+"tag": "documents-2026"
 },
 "f37336c7-8dd6-4631-afe4-680b29155d1b": {
 "asset": "P2026-0048__f37336c7__General_Development_Application-GDA_126_Logan_Ave_07-13-2026_v.3_-2026-07-22_v1.pdf",
@@ -16364,7 +16404,8 @@
 "asset": "P2026-0052__f45073cf__Affidavit_of_Ownership-Sims_Affidavit_of_Ownership-2026-03-31_v1.pdf",
 "case": "P2026-0052",
 "kind": "notice",
-"size": 236988
+"size": 236988,
+"tag": "documents-2026"
 },
 "f46556ae-0825-4bb4-956d-9bab99a83064": {
 "asset": "P2026-0131__f46556ae__Property_Tax_Certificate-Tax_Cert_-_136_Terrace-2026-09-24_v1.pdf",
@@ -16403,7 +16444,8 @@
 "asset": "P2026-0125__f4b0f7eb__RESO_P2026-0125_232-238_Sip_Ave_EXT_B_10502_L_15_16_17_18.pdf",
 "case": "P2026-0125",
 "kind": "resolution",
-"size": 191634
+"size": 191634,
+"tag": "documents-2026"
 },
 "f54ca36b-37c2-49a0-b989-2ee4c35b3e29": {
 "asset": "P2025-0215__f54ca36b__70_Mallory_Transportation_Comments.pdf",
@@ -16462,7 +16504,8 @@
 "asset": "Z2026-0047__f61bd831__10_Ownership_disclosure_form-10_disclosure_form-2026-08-24_v1.pdf",
 "case": "Z2026-0047",
 "kind": "other:10% ownership disclosure form 10 disclosure form v1",
-"size": 103409
+"size": 103409,
+"tag": "documents-2026"
 },
 "f61cd944-e8cb-4b3c-8738-53fd1b89f4ff": {
 "asset": "P2025-0253__f61cd944__Utility___Infrastructure___Refuse_Form-Infrastructure_Form_1721-1723_JFK-2025-11-25_v1.pdf",
@@ -16475,7 +16518,8 @@
 "asset": "Z2026-0041__f62ec43c__Affidavit_of_Ownership-affidavit_of_ownership_-_signed-2026-07-21_v1.pdf",
 "case": "Z2026-0041",
 "kind": "notice",
-"size": 148094
+"size": 148094,
+"tag": "documents-2026"
 },
 "f64329d4-3775-4028-9bc8-fa47fe7fb85d": {
 "asset": "P2025-0168__f64329d4__Stormwater_Management_Report-Stormwater-2026-10-20_v1.pdf",
@@ -16509,7 +16553,8 @@
 "asset": "Z2026-0028__f6ebb192__Water_Bill_Certificate-08_Ltr_to_Veolia-United_Water_3.13.2026-2026-03-24_v1.pdf",
 "case": "Z2026-0028",
 "kind": "other:water bill certificate 08 ltr to veolia united water v1",
-"size": 42533
+"size": 42533,
+"tag": "documents-2026"
 },
 "f6ef17d9-fb41-4719-9fba-665d86a9367b": {
 "asset": "Z2026-0045__f6ef17d9__Shadow_Study___Visual_Impact_Assessment-2026-08-26_-_VIA_-Shadow_Study_-_64-74_Sackett-2026-08-27_v1.pdf",
@@ -16562,7 +16607,8 @@
 "asset": "P2026-0065__f820f120__Cover_Letter-Initial_Submission_Letter_-_04_24_26-2026-04-24_v1.pdf",
 "case": "P2026-0065",
 "kind": "other:cover letter initial submission letter 04 24 26 v1",
-"size": 101457
+"size": 101457,
+"tag": "documents-2026"
 },
 "f82a3f23-8929-410f-83ec-47357bfebcd3": {
 "asset": "Z2025-0083__f82a3f23__Resolution_-_Memorialized-Original_Reso_Z23-053_88_Highway_139-2025-11-04_v1.pdf",
@@ -16575,7 +16621,8 @@
 "asset": "P2026-0047__f82d25c7__Cover_Letter-Administrative_Amendment_Request_-_Bayfront_3.23.26-2026-03-23_v1.pdf",
 "case": "P2026-0047",
 "kind": "other:cover letter administrative amendment request bayfront v1",
-"size": 102709
+"size": 102709,
+"tag": "documents-2026"
 },
 "f83df6b5-7cc6-487a-b9d3-66d3cc0f2e8b": {
 "asset": "Z2025-0061__f83df6b5__Other-GDA_-_PSE_G_1051_Garfield_-_UPDATED_v1.pdf",
@@ -16602,7 +16649,8 @@
 "asset": "P2026-0161__f8740f4c__Affidavit_of_Ownership-Affidavit_Of_Ownership_executed_-2026-10-13_v1.pdf",
 "case": "P2026-0161",
 "kind": "notice",
-"size": 253008
+"size": 253008,
+"tag": "documents-2026"
 },
 "f8bbba9e-1e54-4c21-9958-507b6f358006": {
 "asset": "P2026-0029__f8bbba9e__Subdivision_Plat-BSA-20267_-_Subdivision_v4_SS_-2026-05-22_v1.pdf",
@@ -16617,17 +16665,12 @@
 "size": 219599,
 "tag": "documents-2025"
 },
-"f8c30ef0-5535-469f-bbfa-8b7f3aa7a402": {
-"asset": "P2026-0013__f8c30ef0__08-11-26_JCPB_-_12_-_P2026-0013_-_627_Palisade_Avenue_-_MINI.pdf",
-"case": "P2026-0013",
-"kind": "other:jcpb 12 p2026 0013 627 palisade avenue mini",
-"size": 132392
-},
 "f8cc490c-d4c6-48e9-a8f1-b86561d71b17": {
 "asset": "Z2026-0037__f8cc490c__Property_Tax_Certificate-577_Jackson_Taxes_paid_TBP-2026-06-15_v1.pdf",
 "case": "Z2026-0037",
 "kind": "tax-cert",
-"size": 4309
+"size": 4309,
+"tag": "documents-2026"
 },
 "f8d4feeb-8019-438a-a967-d072fe2e65b8": {
 "asset": "P2025-0143__f8d4feeb__Survey-Survey-480WashingtonBlvdPrelimFinal-2025-07-18_v1.pdf",
@@ -16640,13 +16683,15 @@
 "asset": "P2026-0095__f8da3b37__P2026-0095_Staff_Report.pdf",
 "case": "P2026-0095",
 "kind": "staff-memo",
-"size": 132706
+"size": 132706,
+"tag": "documents-2026"
 },
 "f8f7ab9d-7d0f-4096-814e-dc11df210aab": {
 "asset": "P2026-0067__f8f7ab9d__RESO_P2026-0067_252_Central_Ave_EXT_B_4404_L_3.pdf",
 "case": "P2026-0067",
 "kind": "other:reso p2026 0067 252 central ave ext b 4404 l 3",
-"size": 229480
+"size": 229480,
+"tag": "documents-2026"
 },
 "f8fa539b-48bc-493a-aa4a-977d603784e3": {
 "asset": "P2025-0265__f8fa539b__10_Ownership_disclosure_form-Ownership_Disclosure-53_Tonnele_Ave_LLC-2025-12-22_v1.pdf",
@@ -16706,7 +16751,8 @@
 "asset": "P2026-0110__fa23449a__Property_Tax_Certificate-806_Tax_Cert-2026-07-16_v1.pdf",
 "case": "P2026-0110",
 "kind": "tax-cert",
-"size": 40557
+"size": 40557,
+"tag": "documents-2026"
 },
 "fa410f98-ece5-488f-86d4-e7c5bf618cc8": {
 "asset": "P2025-0212__fa410f98__Cover_Letter-00_Cover_letter_to_Cameron_Black_ltr_only_-2025-10-10_v1.pdf",
@@ -16739,13 +16785,15 @@
 "asset": "P2026-0064__fa883960__07-28-26_JCPB_-_07a_-_P2026-0064_-_405_Route_440_-_MINI.pdf",
 "case": "P2026-0064",
 "kind": "other:jcpb 07a p2026 0064 405 route 440 mini",
-"size": 154683
+"size": 154683,
+"tag": "documents-2026"
 },
 "fa9566b9-96a7-4e1f-b2b2-1827a7bf8001": {
 "asset": "P2026-0087__fa9566b9__Property_Tax_Certificate-Tax_Cert-2026-06-05_v1.pdf",
 "case": "P2026-0087",
 "kind": "tax-cert",
-"size": 211406
+"size": 211406,
+"tag": "documents-2026"
 },
 "fa9b7a62-6eca-47e6-b068-da4e47d3e7ac": {
 "asset": "P2025-0159__fa9b7a62__Property_Tax_Certificate-Tax_Cert-_279_Communipaw-2025-08-01_v1.pdf",
@@ -16779,7 +16827,8 @@
 "asset": "P2026-0063__fad69a14__176_Halladay_Street_I_AF-2026-0089_I_Approved_AH_Checklist.pdf",
 "case": "P2026-0063",
 "kind": "affordable",
-"size": 158167
+"size": 158167,
+"tag": "documents-2026"
 },
 "fb0c1d90-1bce-41af-b756-89d700fe1561": {
 "asset": "P2025-0198__fb0c1d90__Forestry_Comments_-_P2025-0198.docx",
@@ -16799,7 +16848,8 @@
 "asset": "P2026-0086__fb23835d__P2026-0086_191_Academy_-_Forestry_Comments.docx",
 "case": "P2026-0086",
 "kind": "forestry",
-"size": 11566
+"size": 11566,
+"tag": "documents-2026"
 },
 "fb3a99dc-5b15-4dfe-a41d-3e88fb8a5e7d": {
 "asset": "P2025-0130__fb3a99dc__Traffic_Assessment_Report-September_2025_Traffic_Report_v1.pdf",
@@ -16888,7 +16938,8 @@
 "asset": "P2026-0050__fc1589ea__Affidavit_of_Ownership-Aff_Owner_62-74_Sackett-2026-03-25_v1.pdf",
 "case": "P2026-0050",
 "kind": "notice",
-"size": 182787
+"size": 182787,
+"tag": "documents-2026"
 },
 "fc4b9613-1805-4205-a558-81081cf94ebe": {
 "asset": "P2025-0225__fc4b9613__RESO_P2025-0225_55-59_Cator_Ave_SUB_B_28801_L_4.pdf",
@@ -16901,7 +16952,8 @@
 "asset": "P2026-0087__fc5c74ee__P2026-0087_-_54_Jones_St.docx",
 "case": "P2026-0087",
 "kind": "forestry",
-"size": 11909
+"size": 11909,
+"tag": "documents-2026"
 },
 "fc74e833-3a9c-40ee-844d-816b2c8fbd06": {
 "asset": "P2025-0188__fc74e833__RESO_P2025-0188_394_Summit_Ave_B_10802_L_8_EXTEND.pdf",
@@ -16941,7 +16993,8 @@
 "asset": "Z2026-0029__fce987f8__Property_Tax_Certificate-PAY_TO_DATE_Letter.3.31.26_879409.1_-2026-03-31_v1.pdf",
 "case": "Z2026-0029",
 "kind": "tax-cert",
-"size": 256422
+"size": 256422,
+"tag": "documents-2026"
 },
 "fcf5dcbb-b3b2-4922-b424-e3706cd3c648": {
 "asset": "Z2026-0040__fcf5dcbb__Property_Tax_Certificate-Tax_Status_Inquiry_7-2026_-_626_Palisade_Tax_Cert_Forthcoming-2026-07-20_v1.pdf",
@@ -17015,7 +17068,8 @@
 "asset": "P2026-0149__fe20a452__Resolution_-_Memorialized-RESO_P23-067_394_Summit_Avenue_B_10802_L_8_9.28.26-2026-09-28_v1.pdf",
 "case": "P2026-0149",
 "kind": "resolution",
-"size": 179197
+"size": 179197,
+"tag": "documents-2026"
 },
 "fea4b427-7cfd-487d-bead-764b67637709": {
 "asset": "Z2025-0065__fea4b427__Notice_Sample___Draft-Sample_Notice_of_Hearing_DA_2-2025-08-19_v1.pdf",
