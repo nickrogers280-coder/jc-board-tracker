@@ -9,6 +9,8 @@ from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
 
+from docs_mirror import current_versions
+
 ROOT = Path(__file__).parent
 def _raw(name, legacy):
     p = ROOT / "raw" / name
@@ -225,13 +227,20 @@ def desc_applicant(d):
     return m.group(1).strip(" ,") if m else ""
 
 
-def doc_out(d):
+def doc_out(d, cur=None):
     o = {"name": d.get("name", ""), "note": d.get("note", ""), "added": d.get("added", "")}
     if d.get("id") in mirror:
         o.update(url=mirror_url(mirror[d["id"]]), size=mirror[d["id"]]["size"], current=True)
     elif d.get("url"):
         o.update(url=d["url"], current=True)
+    if cur is not None and id(d) in cur:
+        o["current"] = True
     return o
+
+
+def docs_out(docs):
+    cur = {id(x) for x in current_versions(docs or []).values()}
+    return [doc_out(d, cur) for d in docs or []]
 
 
 def build_prior(p):
@@ -240,7 +249,7 @@ def build_prior(p):
     figs = parse_desc(text)
     grab = lambda pat: (re.search(pat, odp.get("desc") or "") or [None, ""])[1].strip(" ,")
     kind_, label_ = kind_of(p.get("type") or "") if p.get("type") else ("", "")
-    docs = [doc_out(d) for d in (p.get("docs") or [])] + [doc_out(d) for d in odp.get("docs") or []]
+    docs = docs_out(p.get("docs")) + [doc_out(d) for d in odp.get("docs") or []]
     blocks = ({block_of(p.get("pin"))} - {None}) | blocks_in_text(text)
     return {
         "blocks": sorted(blocks),
@@ -319,8 +328,12 @@ for c in cases_raw["cases"]:
         "owner_mail": mail,
         "tracked_because": c.get("tracked_because", "filed"),
         "approval_expires": (c.get("approvalExpires") or "")[:10] or None,
+        # The newest file of each document type is the current version, copied or not; copied files link directly,
+        # the rest open on the city portal until the copy is made.
         "docs": [dict({"name": d.get("name", ""), "note": d.get("note", ""), "added": d.get("added", "")},
-                      **({"url": mirror_url(mirror[d["id"]]), "size": mirror[d["id"]]["size"], "current": True} if d.get("id") in mirror else {}))
+                      **({"url": mirror_url(mirror[d["id"]]), "size": mirror[d["id"]]["size"]} if d.get("id") in mirror else {}),
+                      **({"current": True} if id(d) in _cur else {}))
+                 for _cur in [{id(x) for x in current_versions(c.get("docs") or []).values()}]
                  for d in (c.get("docs") or [])],
         "status_history": history.get(c["id"], []),
     }
@@ -429,6 +442,81 @@ for r in out:
         r["product"] = "minor" if r["kind"] in ("amend", "ext") else "other"
         r["product_basis"] = None
 
+# ------------------------------------------------------------------ same property
+# Every case is linked to the other filings on its site: the same tax lot (block + base lot), or the same street
+# address once spellings are normalized ("20 Columbus Dr" = "20 Christopher Columbus Drive"). Plans and rezonings that
+# cover many lots are left out of the linking, so a neighbourhood plan doesn't tie unrelated sites together.
+SFX = {"STREET": "ST", "AVENUE": "AVE", "AV": "AVE", "BOULEVARD": "BLVD", "DRIVE": "DR", "PLACE": "PL", "ROAD": "RD", "PLAZA": "PLZ",
+       "SQUARE": "SQ", "TERRACE": "TER", "COURT": "CT", "LANE": "LN", "PARKWAY": "PKWY", "HIGHWAY": "HWY"}
+ALIAS = {"CHRISTOPHER COLUMBUS": "COLUMBUS", "JOHN F KENNEDY": "KENNEDY", "JFK": "KENNEDY", "MARTIN LUTHER KING": "MLK",
+         "MARTIN LUTHER KING JR": "MLK", "DR MARTIN LUTHER KING JR": "MLK"}
+
+
+def site_addr(addr):
+    a = (addr or "").upper()
+    a = re.split(r"\bUNIT\b|,|\bJERSEY CITY\b", a)[0]
+    a = re.sub(r"[.#]", " ", a)
+    w = a.split()
+    if len(w) < 2 or not re.match(r"^\d+", w[0]):
+        return None
+    num = re.match(r"^\d+", w[0]).group(0)
+    rest = [SFX.get(x, x) for x in w[1:]]
+    if rest and rest[-1] in SFX.values():
+        rest = rest[:-1]
+    name = " ".join(rest)
+    name = ALIAS.get(name, name)
+    return f"{num} {name}" if name else None
+
+
+def lot_keys(r):
+    pins = [p for p in (r.get("parcel_pins") or [r.get("pams_pin")]) if p]
+    return {"_".join(p.split("_")[:3]) for p in pins} if len(pins) <= 12 else set()
+
+
+parent = {}
+def _find(x):
+    while parent.setdefault(x, x) != x:
+        parent[x] = parent[parent[x]]
+        x = parent[x]
+    return x
+def _union(a, b):
+    parent[_find(a)] = _find(b)
+
+for r in out:
+    if r["kind"] == "plan" and len(r.get("parcel_pins") or []) > 12:
+        continue
+    keys = ["L:" + k for k in lot_keys(r)]
+    ak = site_addr(r.get("address"))
+    if ak:
+        keys.append("A:" + ak)
+    for k in keys:
+        _union("C:" + r["id"], k)
+site = defaultdict(list)
+for r in out:
+    if "C:" + r["id"] in parent:
+        site[_find("C:" + r["id"])].append(r)
+by_id = {r["id"]: r for r in out}
+for r in out:
+    group = site.get(_find("C:" + r["id"]), []) if "C:" + r["id"] in parent else []
+    others = sorted((q for q in group if q is not r), key=lambda q: (q["applied"] or "", q["id"]), reverse=True)
+    r["site_ids"] = [q["id"] for q in others][:40]
+    # What an amendment or extension builds on: the approval its description names (prior_ids), otherwise the most
+    # recent earlier approval on the same site (a new site plan first), otherwise the most recent earlier filing.
+    r["builds_on"] = None
+    if r["kind"] in ("amend", "ext") or re.search(r"previously approved|prior approval|approved (?:site plan|project)", r.get("desc") or "", re.I):
+        named = next((q["id"] for q in r.get("priors") or [] if q.get("same_site")), None)
+        earlier = [q for q in others if (q["applied"] or "") < (r["applied"] or "9")]
+        appr = [q for q in earlier if q["status_group"] == "approved"]
+        pick = next((q for q in appr if q["kind"] == "new"), None) or (appr[0] if appr else None) or (earlier[0] if earlier else None)
+        r["builds_on"] = named or (pick["id"] if pick else None)
+        r["builds_on_approved"] = bool(named) or bool(pick and pick["status_group"] == "approved")
+
+# An amendment or extension with no project of its own is the project it builds on.
+for r in out:
+    src = by_id.get(r.get("builds_on") or "")
+    if src and not strong(r) and src.get("product") in PROJECT:
+        r["product"], r["product_basis"] = src["product"], src["id"]
+
 # One name per attorney: "Ben Wine" and "Benjamin T.F. Wine" are the same person.
 NICK = {"ben": "b", "benjamin": "b", "tom": "t", "thomas": "t", "jim": "j", "james": "j", "mike": "m", "michael": "m", "steve": "s", "stephen": "s", "steven": "s", "chuck": "c", "charles": "c"}
 def person_key(name):
@@ -459,6 +547,8 @@ for r in out:
 # Extensions and amendments that don't give a size take it from the approval they extend (same site only).
 for r in out:
     src = next((q for q in r.get("priors") or [] if q.get("same_site") and (q.get("units") or q.get("stories"))), None)
+    if not src and r.get("builds_on") in by_id and (by_id[r["builds_on"]].get("units") or by_id[r["builds_on"]].get("stories")):
+        src = by_id[r["builds_on"]]
     if not src or r["kind"] not in ("amend", "ext"):
         continue
     for k in ("units", "stories", "affordable", "parking", "retail_sf", "hotel_rooms"):
@@ -512,7 +602,13 @@ for r in out:
     r["stage"] = stage_of(r)
     r["stage_label"] = STAGE_LABEL[r["stage"]]
     h = stage_hist.setdefault(r["id"], [])
-    if not h or h[-1][0] != r["stage"]:
+    # The first sighting of a case is not when it reached that stage, so it carries no date. Entries recorded during
+    # the tracker's first two days (Nov 16-17, 2026, when every case was first seen) are first sightings too.
+    if h and h[0][1] and h[0][1] <= "2026-11-17":
+        h[0][1] = None
+    if not h:
+        h.append([r["stage"], None])
+    elif h[-1][0] != r["stage"]:
         h.append([r["stage"], _today])
     r["stage_history"] = h
     # Old cases the portal never closed out: open status, filed 2+ years ago, no hearing in the past year or ahead.
@@ -666,7 +762,7 @@ if _pf.exists():
                 "desc": c.get("desc") or "", "odp": odp.get("dataset"), **{x: figs[x] for x in ("units", "stories")},
                 "stage": live["stage"] if live else None, "stage_label": live["stage_label"] if live else None,
                 "next_hearing": live.get("next_hearing") if live else None,
-                "docs": [doc_out(d) for d in c.get("docs") or []] + [doc_out(d) for d in odp.get("docs") or []],
+                "docs": docs_out(c.get("docs")) + [doc_out(d) for d in odp.get("docs") or []],
             })
         def ckey(c):
             m = re.match(r"[PZ](\d{2,4})-(\d+)", c["id"])

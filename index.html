@@ -260,6 +260,8 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
 .filter-note { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--ink-2); }
 .filter-note button { background: none; border: 1px solid var(--line); border-radius: 999px; padding: 2px 8px; font-size: 11px; color: var(--ink-2); cursor: pointer; }
 .row select { flex-basis: 90px; }
+.linkish { background: none; border: 0; padding: 0; color: var(--ink); font-size: 13px; text-align: left; cursor: pointer; border-bottom: 1px dotted var(--ink-3); }
+.linkish:hover { color: var(--pin); }
 .ev-head { position: sticky; top: 0; z-index: 2; display: flex; justify-content: space-between; align-items: baseline; padding: 7px 14px 6px; background: var(--panel); border-bottom: 1px solid var(--line); font: 600 11px var(--font-head); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); }
 .ev-head span { font: 500 11px var(--font-data); letter-spacing: 0; text-transform: none; color: var(--ink-3); }
 .ev-jump { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; padding: 8px 14px; font-size: 11.5px; color: var(--ink-3); border-bottom: 1px solid var(--line); }
@@ -739,7 +741,7 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
   function docRow(d, link) {
     const k = docKind(d);
     const name = `${k ? `<span class="doc-kind${k.key ? " key" : ""}">${esc(k.label)}</span>` : ""}${esc(d.name)}`;
-    return `<li><span class="fn">${d.url ? `<a href="${esc(d.url)}" target="_blank" rel="noopener">${name}</a>` : name}</span><span class="dt">${[d.size ? mb(d.size) : "", d.added ? fmtShort(d.added) : ""].filter(Boolean).join(" · ")}</span>${d.note ? `<span class="nt">${esc(d.note)}</span>` : ""}</li>`;
+    return `<li><span class="fn">${d.url ? `<a href="${esc(d.url)}" target="_blank" rel="noopener">${name}</a>` : link ? `<a href="${link}" target="_blank" rel="noopener" title="Opens the case's file list on the city portal">${name}</a> <span class="note">· on city portal</span>` : name}</span><span class="dt">${[d.size ? mb(d.size) : "", d.added ? fmtShort(d.added) : ""].filter(Boolean).join(" · ")}</span>${d.note ? `<span class="nt">${esc(d.note)}</span>` : ""}</li>`;
   }
   function docsHtml(p) {
     const docs = p.docs || [];
@@ -785,12 +787,16 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
   const STEPS = [["filed", "Filed"], ["review", "Staff review"], ["scheduled", "Scheduled"], ["heard", "Heard"], ["approved", "Approved"]];
   function stagesHtml(p) {
     if (!p.stage) return "";
-    const when = {}; (p.stage_history || []).forEach(([st, d]) => { if (!when[st]) when[st] = d; });
+    // Dates come from the record itself; a stage-history date counts only when the tracker saw the case move
+    // (first sightings, and everything recorded Nov 16-17, 2026 when every case was first loaded, carry none).
+    const when = {}; (p.stage_history || []).forEach(([st, d], i) => { if (i > 0 && d && d > "2026-11-17" && !when[st]) when[st] = d; });
+    const past = (p.hearings || []).map((h) => h[0]).filter((d) => d && parseDay(d) <= NOW).sort();
+    if (past.length) { when.heard = when.heard || past[past.length - 1]; when.scheduled = when.scheduled || past[0]; }
     const stop = ["denied", "withdrawn"].includes(p.stage);
     const at = stop ? -1 : STEPS.findIndex((x) => x[0] === p.stage);
     const items = STEPS.map(([k, l], i) => {
       const cls = i < at ? "done" : i === at ? "now" : "";
-      const d = k === "filed" ? p.applied : k === "scheduled" && p.next_hearing ? p.next_hearing : k === "approved" && p.approved_on ? p.approved_on : when[k];
+      const d = k === "filed" ? p.applied : k === "scheduled" && p.next_hearing ? p.next_hearing : k === "approved" ? (p.approved_on || when.approved || (p.status_group === "approved" ? p.completed : null)) : when[k];
       return `<li class="${cls}">${l}${d && (i <= at || k === "scheduled") ? `<time>${fmtDate(d)}</time>` : ""}</li>`;
     });
     if (stop) items[4] = `<li class="now">${p.stage === "denied" ? "Denied" : "Withdrawn"}${p.completed ? `<time>${fmtDate(p.completed)}</time>` : ""}</li>`;
@@ -822,6 +828,61 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
       Object.assign(p, { docs: d.docs || [], priors: d.priors || p.priors, sales: d.sales || [] });
       p._full = true;
     } catch { delete shardCache[p.shard]; }
+  }
+
+  // ---------------------------------------------------------------- same property
+  const SFX = { STREET: "ST", AVENUE: "AVE", AV: "AVE", BOULEVARD: "BLVD", DRIVE: "DR", PLACE: "PL", ROAD: "RD", PLAZA: "PLZ", SQUARE: "SQ", TERRACE: "TER", COURT: "CT", LANE: "LN", PARKWAY: "PKWY", HIGHWAY: "HWY" };
+  const SFXV = new Set(Object.values(SFX));
+  const ALIAS = { "CHRISTOPHER COLUMBUS": "COLUMBUS", "JOHN F KENNEDY": "KENNEDY", JFK: "KENNEDY", "MARTIN LUTHER KING": "MLK", "MARTIN LUTHER KING JR": "MLK", "DR MARTIN LUTHER KING JR": "MLK" };
+  function siteAddr(a) {
+    const w = String(a || "").toUpperCase().split(/\bUNIT\b|,|\bJERSEY CITY\b/)[0].replace(/[.#]/g, " ").split(/\s+/).filter(Boolean);
+    if (w.length < 2 || !/^\d+/.test(w[0])) return null;
+    let rest = w.slice(1).map((x) => SFX[x] || x);
+    if (SFXV.has(rest[rest.length - 1])) rest = rest.slice(0, -1);
+    let name = rest.join(" "); name = ALIAS[name] || name;
+    return name ? w[0].match(/^\d+/)[0] + " " + name : null;
+  }
+  const lotKeys = (p) => { const pins = (p.parcel_pins && p.parcel_pins.length ? p.parcel_pins : [p.pams_pin]).filter(Boolean); return pins.length <= 12 ? pins.map((x) => x.split("_").slice(0, 3).join("_")) : []; };
+  let SITE_INDEX = null;
+  function siteOthers(p) {
+    if (p.site_ids) return p.site_ids.map((id) => DATA.cases.find((x) => x.id === id)).filter(Boolean);
+    if (!SITE_INDEX) {
+      SITE_INDEX = new Map();
+      DATA.cases.forEach((x) => { if (x.kind === "plan" && (x.parcel_pins || []).length > 12) return; [...lotKeys(x).map((k) => "L" + k), siteAddr(x.address) && "A" + siteAddr(x.address)].filter(Boolean).forEach((k) => { if (!SITE_INDEX.has(k)) SITE_INDEX.set(k, new Set()); SITE_INDEX.get(k).add(x); }); });
+    }
+    const out = new Set();
+    [...lotKeys(p).map((k) => "L" + k), siteAddr(p.address) && "A" + siteAddr(p.address)].filter(Boolean).forEach((k) => (SITE_INDEX.get(k) || []).forEach((x) => { if (x !== p) out.add(x); }));
+    return [...out].sort((a, b) => (b.applied || "").localeCompare(a.applied || ""));
+  }
+  function buildsOn(p) {
+    if (p.builds_on !== undefined) return p.builds_on ? DATA.cases.find((x) => x.id === p.builds_on) || { id: p.builds_on, external: true } : null;
+    if (!(["amend", "ext"].includes(p.kind) || /previously approved|prior approval|approved (site plan|project)/i.test(p.desc || ""))) return null;
+    const named = (p.priors || []).find((q) => q.same_site !== false);
+    if (named) return DATA.cases.find((x) => x.id === named.id) || { id: named.id, external: true };
+    const earlier = siteOthers(p).filter((q) => (q.applied || "") < (p.applied || "9"));
+    const appr = earlier.filter((q) => q.status_group === "approved");
+    return appr.find((q) => q.kind === "new") || appr[0] || earlier[0] || null;
+  }
+  function siteHtml(p) {
+    const others = siteOthers(p), base = buildsOn(p);
+    if (!others.length && !base) return `<div class="sec"><h3>This property</h3><p class="note" style="margin:0">No other Planning or Zoning Board filings on this lot since 2018.${["amend", "ext"].includes(p.kind) ? " The approval this changes is older than the city's online records (before 2018); ask the Division of City Planning for the resolution." : ""}</p></div>`;
+    let box = "";
+    if (base && !base.external) {
+      const blink = `${PORTAL}${esc(base.case_id)}?tab=attachments`;
+      let cur = (base.docs || []).filter((d) => d.current).sort((a, b) => (docKind(b)?.key ? 1 : 0) - (docKind(a)?.key ? 1 : 0)).slice(0, 6);
+      if (!cur.length) cur = (base.docs || []).slice().sort((a, b) => (b.added || "").localeCompare(a.added || "")).slice(0, 6);
+      box = `<div class="prior" style="margin-bottom:10px">
+        <div style="font-size:12px;color:var(--ink-3);margin-bottom:3px">${base.status_group === "approved" ? (p.kind === "ext" ? "Approval this extends" : "Approval this modifies") : "Earlier filing this follows"}</div>
+        <button class="linkish" data-id="${base.id}"><span class="mono">${base.id}</span> · ${esc(base.kind_label)} · <span style="color:${statusColor(base)}">${esc(base.status)}</span></button>
+        <div class="note">Filed ${fmtDate(base.applied)}${base.units ? ` · ${n0(base.units)} units` : ""}${base.stories ? ` · ${base.stories} stories` : ""}</div>
+        ${base.desc ? `<p class="desc" style="font-size:12.5px;margin:4px 0 6px">${esc(base.desc.slice(0, 260))}${base.desc.length > 260 ? "…" : ""}</p>` : ""}
+        ${base._full ? (cur.length ? `<ul class="docs">${cur.map((d) => docRow(d, blink)).join("")}</ul>${(base.docs || []).length > cur.length ? `<p class="note" style="margin:4px 0 0">${(base.docs || []).length - cur.length} more files · <a href="${blink}" target="_blank" rel="noopener">all files on the city portal</a></p>` : ""}${(base.docs || []).length <= 3 ? `<p class="note" style="margin:4px 0 0">Few files are posted online for ${base.id}; its approved plans and resolution may be on paper at the Division of City Planning.</p>` : ""}` : `<p class="note" style="margin:0">No documents posted online for ${base.id}.</p>`) : `<p class="note" style="margin:0">Loading its documents…</p>`}
+      </div>`;
+    } else if (base && base.external) {
+      box = `<p class="note" style="margin:0 0 8px">Builds on <span class="mono">${esc(base.id)}</span>, shown under Property history below.</p>`;
+    }
+    const rows = others.slice(0, 25).map((x) => `<button data-id="${x.id}"><span class="mono">${x.id}</span> · ${esc(x.kind_label)}${x.units ? ` · ${n0(x.units)} units` : ""} <span class="note">· filed ${fmtShort(x.applied)}${(x.applied || "").slice(0, 4) !== String(NOW.getFullYear()) ? ", " + (x.applied || "").slice(0, 4) : ""}</span><span class="tag" style="--t:${statusColor(x)};float:right">${esc(x.status)}</span></button>`).join("");
+    return `<div class="sec"><h3>This property · ${others.length} other filing${others.length === 1 ? "" : "s"}</h3>${box}${others.length ? `<div class="related">${rows}</div>${others.length > 25 ? `<p class="note">and ${others.length - 25} more</p>` : ""}` : ""}</div>`;
   }
 
   function renderDetail(p) {
@@ -856,6 +917,7 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
         ${affPct != null ? `<div class="meter"><div><b>${affPct}%</b> of units affordable (${p.affordable} of ${n0(p.units)})</div><div class="bar"><i style="width:${Math.min(affPct, 100)}%;--fill:var(--ok)"></i></div></div>` : ""}
         <div class="sec"><h3>What's proposed</h3><p class="desc">${esc(p.desc || "No description filed.")}</p>
           ${p.retail_sf || (p.parking != null && figs[2][0] !== "Parking") ? `<p class="note" style="margin:8px 0 0">${[p.retail_sf ? n0(p.retail_sf) + " SF retail/commercial" : "", p.parking != null && figs[2][0] !== "Parking" ? n0(p.parking) + " parking spaces" : ""].filter(Boolean).join(" · ")}</p>` : ""}</div>
+        ${siteHtml(p)}
         ${p._full ? docsHtml(p) : `<div class="sec"><h3>Documents</h3><p class="note">Loading…</p></div>`}
         <div class="sec"><h3>Application</h3><dl class="kv">
           <dt>Case</dt><dd><span class="mono">${esc(p.id)}</span>${copyBtn(p.id)}</dd>
@@ -884,7 +946,6 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
           ${p.last_sale_price ? `<dt>Last sale</dt><dd>${money(p.last_sale_price)}${p.last_sale_date ? " · " + fmtDate(p.last_sale_date) : ""}</dd>` : ""}
           ${p.units && (p.lots_acre || p.calc_acre) ? `<dt>Density</dt><dd>${Math.round(p.units / (p.lots_acre || p.calc_acre))} units / acre</dd>` : ""}
         </dl></div>` : ""}
-        ${related.length || sameMail.length ? `<div class="sec"><h3>Related cases</h3><div class="related">${[...related, ...sameMail].slice(0, 8).map((x) => `<button data-id="${x.id}"><span class="mono">${x.id}</span> · ${esc(x.kind_label)} · ${esc(titleCase(x.address))}${related.includes(x) ? "" : ' <span class="note">(same owner address)</span>'}</button>`).join("")}</div></div>` : ""}
         <div class="links">
           <a href="${PORTAL + esc(p.case_id)}?tab=attachments" target="_blank" rel="noopener">City portal &amp; plans</a>
           <a href="https://www.google.com/maps/search/?api=1&query=${ll}" target="_blank" rel="noopener">Google Maps</a>
@@ -897,7 +958,7 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
       try { await navigator.clipboard.writeText(b.dataset.copy); b.textContent = "Copied"; } catch { b.textContent = b.dataset.copy; }
       setTimeout(() => (b.textContent = "Copy"), 1500);
     }));
-    $("#detail").querySelectorAll(".related button").forEach((b) => (b.onclick = () => select(b.dataset.id, true)));
+    $("#detail").querySelectorAll(".related button, .linkish").forEach((b) => (b.onclick = () => select(b.dataset.id, true)));
   }
 
   function select(id, fly) {
@@ -907,7 +968,9 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
     selected = id;
     [prev, id].forEach((pid) => { const m = markers.get(pid); if (m) m.setIcon(pinIcon(m._p)); });
     renderDetail(p);
-    if (!p._full) ensureDetail(p).then(() => { if (selected === p.id) { const y = $("#detail").scrollTop; renderDetail(p); $("#detail").scrollTop = y; } });
+    const base = buildsOn(p);
+    const need = [p, base && !base.external ? base : null].filter((x) => x && !x._full);
+    if (need.length) Promise.all(need.map(ensureDetail)).then(() => { if (selected === p.id) { const y = $("#detail").scrollTop; renderDetail(p); $("#detail").scrollTop = y; } });
     $("#detail").hidden = false;
     $("#detail").scrollTop = 0;
     if (window.matchMedia("(max-width: 760px)").matches) $("#side").classList.add("collapsed");

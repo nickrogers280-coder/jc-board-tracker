@@ -520,7 +520,8 @@ def main():
         cid = x["CaseId"]
         old = prev.get(x["CaseNumber"])
         closed = (x.get("CaseStatus") or "").strip().lower() in CLOSED
-        if old and closed and old.get("status") == x.get("CaseStatus") and old.get("checked", "") >= fresh_after:
+        # v2 records carry the completion date from the case record itself (the search results leave it blank).
+        if old and closed and old.get("v") == 2 and old.get("status") == x.get("CaseStatus") and old.get("checked", "") >= fresh_after:
             cases.append({**old, "tracked_because": why.get(x["CaseNumber"], "filed")})
             reused += 1
             continue
@@ -540,8 +541,8 @@ def main():
             docs = (prev.get(x["CaseNumber"]) or {}).get("docs", [])
         cases.append({
             "id": x["CaseNumber"], "caseId": cid, "type": x.get("CaseType"), "workclass": x.get("CaseWorkclass"),
-            "status": x.get("CaseStatus"), "applied": x.get("ApplyDate"), "expires": x.get("ExpireDate"),
-            "completed": x.get("CompleteDate"), "ward": d.get("DistrictName"), "planner": d.get("AssignedTo"),
+            "status": x.get("CaseStatus"), "applied": x.get("ApplyDate"), "expires": d.get("ExpireDate") or x.get("ExpireDate"),
+            "completed": d.get("CompleteDate") or x.get("CompleteDate"), "v": 2, "ward": d.get("DistrictName"), "planner": d.get("AssignedTo"),
             "address": x.get("AddressDisplay"), "project": d.get("ProjectName"),
             "pin": d.get("MainParcelNumber") or x.get("MainParcel"), "desc": d.get("Description") or x.get("Description"),
             "approvalExpires": d.get("ApprovalExpireDate"), "docs": docs, "loc_pins": loc,
@@ -636,6 +637,9 @@ def main():
         if not h:
             first = (c.get("completed") or "")[:10] if (c["status"] or "").lower() in ("approved", "complete", "denied", "withdrawn", "void") else ""
             h.append([c["status"], first, "seed"])  # seed: date unknown unless the portal has a completion date
+        elif len(h) == 1 and len(h[0]) > 2 and not h[0][1] and h[0][0] == c["status"] and c.get("completed") and \
+                (c["status"] or "").lower() in ("approved", "complete", "denied", "withdrawn", "void", "approved, conditions pending"):
+            h[0][1] = (c["completed"] or "")[:10]  # seed recorded before the completion date was being read
         elif h[-1][0] != c["status"]:
             h.append([c["status"], stamp])
     hist_path.write_text(json.dumps(hist, indent=0, sort_keys=True))
