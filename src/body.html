@@ -704,7 +704,7 @@
       let cur = (base.docs || []).filter((d) => d.current).sort((a, b) => (docKind(b)?.key ? 1 : 0) - (docKind(a)?.key ? 1 : 0)).slice(0, 6);
       if (!cur.length) cur = (base.docs || []).slice().sort((a, b) => (b.added || "").localeCompare(a.added || "")).slice(0, 6);
       box = `<div class="prior" style="margin-bottom:10px">
-        <div style="font-size:12px;color:var(--ink-3);margin-bottom:3px">${base.status_group === "approved" ? (p.kind === "ext" ? "Approval this extends" : "Approval this modifies") : "Earlier filing this follows"}</div>
+        <div style="font-size:12px;color:var(--ink-3);margin-bottom:3px">${base.status_group === "approved" || citedIds(p).includes(base.id) ? (p.kind === "ext" ? "Approval this extends" : "Approval this modifies") + (citedIds(p).includes(base.id) ? " (cited in the application)" : "") : "Earlier filing this follows"}${citedIds(p).includes(base.id) && base.status_group !== "approved" ? `<div class="note">The city portal still lists ${esc(base.id)} as "${esc(base.status)}"; it was never closed out online.</div>` : ""}</div>
         <button class="linkish" data-id="${base.id}"><span class="mono">${base.id}</span> · ${esc(base.kind_label)} · <span style="color:${statusColor(base)}">${esc(base.status)}</span></button>
         <div class="note">Filed ${fmtDate(base.applied)}${base.units ? ` · ${n0(base.units)} units` : ""}${base.stories ? ` · ${base.stories} stories` : ""}</div>
         ${base.desc ? `<p class="desc" style="font-size:12.5px;margin:4px 0 6px">${esc(base.desc.slice(0, 260))}${base.desc.length > 260 ? "…" : ""}</p>` : ""}
