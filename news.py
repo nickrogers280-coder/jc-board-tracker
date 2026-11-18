@@ -206,18 +206,28 @@ def pull_wordpress(db, S, key, base):
     after = (datetime.fromisoformat(since) - timedelta(days=3)).isoformat() if since else SINCE
     page, added, pages = 1, 0, None
     while True:
-        try:
-            r = S.get(f"{base}/wp-json/wp/v2/posts", timeout=60, params={
-                "search": "Jersey City", "after": after, "per_page": 100, "page": page, "orderby": "date", "order": "asc",
-                "_fields": "id,date,link,title,excerpt,content"})
-        except Exception as e:
-            print(f"  {key}: page {page} failed ({e})"); break
-        if r.status_code == 400:  # past the last page
+        posts, r = None, None
+        for attempt in range(3):
+            try:
+                r = S.get(f"{base}/wp-json/wp/v2/posts", timeout=60, params={
+                    "search": "Jersey City", "after": after, "per_page": 50, "page": page, "orderby": "date", "order": "asc",
+                    "_fields": "id,date,link,title,excerpt,content"})
+                if r.status_code == 200:
+                    posts = r.json()
+                    break
+            except ValueError:  # not JSON (a block page or a cut-off response)
+                print(f"  {key}: page {page} was not JSON ({r.headers.get('content-type')}): {r.text[:160]!r}")
+            except Exception as e:
+                print(f"  {key}: page {page} failed ({e})")
+            if r is not None and r.status_code == 400:  # past the last page
+                break
+            time.sleep(15)
+        if posts is None:
+            if r is not None and r.status_code not in (200, 400):
+                print(f"  {key}: page {page} returned {r.status_code}")
             break
-        if r.status_code != 200:
-            print(f"  {key}: page {page} returned {r.status_code}"); break
         pages = pages or int(r.headers.get("X-WP-TotalPages") or 1)
-        for p in r.json():
+        for p in posts:
             aid = f"{key}:{p['id']}"
             db["articles"][aid] = {"src": key, "title": _text(p["title"]["rendered"]), "date": p["date"], "url": p["link"],
                                    "blurb": _text(p["excerpt"]["rendered"]), "text": _text(p["content"]["rendered"])[:20000]}
@@ -348,14 +358,15 @@ def main():
     cases = json.loads((ROOT / "data/map.json").read_text(encoding="utf-8"))["cases"]
     db = load()
     S = _session()
-    pull_wordpress(db, S, "jd", "https://jerseydigs.com")
-    save(db)
-    pull_wordpress(db, S, "roi", "https://www.roi-nj.com")
-    save(db)
-    pull_traded(db, S, cases)
-    save(db)
-    pull_renj(db, S, cases)
-    save(db)
+    for name, step in (("Jersey Digs", lambda: pull_wordpress(db, S, "jd", "https://jerseydigs.com")),
+                       ("ROI-NJ", lambda: pull_wordpress(db, S, "roi", "https://www.roi-nj.com")),
+                       ("Traded", lambda: pull_traded(db, S, cases)),
+                       ("Real Estate NJ", lambda: pull_renj(db, S, cases))):
+        try:
+            step()
+        except Exception as e:  # one outlet failing shouldn't stop the others
+            print(f"  {name}: stopped ({type(e).__name__}: {e})")
+        save(db)
     m = match_cases(cases, db)
     n_art = len({a for v in m.values() for a in v})
     print(f"news: {len(db['articles'])} articles on file; {n_art} name a tracked property, covering {len(m)} cases")
