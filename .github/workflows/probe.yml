@@ -1,0 +1,27 @@
+name: probe
+on: workflow_dispatch
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          pip install -q requests
+          python3 - <<'PY'
+          import requests, re, json, collections
+          B="https://data.jerseycitynj.gov/api/explore/v2.1/catalog/datasets"
+          ids=[]; off=0
+          while True:
+              r=requests.get(B,params={"limit":100,"offset":off,"select":"dataset_id,title"},timeout=60).json()
+              res=r.get("results",[]); ids+=[(d["dataset_id"],d["title"]) for d in res]
+              if off==0: print("catalog total", r.get("total_count"))
+              if len(res)<100 or off>20000: break
+              off+=100
+          cases=[(i,t) for i,t in ids if re.match(r"^[pz]\d{2}-?\d{2,4}\b|^[pz]20\d\d-\d+",i)]
+          print("case-like datasets", len(cases))
+          c=collections.Counter(re.match(r"^([pz])(\d{2,4})",i).group(0)[:3] for i,_ in cases); print(sorted(c.items()))
+          print([x for x in cases if "communipaw" in x[0]][:10])
+          print(cases[:15])
+          others=collections.Counter(re.sub(r"[-_\d].*","",i) for i,_ in ids); print(others.most_common(25))
+          m=requests.get("https://data.jerseycitynj.gov/api/explore/v2.1/catalog/datasets/"+[x for x in cases if x[0].startswith("p22-146")][0][0],timeout=60).json()
+          print(json.dumps(m)[:3000])
+          PY
