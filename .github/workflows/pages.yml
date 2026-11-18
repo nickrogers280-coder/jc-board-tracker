@@ -13,8 +13,9 @@ permissions:
   pages: write
   id-token: write
 
+# Data runs (schedule, manual) queue on their own; a code push only republishes the page and never bumps a waiting data run.
 concurrency:
-  group: tracker
+  group: ${{ github.event_name == 'push' && 'publish-on-push' || 'tracker' }}
   cancel-in-progress: false
 
 jobs:
