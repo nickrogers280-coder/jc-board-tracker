@@ -23,7 +23,7 @@ import requests
 import docs_mirror as DM
 
 ROOT = Path(__file__).parent
-BUDGET = 350          # forms read per run
+BUDGET = 500          # forms read per run
 FORM = [  # which filings to read, best first
     ("disclosure", re.compile(r"disclos", re.I)),
     ("application form", re.compile(r"general development application|\bGDA\b|planning application|development application|application form|appeal application", re.I)),
