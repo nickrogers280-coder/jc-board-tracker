@@ -23,6 +23,7 @@ ROOT = Path(__file__).parent
 FIRST_YEAR = 2018
 TODAY = date.today()
 YEARS = list(range(FIRST_YEAR, TODAY.year + 1))
+PROBE_MAX = 600  # direct case-number lookups per run (gap fill)
 REFRESH_CLOSED_DAYS = 14  # closed cases are re-read from the portal every two weeks; open ones every run
 
 
@@ -511,6 +512,46 @@ def main():
         if x:
             rows.append(x)
             why[x["CaseNumber"]] = "agenda" if ref in ag else "tracked"
+
+    # The portal's keyword search misses many legacy case numbers (P22-145 is on the portal but not in a "P22-" search).
+    # Fill the gaps: every case number cited by a tracked case, and every unseen number up to the highest one seen in
+    # each year's series, is looked up directly. Numbers that don't exist are remembered for 30 days.
+    probe_path = ROOT / "raw/probe_cache.json"
+    probes = json.loads(probe_path.read_text()) if probe_path.exists() else {}
+    retry_after = TODAY.fromordinal(TODAY.toordinal() - 30).isoformat()
+    series = {}
+    for num in why:
+        m = re.match(r"^([PZ])(\d{2}|\d{4})-(\d+)$", num)
+        if m:
+            k = (m.group(1), m.group(2), len(m.group(3)))
+            series[k] = max(series.get(k, 0), int(m.group(3)))
+    cand = []
+    for c in prev.values():
+        cand += [r for r in prior_refs(c.get("desc"), c["id"])]
+    for (b, yy, w), top in series.items():
+        cand += [f"{b}{yy}-{n:0{w}d}" for n in range(1, top + 1)]
+
+    def in_range(ref):
+        m = re.match(r"^[PZ](\d{2}|\d{4})-\d+$", ref)
+        return bool(m) and (int(m.group(1)) + (2000 if len(m.group(1)) == 2 else 0)) >= FIRST_YEAR
+
+    cand = [r for i, r in enumerate(cand) if r not in why and in_range(r) and r not in cand[:i]
+            and not (probes.get(r, "") >= retry_after)]
+    added = 0
+    for ref in cand[:PROBE_MAX]:
+        try:
+            x = find_case(ref)
+        except Exception:
+            continue
+        if x and x["CaseNumber"] not in why:
+            rows.append(x)
+            why[x["CaseNumber"]] = "filed"
+            added += 1
+            probes.pop(ref, None)
+        elif not x:
+            probes[ref] = TODAY.isoformat()
+    probe_path.write_text(json.dumps(probes))
+    print(f"gap fill: looked up {min(len(cand), PROBE_MAX)} of {len(cand)} unseen case numbers, added {added}")
     print(f"{len(rows)} cases tracked ({sum(1 for v in why.values() if v != 'filed')} filed before {FIRST_YEAR})")
 
     cases = []
