@@ -547,6 +547,11 @@ for r in out:
     if r["status_group"] == "approved":
         hit = [h for h in r["status_history"] if status_group(h[0]) == "approved"]
         r["approved_on"] = next((h[1] for h in hit if h[1]), None) or r["completed"]
+    # A completion date in the future or before the filing is a data-entry error in the city's record: drop it.
+    _now = datetime.now(timezone.utc).date().isoformat()
+    for k in ("approved_on", "completed"):
+        if r.get(k) and (r[k][:10] > _now or r[k][:10] < (r["applied"] or "")[:10]):
+            r[k] = None
     r["status_changed_on"] = r["status_history"][-1][1] if r["status_history"] and len(r["status_history"][-1]) == 2 else None
 
 # Extensions and amendments that don't give a size take it from the approval they extend (same site only).
