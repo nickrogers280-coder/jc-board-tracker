@@ -845,18 +845,37 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
   const lotKeys = (p) => { const pins = (p.parcel_pins && p.parcel_pins.length ? p.parcel_pins : [p.pams_pin]).filter(Boolean); return pins.length <= 12 ? pins.map((x) => x.split("_").slice(0, 3).join("_")) : []; };
   let SITE_INDEX = null;
   function siteOthers(p) {
-    if (p.site_ids) return p.site_ids.map((id) => DATA.cases.find((x) => x.id === id)).filter(Boolean);
+    if (p.site_ids) { const c = citedIds(p).map((id) => DATA.cases.find((x) => x.id === id)).filter(Boolean); return [...c, ...p.site_ids.map((id) => DATA.cases.find((x) => x.id === id)).filter((x) => x && !c.includes(x))]; }
     if (!SITE_INDEX) {
       SITE_INDEX = new Map();
       DATA.cases.forEach((x) => { if (x.kind === "plan" && (x.parcel_pins || []).length > 12) return; [...lotKeys(x).map((k) => "L" + k), siteAddr(x.address) && "A" + siteAddr(x.address)].filter(Boolean).forEach((k) => { if (!SITE_INDEX.has(k)) SITE_INDEX.set(k, new Set()); SITE_INDEX.get(k).add(x); }); });
     }
     const out = new Set();
     [...lotKeys(p).map((k) => "L" + k), siteAddr(p.address) && "A" + siteAddr(p.address)].filter(Boolean).forEach((k) => (SITE_INDEX.get(k) || []).forEach((x) => { if (x !== p) out.add(x); }));
-    return [...out].sort((a, b) => (b.applied || "").localeCompare(a.applied || ""));
+    const cited = citedIds(p).map((id) => DATA.cases.find((x) => x.id === id)).filter(Boolean);
+    return [...cited, ...[...out].filter((x) => !cited.includes(x)).sort((a, b) => (b.applied || "").localeCompare(a.applied || ""))];
+  }
+  // Case numbers a description cites, normalized the way the city numbers them: P21-003, P2023-0059.
+  function citedIds(p) {
+    if (p.cites) return p.cites;
+    const out = [], re = /(?<![A-Za-z0-9])(?:Case\s*(?:No\.?|Number|#)?\s*)?([PZ])?\s?-?\s?(20\d{2}|\d{2})\s?-\s?(\d{2,4})(?![\d-])/gi;
+    let m; const t = p.desc || "";
+    while ((m = re.exec(t))) {
+      let L = (m[1] || "").toUpperCase();
+      if (!L && !/case/i.test(t.slice(Math.max(0, m.index - 12), m.index + m[0].length))) continue;
+      L = L || p.id[0];
+      const id = m[2].length === 4 ? `${L}${m[2]}-${String(+m[3]).padStart(4, "0")}` : `${L}${m[2]}-${String(+m[3]).padStart(3, "0")}`;
+      if (id !== p.id && !out.includes(id)) out.push(id);
+    }
+    return out;
   }
   function buildsOn(p) {
+    const citedFirst = citedIds(p).map((id) => DATA.cases.find((x) => x.id === id)).find(Boolean);
+    if (citedFirst && ["amend", "ext"].includes(p.kind)) return citedFirst;
     if (p.builds_on !== undefined) return p.builds_on ? DATA.cases.find((x) => x.id === p.builds_on) || { id: p.builds_on, external: true } : null;
     if (!(["amend", "ext"].includes(p.kind) || /previously approved|prior approval|approved (site plan|project)/i.test(p.desc || ""))) return null;
+    const cited = citedIds(p).map((id) => DATA.cases.find((x) => x.id === id)).find(Boolean);
+    if (cited) return cited;
     const named = (p.priors || []).find((q) => q.same_site !== false);
     if (named) return DATA.cases.find((x) => x.id === named.id) || { id: named.id, external: true };
     const earlier = siteOthers(p).filter((q) => (q.applied || "") < (p.applied || "9"));
@@ -865,7 +884,7 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
   }
   function siteHtml(p) {
     const others = siteOthers(p), base = buildsOn(p);
-    if (!others.length && !base) return `<div class="sec"><h3>This property</h3><p class="note" style="margin:0">No other Planning or Zoning Board filings on this lot since 2018.${["amend", "ext"].includes(p.kind) ? " The approval this changes is older than the city's online records (before 2018); ask the Division of City Planning for the resolution." : ""}</p></div>`;
+    if (!others.length && !base && !citedIds(p).length) return `<div class="sec"><h3>This property</h3><p class="note" style="margin:0">No other Planning or Zoning Board filings on this lot since 2018.${["amend", "ext"].includes(p.kind) ? " The approval this changes is older than the city's online records (before 2018); ask the Division of City Planning for the resolution." : ""}</p></div>`;
     let box = "";
     if (base && !base.external) {
       const blink = `${PORTAL}${esc(base.case_id)}?tab=attachments`;
@@ -881,6 +900,8 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
     } else if (base && base.external) {
       box = `<p class="note" style="margin:0 0 8px">Builds on <span class="mono">${esc(base.id)}</span>, shown under Property history below.</p>`;
     }
+    const missing = citedIds(p).filter((id) => !DATA.cases.some((x) => x.id === id) && !(p.priors || []).some((q) => q.id === id));
+    if (missing.length) box += `<p class="note" style="margin:0 0 8px">Cites ${missing.map((x) => `<span class="mono">${esc(x)}</span>`).join(", ")}, which isn't in the city's online records${missing.length > 1 ? "" : ""}.</p>`;
     const rows = others.slice(0, 25).map((x) => `<button data-id="${x.id}"><span class="mono">${x.id}</span> · ${esc(x.kind_label)}${x.units ? ` · ${n0(x.units)} units` : ""} <span class="note">· filed ${fmtShort(x.applied)}${(x.applied || "").slice(0, 4) !== String(NOW.getFullYear()) ? ", " + (x.applied || "").slice(0, 4) : ""}</span><span class="tag" style="--t:${statusColor(x)};float:right">${esc(x.status)}</span></button>`).join("");
     return `<div class="sec"><h3>This property · ${others.length} other filing${others.length === 1 ? "" : "s"}</h3>${box}${others.length ? `<div class="related">${rows}</div>${others.length > 25 ? `<p class="note">and ${others.length - 25} more</p>` : ""}` : ""}</div>`;
   }

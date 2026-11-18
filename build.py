@@ -10,6 +10,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from docs_mirror import current_versions
+from fetch import prior_refs
 
 ROOT = Path(__file__).parent
 def _raw(name, legacy):
@@ -499,12 +500,16 @@ by_id = {r["id"]: r for r in out}
 for r in out:
     group = site.get(_find("C:" + r["id"]), []) if "C:" + r["id"] in parent else []
     others = sorted((q for q in group if q is not r), key=lambda q: (q["applied"] or "", q["id"]), reverse=True)
+    # Case numbers the description cites ("amend Approval P21-003 (as extended by P2023-0059)") are linked too.
+    r["cites"] = [x for x in prior_refs(r.get("desc") or "", r["id"]) if x != r["id"]]
+    cited = [by_id[x] for x in r["cites"] if x in by_id]
+    others = cited + [q for q in others if q not in cited]
     r["site_ids"] = [q["id"] for q in others][:40]
     # What an amendment or extension builds on: the approval its description names (prior_ids), otherwise the most
     # recent earlier approval on the same site (a new site plan first), otherwise the most recent earlier filing.
     r["builds_on"] = None
     if r["kind"] in ("amend", "ext") or re.search(r"previously approved|prior approval|approved (?:site plan|project)", r.get("desc") or "", re.I):
-        named = next((q["id"] for q in r.get("priors") or [] if q.get("same_site")), None)
+        named = next((q["id"] for q in cited), None) or next((q["id"] for q in r.get("priors") or [] if q.get("same_site")), None)
         earlier = [q for q in others if (q["applied"] or "") < (r["applied"] or "9")]
         appr = [q for q in earlier if q["status_group"] == "approved"]
         pick = next((q for q in appr if q["kind"] == "new"), None) or (appr[0] if appr else None) or (earlier[0] if earlier else None)
