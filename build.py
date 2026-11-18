@@ -519,7 +519,7 @@ for r in out:
 # An amendment or extension with no project of its own is the project it builds on.
 for r in out:
     src = by_id.get(r.get("builds_on") or "")
-    if src and not strong(r) and src.get("product") in PROJECT:
+    if src and src.get("product") in PROJECT and (not strong(r) or r.get("product_basis") not in (None, "this application")):
         r["product"], r["product_basis"] = src["product"], src["id"]
 
 # One name per attorney: "Ben Wine" and "Benjamin T.F. Wine" are the same person.
