@@ -5,12 +5,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
+          set +e
           UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/124 Safari/537.36"
           curl -sS -A "$UA" -D - -o /dev/null "https://www.roi-nj.com/wp-json/wp/v2/posts?search=jersey%20city&per_page=1&_fields=id&after=2018-01-01T00:00:00" | grep -i x-wp-total
           curl -sS -A "$UA" "https://jerseydigs.com/wp-json/wp/v2/posts?search=jersey%20city&per_page=100&_fields=id,date,link,title,excerpt,content" -o jd.json -w "%{http_code} %{size_download} %{time_total}\n"
           echo "=== traded page"
           curl -sS -A "$UA" "https://traded.co/deals/new-jersey/development-site/sale/829-bergen-avenue/" -o t.html
-          grep -o '<title>[^<]*' t.html; grep -o '<meta[^>]*\(description\|og:\)[^>]*>' t.html | head -8
+          grep -o '<title>[^<]*' t.html; grep -o '<meta[^>]*\(description\|og:\)[^>]*>' t.html | head -8 || true
           python3 - <<'PY'
           import re,json
           s=open('t.html').read()
@@ -35,4 +36,5 @@ jobs:
           import sys,re;s=sys.stdin.read()
           for it in re.findall(r'<item>(.*?)</item>',s,re.S)[:3]: print(re.findall(r'<(title|link|pubDate)[^>]*>(.*?)</',it))"
           curl -sS -A "$UA" "https://traded.co/sitemap.xml" | grep -o "<loc>[^<]*" 
+          set +e
           for f in sitemap-deals.xml sitemap-deals-1.xml; do curl -sS -A "$UA" https://traded.co/$f | grep -o "<loc>https://traded.co/deals/new-jersey/[^<]*" > nj_$f.txt; wc -l nj_$f.txt; grep -c jersey-city nj_$f.txt; grep -i communipaw nj_$f.txt; done
