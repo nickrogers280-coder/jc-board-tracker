@@ -11,6 +11,7 @@ from pathlib import Path
 
 from docs_mirror import current_versions
 from fetch import prior_refs
+import applicants as APPL
 
 ROOT = Path(__file__).parent
 def _raw(name, legacy):
@@ -282,6 +283,8 @@ for c in cases_raw["cases"]:
     hearings = sorted({(x[:10], "Zoning Board" if x.endswith("Z") else "Planning Board") for x in ag.get("dates", [])})
     filings = FILED_PARTIES.get(c["id"]) or {}
     applicant, app_src = clean_app(ag.get("app", "")), "board agenda"
+    if filings.get("pv") != APPL.PV:  # names read by the first parser: clean up (or drop) until re-read
+        filings = {**filings, "applicant": APPL.tidy(filings.get("applicant")), "attorney": APPL.tidy(filings.get("attorney"), "attorney")}
     if not applicant and filings.get("applicant"):
         applicant, app_src = filings["applicant"], "the " + (filings.get("source") or "application form")
     if not applicant:
