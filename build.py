@@ -347,11 +347,13 @@ for c in cases_raw["cases"]:
         # The newest file of each document type is the current version, copied or not; copied files link directly,
         # the rest open on the city portal until the copy is made.
         "docs": [dict({"name": d.get("name", ""), "note": d.get("note", ""), "added": d.get("added", "")},
-                      **({"url": mirror_url(mirror[d["id"]]), "size": mirror[d["id"]]["size"]} if d.get("id") in mirror else {}),
+                      **({"url": mirror_url(mirror[d["id"]]), "size": mirror[d["id"]]["size"]} if d.get("id") in mirror
+                         else {"url": d["url"]} if d.get("url") else {}),
                       **({"current": True} if id(d) in _cur else {}))
                  for _cur in [{id(x) for x in current_versions(c.get("docs") or []).values()}]
                  for d in (c.get("docs") or [])],
         "status_history": history.get(c["id"], []),
+        **({"archived": True, "archive_url": c.get("archive_url")} if c.get("archived") else {}),
     }
     dd = p.get("DEED_DATE")
     if isinstance(dd, (int, float)) and dd:
@@ -627,6 +629,9 @@ _today = datetime.now(timezone.utc).date().isoformat()
 for r in out:
     r["stage"] = stage_of(r)
     r["stage_label"] = STAGE_LABEL[r["stage"]]
+    if r.get("archived") and (r["status"] or "").lower() == "archived" and r["stage"] in ("review", "heard"):
+        # pre-portal case whose decision isn't on the action agendas
+        r["stage_label"] = "Heard: outcome not posted online" if r["stage"] == "heard" else "Pre-portal case: outcome not posted online"
     h = stage_hist.setdefault(r["id"], [])
     # The first sighting of a case is not when it reached that stage, so it carries no date. Entries recorded during
     # the tracker's first two days (Nov 16-17, 2026, when every case was first seen) are first sightings too.

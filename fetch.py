@@ -23,7 +23,7 @@ ROOT = Path(__file__).parent
 FIRST_YEAR = 2018
 TODAY = date.today()
 YEARS = list(range(FIRST_YEAR, TODAY.year + 1))
-PROBE_MAX = 600  # direct case-number lookups per run (gap fill)
+PROBE_MAX = 150  # direct case-number lookups per run (gap fill)
 REFRESH_CLOSED_DAYS = 14  # closed cases are re-read from the portal every two weeks; open ones every run
 
 
@@ -417,7 +417,8 @@ def parse_agendas(seen_cache):
                         x = re.search(pat, part)
                         return re.sub(r"\s+", " ", x.group(1)).strip() if x else ""
 
-                    for k, pat in (("app", r"Applicant\s*:\s*([^\n]+)"), ("att", r"Attorney\s*:\s*([^\n]+)"), ("zone", r"Zon(?:e|ing)\s*:\s*([^\n]+)"), ("bl", r"Block\s*:?\s*([^\n]+)")):
+                    for k, pat in (("app", r"Applicant\s*:\s*([^\n]+)"), ("att", r"Attorney\s*:\s*([^\n]+)"), ("zone", r"Zon(?:e|ing)\s*:\s*([^\n]+)"), ("bl", r"Block\s*:?\s*([^\n]+)"),
+                                   ("addr", r"Address\s*:\s*([^\n]+)"), ("for", r"For\s*:\s*([^\n]+)"), ("desc", r"Description\s*:\s*([^\n]+(?:\n(?![A-Z][a-z]+\s*:)[^\n]+){0,3})")):
                         v = g(pat)
                         if v:
                             rec[k] = v
@@ -427,6 +428,92 @@ def parse_agendas(seen_cache):
     for rec in ag.values():
         rec["dates"] = sorted(set(rec["dates"]))
     return ag, agenda_ids
+
+
+_CN = re.compile(r"\b([PZ])\s?(20\d\d|\d{2})\s?-\s?(\d{2,4})(?!\d)", re.I)
+_STREET = r"(?:Ave(?:nue)?|Av|St(?:reet)?|Blvd|Boulevard|Pl(?:ace)?|Rd|Road|Dr(?:ive)?|Ter(?:race)?|Ct|Court|Way|Plaza|Plz|Square|Sq|Pkwy|Parkway|Hwy|Highway|Lane|Ln)"
+
+
+def _cn(b, yy, n):
+    return f"{b.upper()}{yy}-{int(n):04d}" if len(yy) == 4 else f"{b.upper()}{yy}-{int(n):03d}"
+
+
+def _plain(h):
+    h = re.sub(r"<br\s*/?>|</p>|</li>|</div>", "\n", h or "", flags=re.I)
+    h = re.sub(r"<[^>]+>", " ", h)
+    return re.sub(r"[ \t\xa0]+", " ", __import__("html").unescape(h)).strip()
+
+
+def archive_index():
+    """Case datasets on Jersey City Open Data: {case number: dataset}."""
+    out, off = {}, 0
+    while True:
+        r = requests.get("https://data.jerseycitynj.gov/api/explore/v2.1/catalog/datasets", timeout=60,
+                         params={"limit": 100, "offset": off, "select": "dataset_id,title"}).json()
+        for d in r.get("results", []):
+            m = _CN.search(d["title"] or "") or _CN.search(d["dataset_id"] or "")
+            if m and not re.search(r"agenda|minutes|sunshine|meeting dates", d["title"] or "", re.I):
+                out.setdefault(_cn(*m.groups()), d)
+        if len(r.get("results", [])) < 100:
+            return out
+        off += 100
+
+
+def add_archived(cases, ag, prev):
+    have = {c["id"] for c in cases}
+    idx = archive_index()
+    def year(cn):
+        m = re.match(r"^[PZ](\d{2}|\d{4})-", cn)
+        return int(m.group(1)) + (2000 if len(m.group(1)) == 2 else 0)
+    want = sorted(cn for cn in set(idx) | set(ag) if cn not in have and year(cn) >= FIRST_YEAR)
+    added = 0
+    for cn in want:
+        a, g = idx.get(cn), ag.get(cn) or {}
+        old = prev.get(cn) or {}
+        if old.get("archived") and old.get("checked", "") >= TODAY.fromordinal(TODAY.toordinal() - 30).isoformat() and old.get("dates") == g.get("dates"):
+            cases.append(old); added += 1
+            continue
+        meta, docs, desc, fields = {}, [], "", {}
+        if a:
+            try:
+                meta = get(ODP + a["dataset_id"] + "/").json()
+            except Exception:
+                meta = {}
+            m_ = meta.get("metas") or {}
+            m_ = m_.get("default", m_)
+            desc = _plain(m_.get("description") or "")
+            for k, pat in (("app", r"Applicant\s*:\s*([^\n]+)"), ("addr", r"Address\s*:\s*([^\n]+)"), ("for", r"For\s*:\s*([^\n]+)"),
+                           ("desc", r"Description\s*:\s*(.+)"), ("att", r"Attorney\s*:\s*([^\n]+)")):
+                x = re.search(pat, desc, re.S if k == "desc" else 0)
+                if x:
+                    fields[k] = re.sub(r"\s+", " ", x.group(1)).strip()
+            docs = [{"name": d.get("title") or d.get("id"), "url": ODP + f"{a['dataset_id']}/attachments/{d['id']}/",
+                     "added": (m_.get("modified") or "")[:10]} for d in meta.get("attachments") or []]
+        addr = fields.get("addr") or g.get("addr") or ""
+        if not addr and a:
+            rest = (a["title"] or "")[_CN.search(a["title"] or "").end():] if _CN.search(a["title"] or "") else ""
+            m = re.search(rf"(\d[\d\s\-&,\.]*?\b[A-Za-z][\w\.' ]*?\b{_STREET})\b", rest, re.I)
+            addr = m.group(1).strip(" -|,") if m else ""
+        if not addr:
+            continue  # nothing to place it on the map with
+        last = (g.get("last") or "").upper()
+        status = ("Approved" if last.startswith("APPROVED") else "Denied" if last.startswith("DENIED")
+                  else "Withdrawn" if last.startswith("WITHDRAWN") else "Archived")
+        dates = sorted(d[:10] for d in g.get("dates") or [] if re.match(r"\d{4}-\d\d-\d\d", d))
+        first = min([d for d in dates] + ([docs[0]["added"]] if docs and docs[0]["added"] else []), default=None)
+        cases.append({
+            "id": cn, "caseId": None, "archived": True, "archive_url": f"https://data.jerseycitynj.gov/explore/dataset/{a['dataset_id']}/" if a else None,
+            "type": ("Zoning Board" if cn.startswith("Z") else "Planning Board") + (" · " + fields["for"] if fields.get("for") else ""),
+            "workclass": None, "status": status, "applied": first, "expires": None,
+            "completed": (dates[-1] if status != "Archived" and dates else None), "v": 2, "ward": None, "planner": None,
+            "address": addr + " JERSEY CITY NEW JERSEY", "project": None, "pin": None,
+            "desc": fields.get("desc") or g.get("desc") or desc[:600] or g.get("for") or fields.get("for") or (a or {}).get("title") or "",
+            "approvalExpires": None, "docs": docs, "loc_pins": [], "dates": g.get("dates"),
+            "tracked_because": "archive", "checked": TODAY.isoformat(),
+        })
+        added += 1
+        time.sleep(0.2)
+    return added
 
 
 # Statuses that mean a case is decided or dead; an older case with any other status is still in play.
@@ -592,6 +679,14 @@ def main():
         if i % 25 == 0:
             print(f"  details {i}/{len(rows)}")
     print(f"  {reused} closed cases reused from the last run")
+
+    # Pre-portal cases: filings from before the portal (mostly 2020-2023) are not on it at all. Their files are on Jersey
+    # City Open Data, one dataset per case, and the board's action is on the action agendas; both are read here.
+    try:
+        n_arch = add_archived(cases, ag, prev)
+        print(f"archive: {n_arch} pre-portal cases added from Open Data and the board agendas")
+    except Exception as e:
+        print("archive step failed", e, file=sys.stderr)
 
     # Parcels: only look up pins we haven't matched before (tax data changes yearly, not daily).
     pins = [c["pin"] for c in cases if c["pin"]]

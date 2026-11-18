@@ -563,7 +563,7 @@
   }
   function docsHtml(p) {
     const docs = p.docs || [];
-    const link = `${PORTAL}${esc(p.case_id)}?tab=attachments`;
+    const link = p.case_id ? `${PORTAL}${esc(p.case_id)}?tab=attachments` : p.archive_url || "";
     if (!docs.length) return `<div class="sec"><h3>Documents</h3><p class="note">No public documents posted yet. They usually appear once the application is deemed complete. <a href="${link}" target="_blank" rel="noopener">Check the city portal</a></p></div>`;
     const rank = (d) => (docKind(d)?.key ? 1 : 0);
     const cur = docs.filter((d) => d.current).sort((a, b) => rank(b) - rank(a) || b.added.localeCompare(a.added));
@@ -798,7 +798,7 @@
           ${p.units && (p.lots_acre || p.calc_acre) ? `<dt>Density</dt><dd>${Math.round(p.units / (p.lots_acre || p.calc_acre))} units / acre</dd>` : ""}
         </dl></div>` : ""}
         <div class="links">
-          <a href="${PORTAL + esc(p.case_id)}?tab=attachments" target="_blank" rel="noopener">City portal &amp; plans</a>
+          ${p.case_id ? `<a href="${PORTAL + esc(p.case_id)}?tab=attachments" target="_blank" rel="noopener">City portal &amp; plans</a>` : p.archive_url ? `<a href="${esc(p.archive_url)}" target="_blank" rel="noopener">Open Data archive &amp; plans</a>` : ""}
           <a href="https://www.google.com/maps/search/?api=1&query=${ll}" target="_blank" rel="noopener">Google Maps</a>
           ${p.lat != null ? `<a href="https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${p.lat},${p.lon}" target="_blank" rel="noopener">Street View</a>` : ""}
         </div>
