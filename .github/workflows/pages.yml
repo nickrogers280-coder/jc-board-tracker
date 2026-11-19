@@ -101,6 +101,11 @@ jobs:
         timeout-minutes: 40
         run: python news.py
 
+      - name: Redevelopment Agency and City Council agendas
+        continue-on-error: true
+        timeout-minutes: 60
+        run: python civic.py
+
       - name: Build map data and page
         run: python build.py
 

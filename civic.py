@@ -33,6 +33,7 @@ COUNCIL_FOLDERS = {1021: "Regular meeting", 6957: "Special meeting"}
 FIRST_YEAR = 2018
 
 # Council items worth showing on a property.
+NOT_RELEVANT = re.compile(r"lead (?:paint |based paint )?abatement|asbestos|noise abatement|appoint|reappoint|member of the", re.I)
 RELEVANT = re.compile(r"redevelop|abatement|tax exemption|financial agreement|payment in lieu|\bPILOT\b|area in need|"
                       r"rehabilitation area|land development ordinance|zoning|zoning map|purchase and sale|sale of .{0,40}"
                       r"property|conveyance|ground lease|developer'?s agreement|community benefit", re.I)
@@ -70,9 +71,23 @@ def _clean(t):
 
 # ------------------------------------------------------------------ JCRA
 def _pdf_text(content, pages=40):
+    """Text of a PDF; scanned agendas (no text layer, most JCRA agendas before 2025) are read with OCR."""
     import pdfplumber
     with pdfplumber.open(io.BytesIO(content)) as p:
-        return "\n".join((pg.extract_text() or "") for pg in p.pages[:pages])
+        t = "\n".join((pg.extract_text() or "") for pg in p.pages[:pages])
+    if len(t.strip()) > 200:
+        return t
+    try:
+        import pypdfium2, pytesseract
+        doc = pypdfium2.PdfDocument(content)
+        out = []
+        for i in range(min(len(doc), 12)):
+            img = doc[i].render(scale=2.4).to_pil()
+            out.append(pytesseract.image_to_string(img))
+        return "\n".join(out)
+    except Exception as e:
+        print(f"  JCRA: OCR failed ({e})")
+        return t
 
 
 def _meeting_date(text, fallback):
@@ -89,7 +104,8 @@ def jcra_items(text):
     """Resolutions ("Item #7 RESOLUTION ...") and redeveloper presentations ("A) X to make a presentation ...")."""
     out = []
     t = text.replace("\r", "")
-    for m in re.finditer(r"(?:Item\s*#?\s*\d+\s*[:.\-]?|^\s*\d{1,2}\.\s+)\s*(RESOLUTION\b.*?)(?=\n\s*Item\s*#?\s*\d+|\n\s*\d{1,2}\.\s+[A-Z]|\Z)",
+    for m in re.finditer(r"(?:[Il]tem\s*(?:#|No\.?)?\s*\d+\s*[:.\-]?|^\s*\d{1,2}[.)]\s+|^\s*[a-h][.)]\s+)\s*(RESOLUTION\b.*?)"
+                         r"(?=\n\s*[Il]tem\s*(?:#|No\.?)?\s*\d+|\n\s*\d{1,2}[.)]\s+[A-Z]|\n\s*[a-h][.)]\s+RESOLUTION|\Z)",
                          t, re.S | re.M):
         body = _clean(m.group(1))
         if re.search(r"minutes|executive session|public comment|league of municipalities|executive director|"
@@ -207,8 +223,12 @@ def pull_council(db, S, budget=400):
                     continue
                 kept = 0
                 for section, num, title, label, defeated, url in council_items(r.text):
-                    if not RELEVANT.search(title):
+                    if not RELEVANT.search(title) or NOT_RELEVANT.search(title):
                         continue
+                    if label.startswith("Ord.") and not section.startswith("Ordinance"):
+                        section = "Ordinance"
+                    elif label.startswith("Res.") and section.startswith("Ordinance"):
+                        section = "Resolution"
                     db["items"][f"council:{did}:{num}"] = {
                         "src": "council", "kind": section, "date": date, "title": title[:1500], "label": label,
                         "defeated": defeated, "url": url or f"{CW}/document/{did}/", "meeting": f"City Council · {kind}"}
@@ -255,7 +275,8 @@ def _entity(name):
 
 
 def match_cases(cases, db=None):
-    """{case id: [item id, ...]} newest first."""
+    """{case id: [item id, ...]} newest first. Matched on the street address, the block and lot, or the applicant's
+    company name; an item naming more than six sites is matched on the company name only."""
     db = db or load()
     addrs = {c["id"]: NEWS.case_addresses(c.get("address") or "") for c in cases}
     streets = {a[0] for v in addrs.values() for a in v}
@@ -271,16 +292,25 @@ def match_cases(cases, db=None):
         if e:
             by_ent.setdefault(e, set()).add(c["id"])
     ent_re = re.compile(r"\b(" + "|".join(sorted(map(re.escape, by_ent), key=len, reverse=True)) + r")\b") if by_ent else None
-    out = {}
-    for iid, it in db["items"].items():
+    out, seen = {}, set()
+    for iid, it in sorted(db["items"].items()):
         text = it["title"]
+        # the same item on a revised agenda posted for the same meeting
+        key = (it["src"], it.get("date"), re.sub(r"[^A-Z0-9]", "", text.upper())[:160])
+        if key in seen:
+            continue
+        seen.add(key)
         hits = set()
-        for m in NEWS.mentions(text, streets):
-            for a, cid in by_street.get(m[0], []):
-                if NEWS._same(a, m):
-                    hits.add(cid)
-        for bl in block_lots(text):
-            hits |= by_bl.get(bl, set())
+        ms, bls = NEWS.mentions(text, streets), block_lots(text)
+        # Contracts and grants that list many sites citywide (environmental work, fencing) aren't about any one of them.
+        many = len({b for b, _ in bls}) > 6 or len(ms) > 6
+        if not many:
+            for m in ms:
+                for a, cid in by_street.get(m[0], []):
+                    if NEWS._same(a, m):
+                        hits.add(cid)
+            for bl in bls:
+                hits |= by_bl.get(bl, set())
         if ent_re:
             up = re.sub(r"\s+", " ", re.sub(r"[^A-Z0-9& ]", " ", _LLC.sub(" ", text.upper())))
             for m in ent_re.finditer(up):

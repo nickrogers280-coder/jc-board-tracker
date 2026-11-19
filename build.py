@@ -670,6 +670,14 @@ try:
 except Exception as e:  # news is extra: never let it hold back the map
     print(f"news skipped: {e}")
     NEWS, _ndb, _nm = None, {"articles": {}}, {}
+# Redevelopment Agency and City Council items that name the property (civic.py pulls them).
+try:
+    import civic as CIVIC
+    _cdb = CIVIC.load()
+    _cm = CIVIC.match_cases(out, _cdb)
+except Exception as e:
+    print(f"civic skipped: {e}")
+    CIVIC, _cdb, _cm = None, {"items": {}}, {}
 _real = lambda d: d if d and re.match(r"\d{4}-\d\d-\d\d", d) else None
 
 
@@ -689,6 +697,13 @@ for r in out:
     r["news"] = [NEWS.public(a) for a in arts[:30]] if NEWS else []
     r["n_news"] = len(arts)
     r["news_last"] = next((a["date"][:10] for a in arts if a.get("date")), None)
+    cids = set(_cm.get(r["id"], []))
+    for sid in r.get("site_ids") or []:
+        cids |= set(_cm.get(sid, []))
+    items = sorted((_cdb["items"][i] for i in cids if i in _cdb["items"]), key=lambda a: a.get("date") or "", reverse=True)
+    r["civic"] = [CIVIC.public(a) for a in items[:40]] if CIVIC else []
+    r["n_civic"] = len(items)
+    r["civic_last"] = next((a["date"][:10] for a in items if a.get("date")), None)
     acts = _own_activity(r)
     for sid in r.get("site_ids") or []:
         q = _by_id.get(sid)
@@ -696,6 +711,8 @@ for r in out:
             acts += [d for d in (q.get("applied"), q.get("next_hearing")) if _real(d)] + [h[0] for h in q["hearings"] if _real(h[0])]
     if r["news_last"]:
         acts.append(r["news_last"])
+    if r["civic_last"]:
+        acts.append(r["civic_last"])
     acts = [d for d in acts if d <= _today or d == r.get("next_hearing")]
     r["last_activity"] = max(acts) if acts else None
     # Still open, but nothing dated on the property in a year: shown as a note, the case still counts as active.
@@ -777,7 +794,7 @@ shards = defaultdict(dict)
 full = [dict(r) for r in out]  # keeps everything, for the single-file version
 for r in out:
     shards[shard_of(r["id"])][r["id"]] = {"docs": r.pop("docs", []), "priors": r.get("priors") or [], "sales": r.pop("sales", []),
-                                          "news": r.pop("news", [])}
+                                          "news": r.pop("news", []), "civic": r.pop("civic", [])}
     d = shards[shard_of(r["id"])][r["id"]]
     r["n_docs"], r["n_cur_docs"], r["n_sales"] = len(d["docs"]), sum(1 for x in d["docs"] if x.get("current")), len(d["sales"])
     r["n_transfers"] = sum(1 for x in d["sales"] if "deed" in (x.get("type") or "").lower() and "mortgage" not in (x.get("type") or "").lower())
