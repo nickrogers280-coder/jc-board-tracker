@@ -422,11 +422,24 @@ def parse_agendas(seen_cache):
                         v = g(pat)
                         if v:
                             rec[k] = v
-                    st = re.search(r"(ADJOURNED[^\n]*|CARRIED[^\n]*|WITHDRAWN[^\n]*|APPROVED[^\n]*|DENIED[^\n]*)", part)
-                    if st:
-                        rec["last"] = st.group(1).strip()
+                    # The board's action follows the case's description, in capitals or not ("Approved with conditions
+                    # 5-0", "Carried to March 7, 2023 ..."). Read only up to the next numbered item, take the last action
+                    # named, and keep the one from the latest meeting (an action agenda over a plain one on the same day).
+                    nxt = re.search(r"\n\s*(?:\d{1,2}|[a-z])\.\s+\S", part[40:])
+                    own = part[:40 + nxt.start()] if nxt else part
+                    sts = re.findall(r"\b((?:APPROVED|Approved|DENIED|Denied|WITHDRAWN|Withdrawn|CARRIED|Carried|ADJOURNED|Adjourned|"
+                                     r"DISMISSED|Dismissed)\b[^\n]*)", own)
+                    if sts:
+                        act = "act" in key.lower()
+                        rank = (d, act)
+                        if rank >= tuple(rec.get("_rank") or ("", False)):
+                            rec["_rank"] = list(rank)
+                            rec["last"] = sts[-1].strip()
+                            if act:
+                                rec["outcome_date"] = d
     for rec in ag.values():
         rec["dates"] = sorted(set(rec["dates"]))
+        rec.pop("_rank", None)
     return ag, agenda_ids
 
 
@@ -470,7 +483,8 @@ def add_archived(cases, ag, prev):
     for cn in want:
         a, g = idx.get(cn), ag.get(cn) or {}
         old = prev.get(cn) or {}
-        if old.get("archived") and old.get("checked", "") >= TODAY.fromordinal(TODAY.toordinal() - 30).isoformat() and old.get("dates") == g.get("dates"):
+        if (old.get("archived") and old.get("checked", "") >= TODAY.fromordinal(TODAY.toordinal() - 30).isoformat()
+                and old.get("dates") == g.get("dates") and old.get("last") == g.get("last")):
             cases.append(old); added += 1
             continue
         meta, docs, desc, fields = {}, [], "", {}
@@ -505,10 +519,10 @@ def add_archived(cases, ag, prev):
             "id": cn, "caseId": None, "archived": True, "archive_url": f"https://data.jerseycitynj.gov/explore/dataset/{a['dataset_id']}/" if a else None,
             "type": ("Zoning Board" if cn.startswith("Z") else "Planning Board") + (" · " + fields["for"] if fields.get("for") else ""),
             "workclass": None, "status": status, "applied": first, "expires": None,
-            "completed": (dates[-1] if status != "Archived" and dates else None), "v": 2, "ward": None, "planner": None,
+            "completed": ((g.get("outcome_date") or dates[-1])[:10] if status != "Archived" and dates else None), "v": 2, "ward": None, "planner": None,
             "address": addr + " JERSEY CITY NEW JERSEY", "project": None, "pin": None,
             "desc": fields.get("desc") or g.get("desc") or desc[:600] or g.get("for") or fields.get("for") or (a or {}).get("title") or "",
-            "approvalExpires": None, "docs": docs, "loc_pins": [], "dates": g.get("dates"),
+            "approvalExpires": None, "docs": docs, "loc_pins": [], "dates": g.get("dates"), "last": g.get("last"),
             "tracked_because": "archive", "checked": TODAY.isoformat(),
         })
         added += 1
