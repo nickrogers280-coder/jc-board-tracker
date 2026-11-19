@@ -541,6 +541,7 @@
   }
 
   function players() {
+    if (ptab === "developer" && !DATA.cases.some((p) => p.dev_id)) ptab = "applicant";  // data from before developer links
     if (ptab === "developer") return developers();
     const key = ptab === "applicant" ? (p) => p.applicant : ptab === "attorney" ? (p) => p.attorney : (p) => p.owner_mail;
     const g = new Map();
