@@ -519,7 +519,7 @@ def add_archived(cases, ag, prev):
     for cn in want:
         a, g = idx.get(cn), ag.get(cn) or {}
         old = prev.get(cn) or {}
-        if (old.get("archived") and old.get("checked", "") >= TODAY.fromordinal(TODAY.toordinal() - 30).isoformat()
+        if (old.get("archived") and old.get("fmt") == 2 and old.get("checked", "") >= TODAY.fromordinal(TODAY.toordinal() - 30).isoformat()
                 and old.get("dates") == g.get("dates") and old.get("last") == g.get("last") and old.get("memo") == g.get("memo")):
             cases.append(old); added += 1
             continue
@@ -564,7 +564,7 @@ def add_archived(cases, ag, prev):
             "address": (addr + " JERSEY CITY NEW JERSEY") if addr else "", "project": None, "pin": (bl_pins[0] if bl_pins else None),
             "desc": fields.get("desc") or g.get("desc") or desc[:600] or g.get("for") or fields.get("for") or (a or {}).get("title") or "",
             "approvalExpires": None, "docs": docs, "loc_pins": [], "dates": g.get("dates"), "last": g.get("last"), "memo": g.get("memo"),
-            "tracked_because": "archive", "checked": TODAY.isoformat(),
+            "tracked_because": "archive", "checked": TODAY.isoformat(), "fmt": 2,
         })
         added += 1
         time.sleep(0.2)
