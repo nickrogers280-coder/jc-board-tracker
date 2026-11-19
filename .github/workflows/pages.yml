@@ -93,7 +93,7 @@ jobs:
 
       - name: Applicants from each case's application form and ownership disclosure
         continue-on-error: true
-        timeout-minutes: 40
+        timeout-minutes: 75
         run: python applicants.py
 
       - name: News coverage (Jersey Digs, ROI-NJ, Real Estate NJ, Traded)

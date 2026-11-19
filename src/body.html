@@ -58,6 +58,9 @@
 .player:hover { background: var(--panel-2); }
 .player .nm { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .player .ct { font-family: var(--font-data); font-size: 13px; text-align: right; }
+.player .meta.sub { color: var(--ink-3); font-size: 11.5px; }
+.psort { margin: 2px 14px 6px; font-size: 12px; color: var(--ink-2); display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.psort select { font-size: 12px; }
 .player .meta { grid-column: 1 / -1; font-size: 12px; color: var(--ink-2); display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .mix { display: inline-flex; height: 6px; width: 80px; border-radius: 3px; overflow: hidden; background: var(--panel-2); }
 .mix i { display: block; height: 100%; }
@@ -196,8 +199,8 @@
   const MONTHS = { january: 1, february: 2, march: 3, april: 4, may: 5, june: 6, july: 7, august: 8, september: 9, october: 10, november: 11, december: 12 };
 
   let BOUNDS = null, cityLayer = null, maskLayer = null, wardLayer = null, wardLabels = null;
-  let DATA, NOW, LAST_VISIT, map, layers, markers = new Map(), selected = null, outline = null, tab = "activity", ptab = "applicant";
-  const state = { exist: "", q: "", board: "", kind: "", ward: "", window: "active", size: 0, statuses: new Set(["pending", "heard", "approved"]), types: new Set(TYPES.map((t) => t.key)) };
+  let DATA, NOW, LAST_VISIT, map, layers, markers = new Map(), selected = null, outline = null, tab = "activity", ptab = "developer", psort = "cases";
+  const state = { dev: "", exist: "", q: "", board: "", kind: "", ward: "", window: "active", size: 0, statuses: new Set(["pending", "heard", "approved"]), types: new Set(TYPES.map((t) => t.key)) };
 
   const isNew = (p) => (NOW - parseDay(p.applied)) / 864e5 <= 14;
   const nextHearing = (p) => {
@@ -220,6 +223,7 @@
   const boardShort = (p) => (p.board === "zoning" ? "ZBA" : "PB");
 
   function visible(p, noWindow) {
+    if (state.dev) return p.dev_id === state.dev;  // a developer's whole record, whatever the other filters say
     if (!state.statuses.has(statusKey(p))) return false;
     if (!state.types.has(p.product)) return false;
     if (state.board && p.board !== state.board) return false;
@@ -232,7 +236,7 @@
     else if (state.window) { const d = parseDay(p.applied); if (!d || d < +NOW - state.window * 864e5) return false; }
     if (state.exist && !(p.existing || []).some((c) => (state.exist === "15" ? /^15/.test(c) : c === state.exist))) return false;
     if (state.q) {
-      const hay = [p.id, (p.priors || []).map((q) => q.id + " " + (q.applicant || "")).join(" "), p.address, p.prop_loc, p.applicant, p.attorney, p.owner_mail, p.zone, p.planner, p.block && "block " + p.block, p.kind_label, p.type, p.desc].join(" ").toLowerCase();
+      const hay = [p.developer, (p.owners || []).map((o) => o.name).join(" "), p.care_of, p.id, (p.priors || []).map((q) => q.id + " " + (q.applicant || "")).join(" "), p.address, p.prop_loc, p.applicant, p.attorney, p.owner_mail, p.zone, p.planner, p.block && "block " + p.block, p.kind_label, p.type, p.desc].join(" ").toLowerCase();
       if (!state.q.split(/\s+/).every((w) => hay.includes(w))) return false;
     }
     return true;
@@ -387,6 +391,14 @@
     $("#panel-btn").onclick = () => $("#side").classList.toggle("collapsed");
   }
 
+  function setDev(id) {
+    state.dev = id; $("#q").value = ""; state.q = "";
+    tab = "apps"; ["activity", "apps", "players"].forEach((k) => $("#tab-" + k).setAttribute("aria-selected", k === "apps"));
+    refresh();
+    const pts = DATA.cases.filter((p) => p.lat != null && visible(p)).map((p) => [p.lat, p.lon]);
+    if (pts.length) map.fitBounds(pts, { padding: [60, 60], maxZoom: 16 });
+  }
+
   function setSearch(text) {
     $("#q").value = text; state.q = text.toLowerCase();
     tab = "apps"; ["activity", "apps", "players"].forEach((k) => $("#tab-" + k).setAttribute("aria-selected", k === "apps"));
@@ -501,7 +513,35 @@
     </button>`;
   }
 
+  // Developer groups: every case of the group (all years, all outcomes) counts toward its record.
+  const OPEN_STAGES = new Set(["filed", "review", "scheduled", "heard"]);
+  const devCount = (p) => (p.dev_id ? DATA.cases.filter((x) => x.dev_id === p.dev_id).length : 0);
+  function developers() {
+    const g = new Map();
+    DATA.cases.forEach((p) => {
+      if (!p.dev_id) return;
+      const r = g.get(p.dev_id) || { id: p.dev_id, name: p.developer, cases: [], vis: 0, units: 0, mix: {}, ok: 0, no: 0, open: 0, wards: new Set(), sites: new Set(), llcs: new Set(), att: {}, last: "", basis: new Set(), people: p.dev_people || [], linked: false };
+      r.cases.push(p); if (visible(p)) r.vis++;
+      if (p.counts_units) r.units += p.units;
+      r.mix[p.product] = (r.mix[p.product] || 0) + 1;
+      if (p.stage === "approved") r.ok++; else if (p.stage === "denied") r.no++;
+      if (OPEN_STAGES.has(p.stage) && !p.superseded_by) r.open++;
+      if (p.ward) r.wards.add(p.ward);
+      r.sites.add((p.site_ids && p.site_ids.length ? [p.id, ...p.site_ids].sort()[0] : p.address) || p.id);
+      r.llcs.add(p.applicant);
+      if (p.attorney) r.att[p.attorney] = (r.att[p.attorney] || 0) + 1;
+      if ((p.applied || "") > r.last) r.last = p.applied;
+      (p.dev_basis || []).forEach((b) => r.basis.add(b));
+      r.linked = r.linked || p.dev_linked;
+      g.set(p.dev_id, r);
+    });
+    const sortBy = { cases: (a, b) => b.cases.length - a.cases.length || b.units - a.units, units: (a, b) => b.units - a.units || b.cases.length - a.cases.length,
+      recent: (a, b) => b.last.localeCompare(a.last), active: (a, b) => b.open - a.open || b.cases.length - a.cases.length }[psort];
+    return [...g.values()].filter((r) => r.vis > 0 || state.dev === r.id).sort((a, b) => sortBy(a, b) || a.name.localeCompare(b.name));
+  }
+
   function players() {
+    if (ptab === "developer") return developers();
     const key = ptab === "applicant" ? (p) => p.applicant : ptab === "attorney" ? (p) => p.attorney : (p) => p.owner_mail;
     const g = new Map();
     DATA.cases.forEach((p) => {
@@ -522,7 +562,7 @@
     $("#n-apps").textContent = vis.length;
     $("#n-players").textContent = pl.length;
     const fn = $("#filter-note");
-    if (state.q) { fn.hidden = false; fn.innerHTML = `Showing matches for “${esc(state.q)}” <button id="clear-q">Clear</button>`; $("#clear-q").onclick = () => { $("#q").value = ""; state.q = ""; refresh(); }; } else fn.hidden = true;
+    if (state.dev) { const d = DATA.cases.find((p) => p.dev_id === state.dev); fn.hidden = false; fn.innerHTML = `Showing every case of <b>${esc(d ? d.developer : "developer")}</b> <button id="clear-dev">Clear</button>`; $("#clear-dev").onclick = () => { state.dev = ""; refresh(); }; } else if (state.q) { fn.hidden = false; fn.innerHTML = `Showing matches for “${esc(state.q)}” <button id="clear-q">Clear</button>`; $("#clear-q").onclick = () => { $("#q").value = ""; state.q = ""; refresh(); }; } else fn.hidden = true;
     const list = $("#list");
     if (tab === "activity") {
       renderFeed(list);
@@ -532,8 +572,31 @@
       list.innerHTML = sorted.length ? sorted.map((p) => itemHtml(p, `<div class="top"><span class="mono" style="font-size:11.5px;color:var(--ink-2)">${p.id}</span><span class="tag" style="--t:${statusColor(p)}">${esc(p.status)}</span><span class="when">${fmtShort(p.applied)}</span></div>`)).join("")
         : `<div class="empty">No applications match these filters.</div>`;
     } else {
-      const label = { applicant: "applicant", attorney: "attorney", owner: "owner mailing address" }[ptab];
+      const label = { developer: "developer", applicant: "applicant", attorney: "attorney", owner: "owner mailing address" }[ptab];
+      if (ptab === "developer") {
+        const BASIS = { disclosure: "ownership disclosure", "c/o": "c/o on agenda", agency: "Agency transfer", name: "name" };
+        const linkedOnly = pl.filter((r) => r.linked || r.cases.length > 1);
+        list.innerHTML = `<div class="seg" role="group" aria-label="Group players by">
+            <button data-p="developer" aria-pressed="true">Developers</button>
+            <button data-p="applicant" aria-pressed="false">Applicants</button>
+            <button data-p="attorney" aria-pressed="false">Attorneys</button>
+            <button data-p="owner" aria-pressed="false">Repeat owners</button></div>
+          <div class="psort">Sort <select id="psort" aria-label="Sort developers">${[["cases", "Most cases"], ["units", "Most units"], ["active", "Most active cases"], ["recent", "Latest filing"]].map(([k, l]) => `<option value="${k}"${psort === k ? " selected" : ""}>${l}</option>`).join("")}</select> <span class="note">${linkedOnly.length} developers with more than one LLC or a known owner</span></div>` +
+          (pl.length ? pl.map((r) => {
+            const decided = r.ok + r.no, att = Object.entries(r.att).sort((a, b) => b[1] - a[1])[0];
+            return `<button class="player dev" data-dev="${esc(r.id)}">
+              <span class="nm">${esc(r.name)}</span><span class="ct">${r.cases.length}</span>
+              <span class="meta"><span class="mix">${TYPES.filter((t) => r.mix[t.key]).map((t) => `<i style="background:${t.c};width:${(100 * r.mix[t.key]) / r.cases.length}%"></i>`).join("")}</span>${r.sites.size} site${r.sites.size === 1 ? "" : "s"}${r.units ? ` · ${n0(r.units)} new units` : ""}${decided ? ` · ${Math.round((100 * r.ok) / decided)}% approved (${r.ok}/${decided})` : ""}${r.open ? ` · ${r.open} active` : ""}${r.wards.size ? ` · Ward ${[...r.wards].sort().join(", ")}` : ""}${r.last ? ` · latest ${fmtShort(r.last)} ${r.last.slice(0, 4)}` : ""}</span>
+              <span class="meta sub">${r.llcs.size > 1 ? `${r.llcs.size} LLCs` : esc([...r.llcs][0] || "")}${r.people.length ? ` · ${esc(r.people.slice(0, 3).join(", "))}` : ""}${att ? ` · counsel ${esc(att[0])}` : ""}${r.basis.size ? ` · via ${[...r.basis].map((b) => BASIS[b] || b).join(", ")}` : ""}</span>
+            </button>`; }).join("") : `<div class="empty">No developers on record for these filters.</div>`) +
+          `<div class="empty" style="padding-top:12px">Each applicant LLC is linked to the people and companies behind it: the 10% owners on its ownership disclosure, the company it files "in care of", and Redevelopment Agency transfers of its membership interests. LLCs that share an owner are one developer. Counts cover every case the developer has filed, all years and outcomes; click a row to show them all on the map.</div>`;
+        list.querySelectorAll(".seg button").forEach((b) => (b.onclick = () => { ptab = b.dataset.p; renderList(); }));
+        $("#psort").onchange = (e) => { psort = e.target.value; renderList(); };
+        list.querySelectorAll(".player.dev").forEach((b) => (b.onclick = () => setDev(b.dataset.dev)));
+        return;
+      }
       list.innerHTML = `<div class="seg" role="group" aria-label="Group players by">
+          <button data-p="developer" aria-pressed="false">Developers</button>
           <button data-p="applicant" aria-pressed="${ptab === "applicant"}">Applicants</button>
           <button data-p="attorney" aria-pressed="${ptab === "attorney"}">Attorneys</button>
           <button data-p="owner" aria-pressed="${ptab === "owner"}">Repeat owners</button></div>` +
@@ -804,6 +867,10 @@
         </dl></div>
         <div class="sec"><h3>Players</h3><dl class="kv">
           <dt>Applicant</dt><dd>${p.applicant ? `<b>${esc(p.applicant)}</b>${p.applicant_source && p.applicant_source !== "board agenda" ? `<div class="note">From ${esc(p.applicant_source)}${p.applicant_doc ? ` (${esc(p.applicant_doc.slice(0, 60))}${p.applicant_doc.length > 60 ? "…" : ""})` : ""}</div>` : ""}` : `<span class="note">Not named yet: no agenda and no application form or disclosure posted online</span>`}</dd>
+          ${p.care_of ? `<dt>In care of</dt><dd>${esc(p.care_of)}</dd>` : ""}
+          ${p.dev_id && (p.dev_linked || devCount(p) > 1) ? `<dt>Developer</dt><dd><button class="linkish" data-dev="${esc(p.dev_id)}"><b>${esc(p.developer)}</b> · ${devCount(p)} case${devCount(p) === 1 ? "" : "s"}</button>${(p.dev_basis || []).length ? `<div class="note">Linked through ${esc((p.dev_basis || []).map((b) => ({ disclosure: "the ownership disclosure", "c/o": "the agenda's c/o line", agency: "a Redevelopment Agency transfer", name: "the company name" }[b] || b)).join(", "))}</div>` : ""}</dd>` : ""}
+          ${(p.owners || []).length ? `<dt>10% owners</dt><dd>${p.owners.map((o) => `${esc(o.name)}${o.pct != null ? ` <span class="note">${+o.pct.toFixed(1)}%</span>` : ""}`).join("<br>")}<div class="note">From the ownership disclosure</div></dd>` : ""}
+          ${p.transfer ? `<dt>Transfer</dt><dd>Agency approved transfer of the LLC's interests to <b>${esc(p.transfer.to)}</b>${p.transfer.date ? ` · ${fmtDate(p.transfer.date)}` : ""}</dd>` : ""}
           <dt>Attorney</dt><dd>${p.attorney ? esc(p.attorney) : "—"}</dd>
           <dt>Tax bill to</dt><dd>${p.owner_mail ? esc(titleCase(p.owner_mail)) + (sameMail.length ? `<div class="note">Same mailing address on ${sameMail.length} other ${sameMail.length === 1 ? "case" : "cases"}</div>` : "") : "—"}</dd>
         </dl></div>
@@ -833,7 +900,7 @@
       try { await navigator.clipboard.writeText(b.dataset.copy); b.textContent = "Copied"; } catch { b.textContent = b.dataset.copy; }
       setTimeout(() => (b.textContent = "Copy"), 1500);
     }));
-    $("#detail").querySelectorAll(".related button, .linkish").forEach((b) => (b.onclick = () => select(b.dataset.id, true)));
+    $("#detail").querySelectorAll(".related button, .linkish").forEach((b) => (b.onclick = () => (b.dataset.dev ? setDev(b.dataset.dev) : select(b.dataset.id, true))));
   }
 
   function select(id, fly) {

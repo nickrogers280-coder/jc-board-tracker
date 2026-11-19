@@ -12,6 +12,7 @@ from pathlib import Path
 from docs_mirror import current_versions
 from fetch import prior_refs
 import applicants as APPL
+import parents as PARENTS
 
 ROOT = Path(__file__).parent
 def _raw(name, legacy):
@@ -291,6 +292,11 @@ for c in cases_raw["cases"]:
     if not applicant:
         applicant, app_src = desc_applicant(c.get("desc")), "the application description"
     attorney = norm_party(ag.get("att", "")) or (filings.get("attorney") or "")
+    _cl = PARENTS.clean_applicant(applicant, attorney)
+    if _cl["name"] != applicant:
+        if not _cl["name"] and not attorney and re.search(r"\bEsq", applicant or "", re.I):
+            attorney = norm_party(applicant)  # the agenda put the attorney in the applicant line
+        applicant = _cl["name"] or ""
     pin = c.get("pin") or ""
     blk = p.get("PCLBLOCK") or (pin.split("_")[1] if pin.count("_") >= 2 else "")
     lot = p.get("PCLLOT") or (pin.split("_")[2] if pin.count("_") >= 2 else "")
@@ -323,6 +329,8 @@ for c in cases_raw["cases"]:
         "applicant_source": app_src if applicant else None,
         "applicant_doc": filings.get("doc") if applicant and app_src.startswith("the ") and app_src != "the application description" else None,
         "attorney": attorney,
+        "care_of": _cl["care_of"],
+        "owners": PARENTS.owners_clean(filings.get("owners")),
         "hearings": hearings,
         "agenda_last": ag.get("last", ""),
         "desc": re.sub(r"\s+", " ", c.get("desc") or "").strip(),
@@ -687,6 +695,14 @@ def _own_activity(q):
     ds += [x.get("added") for x in q.get("docs") or []]
     return [d[:10] for d in ds if _real((d or "")[:10])]
 
+
+# Developer behind each applicant: disclosure owners, c/o lines, Agency transfers, known names (parents.py).
+try:
+    PARENTS.link(out, list(_cdb["items"].values()))
+except Exception as e:
+    print(f"developer links skipped: {e}")
+print("developers:", len({r.get("dev_id") for r in out if r.get("dev_id")}), "groups;",
+      sum(1 for r in out if r.get("dev_linked")), "cases linked beyond their own LLC;", sum(1 for r in out if r.get("owners")), "with owners")
 
 _one_year_ago_q = _one_year_ago
 for r in out:

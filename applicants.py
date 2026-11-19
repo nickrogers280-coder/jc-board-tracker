@@ -24,6 +24,7 @@ import docs_mirror as DM
 
 ROOT = Path(__file__).parent
 BUDGET = 500          # forms read per run
+OWNER_BUDGET = 300    # ownership disclosures read per run for company applicants already named
 FORM = [  # which filings to read, best first
     ("disclosure", re.compile(r"disclos", re.I)),
     ("application form", re.compile(r"general development application|\bGDA\b(?!_?checklist)|planning application|development application|application form|appeal application", re.I)),
@@ -226,6 +227,53 @@ def main():
         found[c["id"]] = rec
     apath.write_text(json.dumps(found))
     print(f"applicants: read {read} forms, named {named} cases this run, {sum(1 for v in found.values() if v.get('applicant'))} named in all")
+
+    # Second pass: the 10% owners behind every company applicant, including the ones a board agenda already named
+    # (the agenda gives the LLC; only the disclosure says who is behind it). Feeds the developer links in parents.py.
+    dis = FORM[0][1]
+    todo2 = []
+    for c in cases:
+        prev = found.get(c["id"]) or {}
+        app = (agendas.get(c["id"]) or {}).get("app") or prev.get("applicant") or ""
+        if prev.get("owners") or not ENTITY.search(app):
+            continue
+        ds = [d for d in sorted(c.get("docs") or [], key=lambda d: d.get("added") or "", reverse=True)
+              if d.get("id") and dis.search(d.get("name") or "") and re.search(r"\.pdf$", d.get("name") or "", re.I)]
+        if not ds or prev.get("owners_tried", "") >= (ds[0].get("added") or ""):
+            continue
+        todo2.append((c, ds[:2]))
+    todo2.sort(key=lambda x: x[0].get("applied") or "", reverse=True)
+    print(f"owners: {len(todo2)} company applicants with a disclosure not read yet")
+    got_n = read2 = 0
+    for c, ds in todo2:
+        if read2 >= OWNER_BUDGET:
+            break
+        rec = found.setdefault(c["id"], {"checked": date.today().isoformat(), "pv": PV, "applicant": None, "attorney": None,
+                                          "source": None, "doc": None, "owners": []})
+        rec["owners_tried"] = ds[0].get("added") or date.today().isoformat()
+        for d in ds:
+            read2 += 1
+            try:
+                with tempfile.TemporaryDirectory() as td:
+                    path = Path(td) / "f.pdf"
+                    m = mirror.get(d["id"])
+                    if m and verified.get(d["id"]) == m["asset"]:
+                        r = requests.get(f"https://github.com/{DM.REPO}/releases/download/{m.get('tag', 'documents')}/{m['asset']}", timeout=120)
+                        r.raise_for_status()
+                        path.write_bytes(r.content)
+                    else:
+                        DM.download(s, d["id"], path)
+                        time.sleep(0.6)
+                    got = parse(text_of(path), "disclosure")
+            except Exception as e:
+                print("could not read", c["id"], d.get("name"), e, file=sys.stderr)
+                continue
+            if got["owners"]:
+                rec["owners"], rec["owners_doc"] = got["owners"][:12], d.get("name")
+                got_n += 1
+                break
+    apath.write_text(json.dumps(found))
+    print(f"owners: read {read2} disclosures, owners found for {got_n}; {sum(1 for v in found.values() if v.get('owners'))} cases with owners in all")
 
 
 if __name__ == "__main__":
