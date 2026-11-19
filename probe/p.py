@@ -4,11 +4,12 @@ H = "https://cityofjerseycity.civicweb.net"
 def items(fid):
     x = requests.get(H + f"/filepro/documents/{fid}/", headers=UA, timeout=60)
     return re.findall(r'data-id="(\d+)" data-parentid="\d+" data-order="\d+" data-type="(\w+)" data-title="([^"]*)"', x.text)
-top = items(1009); print("AGENDAS", top)
-y = next(i for i in top if i[1] == "folder" and "2022" in i[2]) if any("2022" in i[2] for i in top) else top[0]
-s = items(y[0]); print("YEAR", y, len(s), s[:10])
-f = s[0]
-s2 = items(f[0]) if f[1] == "folder" else [f]; print("SUB", f, s2[:10])
+top = items(1021); print("COUNCIL", top)
+for y in top[:12]:
+    s = items(y[0]) if y[1] == "folder" else []
+    print("  ", y, len(s), s[:6])
+y = next(i for i in top if "2022" in i[2])
+s = items(y[0]); f = s[0]; s2 = items(f[0]) if f[1] == "folder" else [f]; print("SUB", f, s2[:10])
 d = next(i for i in s2 if i[1] == "document")
 r = requests.get(H + f"/document/{d[0]}/", headers=UA, timeout=120)
 print("DOC", d, r.status_code, r.headers.get("content-type"), len(r.content))
