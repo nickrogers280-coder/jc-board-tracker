@@ -98,7 +98,13 @@ def post(url, **kw):
 
 # ------------------------------------------------------------------ cases
 def search_cases(prefix):
-    crit = get(API + "search/criteria").json()["Result"]
+    for attempt in range(6):  # the portal sometimes answers without a result for a few minutes
+        crit = (get(API + "search/criteria").json() or {}).get("Result")
+        if crit:
+            break
+        time.sleep(60)
+    else:
+        raise RuntimeError("the permit portal gave no search form after six tries")
     out, page, pages = [], 1, 1
     while page <= pages:
         b = json.loads(json.dumps(crit))
