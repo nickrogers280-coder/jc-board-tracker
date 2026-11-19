@@ -1,15 +1,27 @@
-import json, re, sys, io, requests, pdfplumber
+import re, requests, html
 UA = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36"}
-for u in ("https://www.jerseycitynj.gov/cityhall/Clerk/ordinances___resolutions__2019-_present_",
-          "https://www.jerseycitynj.gov/cityhall/Clerk/view_agenda_and_request_to_speak"):
+B = "https://www.jerseycitynj.gov"
+def items(u):
     r = requests.get(u, headers=UA, timeout=60)
-    print("##", u, len(r.text))
-    for l in sorted(set(re.findall(r'(?:href|src)="([^"]+)"', r.text))): print("   ", l)
-    i = r.text.lower().find("resolution"); print(re.sub(r"\s+", " ", r.text[i-500:i+3000]))
-def pdf(u, n=6000):
-    r = requests.get(u, headers=UA, timeout=120)
-    with pdfplumber.open(io.BytesIO(r.content)) as p:
-        t = "\n".join((pg.extract_text() or "") for pg in p.pages[:25])
-    print("##PDF", u, len(r.content), "pages", "\n", t[:n])
-pdf("https://thejcra.org/wp-content/uploads/2026/10/use-this-October-2026-Resolution-Packet-1.pdf", 7000)
-pdf("https://thejcra.org/wp-content/uploads/2026/10/JCRA-October-2026-Agenda.pdf", 5000)
+    out = re.findall(r'data-id="(\d+)" data-parentid="(\d+)" data-order="\d+" data-type="(\w+)" data-title="([^"]*)"', r.text)
+    print("##", u, r.status_code, len(r.text), len(out))
+    return r, out
+r, top = items(B + "/filepro/documents/108")
+for x in top[:60]: print("  ", x)
+# first meeting folder
+fid = next(x[0] for x in top if x[2] == "folder")
+r, sub = items(B + f"/filepro/documents/{fid}")
+for x in sub[:80]: print("  ", x)
+links = sorted(set(re.findall(r'href="(/document/[^"]+|/filepro/document/[^"]+|[^"]*\.pdf[^"]*)"', r.text)))
+print("doc links", links[:20])
+if sub:
+    for x in sub:
+        if x[2] != "folder":
+            for u in (f"/document/{x[0]}", f"/filepro/document/{x[0]}", f"/document/{x[0]}/"):
+                rr = requests.get(B + u, headers=UA, timeout=60, allow_redirects=True)
+                print("try", u, rr.status_code, rr.headers.get("content-type"), len(rr.content), rr.url)
+            break
+    sf = [x for x in sub if x[2] == "folder"]
+    if sf:
+        r, sub2 = items(B + f"/filepro/documents/{sf[0][0]}")
+        for x in sub2[:40]: print("   ", x)
