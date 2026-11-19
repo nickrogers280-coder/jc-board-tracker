@@ -97,6 +97,7 @@ def owners_clean(owners):
         n = re.sub(r"^[\s|_]+", "", o.get("name") or "")
         n = re.sub(r"\s*\|.*$", "", n).strip(" ,;:-")
         n = re.sub(r"^\W+|\W+$", "", n)
+        n = re.split(r"\s+(?:is|are|owns|owned|which|whose|holds|c/o|care of|approximately|\(the)\b", n, maxsplit=1, flags=re.I)[0].strip(" ,;:-")
         n = re.sub(r"^[a-h]\.\s+", "", n)
         n = re.sub(r"\s+(Jersey City|Hoboken|Brooklyn|New York),?.*$", "", n)
         if len(re.sub(r"[^A-Za-z]", "", n)) < 4 or NOT_OWNER.search(n):
@@ -203,4 +204,17 @@ def link(records, civic_items=()):
             r["dev_basis"] = sorted(set(basis.get(r["id"], []) + (["name"] if brand and brand_of(r["applicant"], r.get("care_of")) else [])))
             r["dev_linked"] = linked
             r["dev_people"] = [p for p, _ in people.most_common(4)]
+    # A filing with no applicant named (an amendment, an extension) takes the developer of the other filings on its site.
+    by_id = {r["id"]: r for r in records}
+    for r in records:
+        if r.get("dev_id"):
+            continue
+        sibs = sorted((by_id[i] for i in r.get("site_ids") or [] if i in by_id and by_id[i].get("dev_id")),
+                      key=lambda q: q.get("applied") or "", reverse=True)
+        if sibs:
+            q = sibs[0]
+            r.update(developer=q["developer"], dev_id=q["dev_id"], dev_linked=q.get("dev_linked"), dev_people=q.get("dev_people"),
+                     dev_basis=["same site"])
+            if q.get("transfer"):
+                r["transfer"] = q["transfer"]
     return records
