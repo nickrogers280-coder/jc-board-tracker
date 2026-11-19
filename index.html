@@ -260,6 +260,12 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
 .news a:hover { color: var(--pin); }
 .nmeta { font-size: 11px; color: var(--ink-3); margin-bottom: 1px; }
 .nblurb { font-size: 12px; color: var(--ink-2); margin-top: 2px; line-height: 1.35; }
+.civic { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.civic li { border-left: 3px solid var(--ink-3); padding-left: 8px; }
+.civic li.jcra { border-left-color: var(--pin); }
+.civic .ctitle { font-size: 12.5px; line-height: 1.38; color: var(--ink); }
+.civic .ctitle.clip { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+.civic a { color: var(--ink-2); font-size: 11.5px; }
 .related button { text-align: left; background: var(--panel-2); border: 1px solid var(--line); border-radius: 6px; padding: 7px 9px; font-size: 12.5px; cursor: pointer; }
 .related button:hover { border-color: var(--pin); }
 .filter-note { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--ink-2); }
@@ -822,6 +828,14 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
     return `<div class="sec"><h3>In the news · ${p.n_news || rows.length} article${(p.n_news || rows.length) === 1 ? "" : "s"}</h3><ul class="news">${li}</ul>${more ? `<details><summary class="note">${rows.length - 12} more</summary><ul class="news">${more}</ul></details>` : ""}</div>`;
   }
 
+  function civicHtml(p) {
+    const rows = p.civic || [];
+    if (!rows.length) return `<div class="sec"><h3>Redevelopment Agency &amp; City Council</h3><p class="note" style="margin:0">No Redevelopment Agency or City Council item names this address, its block and lot, or its applicant (agendas since 2018).</p></div>`;
+    const one = (a) => `<li class="${a.src === "jcra" ? "jcra" : ""}"><div class="nmeta">${a.date ? fmtDate(a.date) + " · " : ""}${esc(a.src === "jcra" ? "Redevelopment Agency" : "City Council")} · ${esc(a.kind || "")}${a.label ? " · " + esc(a.label) : ""}${a.defeated ? " · <b>defeated</b>" : ""}</div><div class="ctitle clip" onclick="this.classList.toggle('clip')" title="Click to show the full text">${esc(a.title)}</div>${a.url ? `<a href="${esc(a.url)}" target="_blank" rel="noopener">${a.src === "jcra" ? "Agenda (PDF)" : "Ordinance / resolution (PDF)"}</a>` : ""}</li>`;
+    const n = p.n_civic || rows.length;
+    return `<div class="sec"><h3>Redevelopment Agency &amp; City Council · ${n} item${n === 1 ? "" : "s"}</h3><p class="note" style="margin:0 0 6px">Agency resolutions and redeveloper presentations, and Council ordinances and resolutions on redevelopment, tax abatements and zoning that name this property.</p><ul class="civic">${rows.slice(0, 10).map(one).join("")}</ul>${rows.length > 10 ? `<details><summary class="note">${rows.length - 10} more</summary><ul class="civic">${rows.slice(10).map(one).join("")}</ul></details>` : ""}</div>`;
+  }
+
   function salesHtml(p) {
     const rows = p.sales || [];
     if (!p.sales_checked && !rows.length) return `<div class="sec"><h3>Ownership &amp; sales</h3><p class="note">Not looked up yet. Deed records for each lot are pulled a few hundred lots per update, so this fills in within a few days.</p></div>`;
@@ -842,7 +856,7 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
     try {
       shardCache[p.shard] = shardCache[p.shard] || fetch(`data/detail/${p.shard}.json`).then((r) => r.json());
       const d = (await shardCache[p.shard])[p.id] || {};
-      Object.assign(p, { docs: d.docs || [], priors: d.priors || p.priors, sales: d.sales || [], news: d.news || [] });
+      Object.assign(p, { docs: d.docs || [], priors: d.priors || p.priors, sales: d.sales || [], news: d.news || [], civic: d.civic || [] });
       p._full = true;
     } catch { delete shardCache[p.shard]; }
   }
@@ -972,7 +986,7 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
         </dl></div>
         <div class="sec"><h3>Timeline</h3><ol class="timeline">${hist.map((h) => `<li><span>${esc(h[0])}</span><time>${fmtDate(h[1])}</time></li>`).join("")}</ol></div>
         <div class="hist-head">Property history</div>
-        ${p._full ? priorsHtml(p) + newsHtml(p) + salesHtml(p) : `<p class="note">Loading…</p>`}
+        ${p._full ? priorsHtml(p) + civicHtml(p) + newsHtml(p) + salesHtml(p) : `<p class="note">Loading…</p>`}
         ${p.prop_class || p.net_value ? `<div class="sec"><h3>Tax record</h3><dl class="kv">
           ${(p.existing || []).length ? `<dt>Existing use</dt><dd>${esc(existText(p))}${nLots(p) > 1 ? ` <span class="note">(across ${nLots(p)} lots)</span>` : ""}<div class="note">Current tax class: what's there now, not what's proposed</div></dd>` : p.class_label ? `<dt>Existing use</dt><dd>${esc(p.prop_class)} · ${esc(p.class_label)}</dd>` : ""}
           ${p.prop_loc ? `<dt>Tax address</dt><dd>${esc(titleCase(p.prop_loc))}</dd>` : ""}
