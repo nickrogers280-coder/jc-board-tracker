@@ -1,27 +1,18 @@
-import re, requests, html
+import re, requests
 UA = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36"}
-B = "https://www.jerseycitynj.gov"
-def items(u):
-    r = requests.get(u, headers=UA, timeout=60)
-    out = re.findall(r'data-id="(\d+)" data-parentid="(\d+)" data-order="\d+" data-type="(\w+)" data-title="([^"]*)"', r.text)
-    print("##", u, r.status_code, len(r.text), len(out))
-    return r, out
-r, top = items(B + "/filepro/documents/108")
-for x in top[:60]: print("  ", x)
-# first meeting folder
-fid = next(x[0] for x in top if x[2] == "folder")
-r, sub = items(B + f"/filepro/documents/{fid}")
-for x in sub[:80]: print("  ", x)
-links = sorted(set(re.findall(r'href="(/document/[^"]+|/filepro/document/[^"]+|[^"]*\.pdf[^"]*)"', r.text)))
-print("doc links", links[:20])
-if sub:
-    for x in sub:
-        if x[2] != "folder":
-            for u in (f"/document/{x[0]}", f"/filepro/document/{x[0]}", f"/document/{x[0]}/"):
-                rr = requests.get(B + u, headers=UA, timeout=60, allow_redirects=True)
-                print("try", u, rr.status_code, rr.headers.get("content-type"), len(rr.content), rr.url)
-            break
-    sf = [x for x in sub if x[2] == "folder"]
-    if sf:
-        r, sub2 = items(B + f"/filepro/documents/{sf[0][0]}")
-        for x in sub2[:40]: print("   ", x)
+P = "https://www.jerseycitynj.gov/cityhall/Clerk/ordinances___resolutions__2019-_present_"
+r = requests.get(P, headers=UA, timeout=60)
+print("final url", r.url)
+top = re.findall(r'data-id="(\d+)" data-parentid="(\d+)" data-order="\d+" data-type="(\w+)" data-title="([^"]*)"', r.text)
+print(len(top), top[:8])
+for m in re.finditer(r'(iframe|base)[^>]+>', r.text): print(m.group(0)[:300])
+print(re.findall(r'https?://[a-z0-9.-]*civicweb[a-z0-9./-]*', r.text)[:10])
+fid = top[0][0]
+for host in ("https://www.jerseycitynj.gov", "https://jerseycitynj.civicweb.net", "https://jerseycity.civicweb.net", "https://jerseycity.hosted.civiclive.com"):
+    for path in (f"/filepro/documents/{fid}", f"/filepro/documents/{fid}/", f"/document/{fid}"):
+        try:
+            x = requests.get(host + path, headers=UA, timeout=40)
+            sub = re.findall(r'data-id="(\d+)" data-parentid="\d+" data-order="\d+" data-type="(\w+)" data-title="([^"]*)"', x.text)
+            print(host + path, x.status_code, len(x.text), x.url, sub[:12])
+        except Exception as e:
+            print(host + path, "ERR", e)
