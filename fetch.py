@@ -410,6 +410,18 @@ def parse_agendas(seen_cache):
                 d = agenda_date(aid, year) or ""
                 t = re.sub(r"https?://\S+", "", text)
                 t = re.sub(r"\s+-\s+", "-", t)
+                for m in _RESO.finditer(t):
+                    words = m.group(1).lower()
+                    if re.search(r"\n\s*\d{1,2}\.\s", m.group(1)):
+                        continue  # ran into the next item
+                    out = ("Denied" if re.search(r"\bden(y|ial|ied)", words) else
+                           "Approved" if re.search(r"approv|grant", words) else None)
+                    if out and "extension" not in words:
+                        cn = (f"{m.group(2)}{m.group(3)}-{int(m.group(4)):04d}" if len(m.group(3)) == 4
+                              else f"{m.group(2)}{m.group(3)}-{int(m.group(4)):03d}")
+                        r_ = ag.setdefault(cn, {"dates": []})
+                        if d >= (r_.get("memo_date") or ""):
+                            r_["memo"], r_["memo_date"] = out, d
                 for part in re.split(r"C\s?ase\s?:\s*", t)[1:]:
                     m = re.match(r"([PZ])\s?(\d{4}|\d{2})\s?-\s?(\d{2,4})(?!\d)", part)
                     if not m:
@@ -426,6 +438,8 @@ def parse_agendas(seen_cache):
                     for k, pat in (("app", r"Applicant\s*:\s*([^\n]+)"), ("att", r"Attorney\s*:\s*([^\n]+)"), ("zone", r"Zon(?:e|ing)\s*:\s*([^\n]+)"), ("bl", r"Block\s*:?\s*([^\n]+)"),
                                    ("addr", r"Address\s*:\s*([^\n]+)"), ("for", r"For\s*:\s*([^\n]+)"), ("desc", r"Description\s*:\s*([^\n]+(?:\n(?![A-Z][a-z]+\s*:)[^\n]+){0,3})")):
                         v = g(pat)
+                        if k in ("app", "att", "zone", "addr", "for"):
+                            v = _clip(v)
                         if v:
                             rec[k] = v
                     # The board's action follows the case's description, in capitals or not ("Approved with conditions
@@ -447,6 +461,22 @@ def parse_agendas(seen_cache):
         rec["dates"] = sorted(set(rec["dates"]))
         rec.pop("_rank", None)
     return ag, agenda_ids
+
+
+_LABEL = re.compile(r"\s+(?:A\s?p\s?p\s?l\s?i\s?c\s?a\s?n\s?t|A\s?t\s?t\s?o\s?r\s?n\s?e\s?y|Review\s+Planner|Block|Lots?|Zon(?:e|ing)|For|"
+                    r"Description|Case|Address|Variances?|Waivers?)\s*:", re.I)
+
+
+def _clip(v):
+    """One field of a one-line record: cut at the next 'Label:' and undo PDF letter spacing ('4 th S t reet')."""
+    v = _LABEL.split(" " + (v or ""), 1)[0].strip(" ,;-|")
+    v = re.sub(r"\b(\d+) (st|nd|rd|th)\b", r"\1\2", v, flags=re.I)
+    v = re.sub(r"\b(?:[A-Za-z] ){2,}[A-Za-z]+\b", lambda m: m.group(0).replace(" ", ""), v)
+    return v
+
+
+# Board resolutions read into a later agenda: "Resolution of the Planning Board ... approving ... #P22-145 submitted by ...".
+_RESO = re.compile(r"Resolution\b(.{0,400}?)#\s?([PZ])\s?(20\d\d|\d{2})\s?-\s?(\d{2,4})(?!\d)", re.S)
 
 
 _CN = re.compile(r"\b([PZ])\s?(20\d\d|\d{2})\s?-\s?(\d{2,4})(?!\d)", re.I)
@@ -490,7 +520,7 @@ def add_archived(cases, ag, prev):
         a, g = idx.get(cn), ag.get(cn) or {}
         old = prev.get(cn) or {}
         if (old.get("archived") and old.get("checked", "") >= TODAY.fromordinal(TODAY.toordinal() - 30).isoformat()
-                and old.get("dates") == g.get("dates") and old.get("last") == g.get("last")):
+                and old.get("dates") == g.get("dates") and old.get("last") == g.get("last") and old.get("memo") == g.get("memo")):
             cases.append(old); added += 1
             continue
         meta, docs, desc, fields = {}, [], "", {}
@@ -507,28 +537,33 @@ def add_archived(cases, ag, prev):
                 x = re.search(pat, desc, re.S if k == "desc" else 0)
                 if x:
                     fields[k] = re.sub(r"\s+", " ", x.group(1)).strip()
+                    if k != "desc":
+                        fields[k] = _clip(fields[k])
             docs = [{"name": d.get("title") or d.get("id"), "url": ODP + f"{a['dataset_id']}/attachments/{d['id']}/",
                      "added": (m_.get("modified") or "")[:10]} for d in meta.get("attachments") or []]
-        addr = fields.get("addr") or g.get("addr") or ""
+        addr = next((x for x in (fields.get("addr"), g.get("addr")) if x and not re.fullmatch(r"(?i)n/?a|tbd|none|various", x)), "")
+        bl_pins = text_pins("Block " + g["bl"] if g.get("bl") else desc, "")
         if not addr and a:
             rest = (a["title"] or "")[_CN.search(a["title"] or "").end():] if _CN.search(a["title"] or "") else ""
             m = re.search(rf"(\d[\d\s\-&,\.]*?\b[A-Za-z][\w\.' ]*?\b{_STREET})\b", rest, re.I)
             addr = m.group(1).strip(" -|,") if m else ""
-        if not addr:
+        if not addr and not bl_pins:
             continue  # nothing to place it on the map with
         last = (g.get("last") or "").upper()
         status = ("Approved" if last.startswith("APPROVED") else "Denied" if last.startswith("DENIED")
                   else "Withdrawn" if last.startswith("WITHDRAWN") else "Archived")
+        if status == "Archived" and g.get("memo"):  # decided, and the resolution was read into a later agenda
+            status = g["memo"]
         dates = sorted(d[:10] for d in g.get("dates") or [] if re.match(r"\d{4}-\d\d-\d\d", d))
         first = min([d for d in dates] + ([docs[0]["added"]] if docs and docs[0]["added"] else []), default=None)
         cases.append({
             "id": cn, "caseId": None, "archived": True, "archive_url": f"https://data.jerseycitynj.gov/explore/dataset/{a['dataset_id']}/" if a else None,
             "type": ("Zoning Board" if cn.startswith("Z") else "Planning Board") + (" · " + fields["for"] if fields.get("for") else ""),
             "workclass": None, "status": status, "applied": first, "expires": None,
-            "completed": ((g.get("outcome_date") or dates[-1])[:10] if status != "Archived" and dates else None), "v": 2, "ward": None, "planner": None,
-            "address": addr + " JERSEY CITY NEW JERSEY", "project": None, "pin": None,
+            "completed": ((g.get("outcome_date") or g.get("memo_date") or (dates or [""])[-1])[:10] or None) if status != "Archived" else None, "v": 2, "ward": None, "planner": None,
+            "address": (addr + " JERSEY CITY NEW JERSEY") if addr else "", "project": None, "pin": (bl_pins[0] if bl_pins else None),
             "desc": fields.get("desc") or g.get("desc") or desc[:600] or g.get("for") or fields.get("for") or (a or {}).get("title") or "",
-            "approvalExpires": None, "docs": docs, "loc_pins": [], "dates": g.get("dates"), "last": g.get("last"),
+            "approvalExpires": None, "docs": docs, "loc_pins": [], "dates": g.get("dates"), "last": g.get("last"), "memo": g.get("memo"),
             "tracked_because": "archive", "checked": TODAY.isoformat(),
         })
         added += 1
