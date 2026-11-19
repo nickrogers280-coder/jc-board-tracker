@@ -49,7 +49,22 @@ def load():
         db = {}
     for k in ("items", "jcra_seen", "council_seen"):
         db.setdefault(k, {})
+    _split_run_together(db)
     return db
+
+
+_RES_START = re.compile(r"(?=\bRESOLUTION OF THE (?:BOARD|JERSEY CITY))")
+
+
+def _split_run_together(db):
+    """OCR of a scanned agenda can run several resolutions into one item; give each its own."""
+    for iid in [k for k, v in db["items"].items() if v["src"] == "jcra"]:
+        it = db["items"][iid]
+        parts = [p.strip() for p in _RES_START.split(it["title"]) if len(p.strip()) > 40]
+        if len(parts) > 1:
+            del db["items"][iid]
+            for j, part in enumerate(parts):
+                db["items"][f"{iid}.{j}"] = dict(it, title=part)
 
 
 def save(db):
@@ -112,7 +127,10 @@ def jcra_items(text):
                      r"payment of (?:bills|invoices)|budget|audit|insurance|professional services", body[:220], re.I) \
                 and not re.search(r"\bblock\b|\bredeveloper\b", body, re.I):
             continue
-        out.append(("Resolution", body[:1200]))
+        for part in _RES_START.split(body):
+            part = part.strip()
+            if len(part) > 40:
+                out.append(("Resolution", part[:1200]))
     pres = re.search(r"PRESENTATIONS?\s*-?(.*?)(?=\n\s*\d{1,2}\.\s+[A-Z]|\n\s*Item\s*#)", t, re.S)
     if pres:
         for part in re.split(r"\n\s*[A-H]\)\s+", "\n" + pres.group(1)):

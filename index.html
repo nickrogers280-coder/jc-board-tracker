@@ -266,6 +266,8 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
 .civic .ctitle { font-size: 12.5px; line-height: 1.38; color: var(--ink); }
 .civic .ctitle.clip { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
 .civic a { color: var(--ink-2); font-size: 11.5px; }
+.envgrp { margin-top: 10px; }
+.envgrp .civic li { border-left-color: #7a9a6a; }
 .related button { text-align: left; background: var(--panel-2); border: 1px solid var(--line); border-radius: 6px; padding: 7px 9px; font-size: 12.5px; cursor: pointer; }
 .related button:hover { border-color: var(--pin); }
 .filter-note { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--ink-2); }
@@ -829,11 +831,19 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
   }
 
   function civicHtml(p) {
-    const rows = p.civic || [];
-    if (!rows.length) return `<div class="sec"><h3>Redevelopment Agency &amp; City Council</h3><p class="note" style="margin:0">No Redevelopment Agency or City Council item names this address, its block and lot, or its applicant (agendas since 2018).</p></div>`;
+    const all = p.civic || [];
+    if (!all.length) return `<div class="sec"><h3>Redevelopment Agency &amp; City Council</h3><p class="note" style="margin:0">No Redevelopment Agency or City Council item names this address, its block and lot, or its applicant (agendas since 2018).</p></div>`;
+    // Cleanup paperwork (environmental consultants, remediation grants, site investigation) goes in its own group.
+    const ENV = /environmental|remediation|hazardous discharge|HDSRF|brownfield|site investigation|\bLSRP\b|soil|groundwater|contaminat|asbestos|underground storage tank|\bUST\b/i;
+    // Judge by what the item is (the start of its title), not by mentions further down; designations and agreements stay in the main list.
+    const isEnv = (a) => { const h = (a.title || "").slice(0, 320); return ENV.test(h) && !/designat|redevelopment agreement|terminat|transfer of membership|financial agreement|tax exemption/i.test(h); };
+    const env = all.filter(isEnv), rows = all.filter((a) => !isEnv(a));
     const one = (a) => `<li class="${a.src === "jcra" ? "jcra" : ""}"><div class="nmeta">${a.date ? fmtDate(a.date) + " · " : ""}${esc(a.src === "jcra" ? "Redevelopment Agency" : "City Council")} · ${esc(a.kind || "")}${a.label ? " · " + esc(a.label) : ""}${a.defeated ? " · <b>defeated</b>" : ""}</div><div class="ctitle clip" onclick="this.classList.toggle('clip')" title="Click to show the full text">${esc(a.title)}</div>${a.url ? `<a href="${esc(a.url)}" target="_blank" rel="noopener">${a.src === "jcra" ? "Agenda (PDF)" : "Ordinance / resolution (PDF)"}</a>` : ""}</li>`;
-    const n = p.n_civic || rows.length;
-    return `<div class="sec"><h3>Redevelopment Agency &amp; City Council · ${n} item${n === 1 ? "" : "s"}</h3><p class="note" style="margin:0 0 6px">Agency resolutions and redeveloper presentations, and Council ordinances and resolutions on redevelopment, tax abatements and zoning that name this property.</p><ul class="civic">${rows.slice(0, 10).map(one).join("")}</ul>${rows.length > 10 ? `<details><summary class="note">${rows.length - 10} more</summary><ul class="civic">${rows.slice(10).map(one).join("")}</ul></details>` : ""}</div>`;
+    const n = rows.length;
+    const main = n ? `<ul class="civic">${rows.slice(0, 10).map(one).join("")}</ul>${n > 10 ? `<details><summary class="note">${n - 10} more</summary><ul class="civic">${rows.slice(10).map(one).join("")}</ul></details>` : ""}`
+      : `<p class="note" style="margin:0">No redevelopment, abatement or zoning actions; only environmental items below.</p>`;
+    const envHtml = env.length ? `<details class="envgrp"><summary class="note"><b>Environmental</b> · ${env.length} item${env.length === 1 ? "" : "s"} (consultant contracts, remediation grants, site investigation)</summary><ul class="civic">${env.map(one).join("")}</ul></details>` : "";
+    return `<div class="sec"><h3>Redevelopment Agency &amp; City Council · ${n} item${n === 1 ? "" : "s"}</h3><p class="note" style="margin:0 0 6px">Agency resolutions and redeveloper presentations, and Council ordinances and resolutions on redevelopment, tax abatements and zoning that name this property.</p>${main}${envHtml}</div>`;
   }
 
   function salesHtml(p) {

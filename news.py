@@ -131,7 +131,11 @@ def mentions(text, streets):
 
 def _same(a, b):
     """A tracked address and an address in an article name the same place."""
-    return a[0] == b[0] and (not a[1] or not b[1] or a[1] == b[1]) and a[2] <= b[3] and b[2] <= a[3]
+    if not (a[0] == b[0] and (not a[1] or not b[1] or a[1] == b[1]) and a[2] <= b[3] and b[2] <= a[3]):
+        return False
+    # A range is one side of the street: 408-420 (even) doesn't take in 417 (odd).
+    pa, pb = {a[2] % 2, a[3] % 2}, {b[2] % 2, b[3] % 2}
+    return len(pa) > 1 or len(pb) > 1 or pa == pb
 
 
 # ------------------------------------------------------------------ cache
