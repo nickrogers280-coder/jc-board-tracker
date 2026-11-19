@@ -707,7 +707,7 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
     const g = new Map();
     DATA.cases.forEach((p) => {
       if (!p.dev_id) return;
-      const r = g.get(p.dev_id) || { id: p.dev_id, name: p.developer, cases: [], vis: 0, units: 0, mix: {}, ok: 0, no: 0, open: 0, wards: new Set(), sites: new Set(), llcs: new Set(), att: {}, last: "", basis: new Set(), people: p.dev_people || [], linked: false };
+      const r = g.get(p.dev_id) || { id: p.dev_id, name: p.developer, cases: [], vis: 0, units: 0, mix: {}, ok: 0, no: 0, open: 0, wards: new Set(), sites: new Set(), llcs: new Set(), llcNames: [], att: {}, last: "", basis: new Set(), people: p.dev_people || [], linked: false };
       r.cases.push(p); if (visible(p)) r.vis++;
       if (p.counts_units) r.units += p.units;
       r.mix[p.product] = (r.mix[p.product] || 0) + 1;
@@ -715,7 +715,7 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
       if (OPEN_STAGES.has(p.stage) && !p.superseded_by) r.open++;
       if (p.ward) r.wards.add(p.ward);
       r.sites.add((p.site_ids && p.site_ids.length ? [p.id, ...p.site_ids].sort()[0] : p.address) || p.id);
-      r.llcs.add(p.applicant);
+      if (p.applicant) { const k = p.applicant.toUpperCase().replace(/[^A-Z0-9]/g, "").replace(/(LLC|INC|LP|CORP)$/, ""); if (!r.llcs.has(k)) { r.llcs.add(k); r.llcNames.push(p.applicant); } }
       if (p.attorney) r.att[p.attorney] = (r.att[p.attorney] || 0) + 1;
       if ((p.applied || "") > r.last) r.last = p.applied;
       (p.dev_basis || []).forEach((b) => r.basis.add(b));
@@ -762,7 +762,7 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
     } else {
       const label = { developer: "developer", applicant: "applicant", attorney: "attorney", owner: "owner mailing address" }[ptab];
       if (ptab === "developer") {
-        const BASIS = { disclosure: "ownership disclosure", "c/o": "c/o on agenda", agency: "Agency transfer", name: "name" };
+        const BASIS = { disclosure: "ownership disclosure", "c/o": "c/o on agenda", agency: "Agency transfer", name: "name", "same site": "same site" };
         const linkedOnly = pl.filter((r) => r.linked || r.cases.length > 1);
         list.innerHTML = `<div class="seg" role="group" aria-label="Group players by">
             <button data-p="developer" aria-pressed="true">Developers</button>
@@ -775,7 +775,7 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
             return `<button class="player dev" data-dev="${esc(r.id)}">
               <span class="nm">${esc(r.name)}</span><span class="ct">${r.cases.length}</span>
               <span class="meta"><span class="mix">${TYPES.filter((t) => r.mix[t.key]).map((t) => `<i style="background:${t.c};width:${(100 * r.mix[t.key]) / r.cases.length}%"></i>`).join("")}</span>${r.sites.size} site${r.sites.size === 1 ? "" : "s"}${r.units ? ` · ${n0(r.units)} new units` : ""}${decided ? ` · ${Math.round((100 * r.ok) / decided)}% approved (${r.ok}/${decided})` : ""}${r.open ? ` · ${r.open} active` : ""}${r.wards.size ? ` · Ward ${[...r.wards].sort().join(", ")}` : ""}${r.last ? ` · latest ${fmtShort(r.last)} ${r.last.slice(0, 4)}` : ""}</span>
-              <span class="meta sub">${r.llcs.size > 1 ? `${r.llcs.size} LLCs` : esc([...r.llcs][0] || "")}${r.people.length ? ` · ${esc(r.people.slice(0, 3).join(", "))}` : ""}${att ? ` · counsel ${esc(att[0])}` : ""}${r.basis.size ? ` · via ${[...r.basis].map((b) => BASIS[b] || b).join(", ")}` : ""}</span>
+              <span class="meta sub">${r.llcs.size > 1 ? `${r.llcs.size} LLCs` : esc(r.llcNames[0] || "")}${r.people.length ? ` · ${esc(r.people.slice(0, 3).join(", "))}` : ""}${att ? ` · counsel ${esc(att[0])}` : ""}${r.basis.size ? ` · via ${[...r.basis].map((b) => BASIS[b] || b).join(", ")}` : ""}</span>
             </button>`; }).join("") : `<div class="empty">No developers on record for these filters.</div>`) +
           `<div class="empty" style="padding-top:12px">Each applicant LLC is linked to the people and companies behind it: the 10% owners on its ownership disclosure, the company it files "in care of", and Redevelopment Agency transfers of its membership interests. LLCs that share an owner are one developer. Counts cover every case the developer has filed, all years and outcomes; click a row to show them all on the map.</div>`;
         list.querySelectorAll(".seg button").forEach((b) => (b.onclick = () => { ptab = b.dataset.p; renderList(); }));
@@ -1056,7 +1056,7 @@ details p { font-size: 12px; color: var(--ink-2); line-height: 1.5; margin: 6px 
         <div class="sec"><h3>Players</h3><dl class="kv">
           <dt>Applicant</dt><dd>${p.applicant ? `<b>${esc(p.applicant)}</b>${p.applicant_source && p.applicant_source !== "board agenda" ? `<div class="note">From ${esc(p.applicant_source)}${p.applicant_doc ? ` (${esc(p.applicant_doc.slice(0, 60))}${p.applicant_doc.length > 60 ? "…" : ""})` : ""}</div>` : ""}` : `<span class="note">Not named yet: no agenda and no application form or disclosure posted online</span>`}</dd>
           ${p.care_of ? `<dt>In care of</dt><dd>${esc(p.care_of)}</dd>` : ""}
-          ${p.dev_id && (p.dev_linked || devCount(p) > 1) ? `<dt>Developer</dt><dd><button class="linkish" data-dev="${esc(p.dev_id)}"><b>${esc(p.developer)}</b> · ${devCount(p)} case${devCount(p) === 1 ? "" : "s"}</button>${(p.dev_basis || []).length ? `<div class="note">Linked through ${esc((p.dev_basis || []).map((b) => ({ disclosure: "the ownership disclosure", "c/o": "the agenda's c/o line", agency: "a Redevelopment Agency transfer", name: "the company name" }[b] || b)).join(", "))}</div>` : ""}</dd>` : ""}
+          ${p.dev_id && (p.dev_linked || devCount(p) > 1) ? `<dt>Developer</dt><dd><button class="linkish" data-dev="${esc(p.dev_id)}"><b>${esc(p.developer)}</b> · ${devCount(p)} case${devCount(p) === 1 ? "" : "s"}</button>${(p.dev_basis || []).length ? `<div class="note">Linked through ${esc((p.dev_basis || []).map((b) => ({ disclosure: "the ownership disclosure", "c/o": "the agenda's c/o line", agency: "a Redevelopment Agency transfer", name: "the company name", "same site": "the other filings on this site" }[b] || b)).join(", "))}</div>` : ""}</dd>` : ""}
           ${(p.owners || []).length ? `<dt>10% owners</dt><dd>${p.owners.map((o) => `${esc(o.name)}${o.pct != null ? ` <span class="note">${+o.pct.toFixed(1)}%</span>` : ""}`).join("<br>")}<div class="note">From the ownership disclosure</div></dd>` : ""}
           ${p.transfer ? `<dt>Transfer</dt><dd>Agency approved transfer of the LLC's interests to <b>${esc(p.transfer.to)}</b>${p.transfer.date ? ` · ${fmtDate(p.transfer.date)}` : ""}</dd>` : ""}
           <dt>Attorney</dt><dd>${p.attorney ? esc(p.attorney) : "—"}</dd>
