@@ -1,18 +1,22 @@
 import re, requests
 UA = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36"}
-P = "https://www.jerseycitynj.gov/cityhall/Clerk/ordinances___resolutions__2019-_present_"
-r = requests.get(P, headers=UA, timeout=60)
-print("final url", r.url)
-top = re.findall(r'data-id="(\d+)" data-parentid="(\d+)" data-order="\d+" data-type="(\w+)" data-title="([^"]*)"', r.text)
-print(len(top), top[:8])
-for m in re.finditer(r'(iframe|base)[^>]+>', r.text): print(m.group(0)[:300])
-print(re.findall(r'https?://[a-z0-9.-]*civicweb[a-z0-9./-]*', r.text)[:10])
-fid = top[0][0]
-for host in ("https://www.jerseycitynj.gov", "https://jerseycitynj.civicweb.net", "https://jerseycity.civicweb.net", "https://jerseycity.hosted.civiclive.com"):
-    for path in (f"/filepro/documents/{fid}", f"/filepro/documents/{fid}/", f"/document/{fid}"):
-        try:
-            x = requests.get(host + path, headers=UA, timeout=40)
-            sub = re.findall(r'data-id="(\d+)" data-parentid="\d+" data-order="\d+" data-type="(\w+)" data-title="([^"]*)"', x.text)
-            print(host + path, x.status_code, len(x.text), x.url, sub[:12])
-        except Exception as e:
-            print(host + path, "ERR", e)
+H = "https://cityofjerseycity.civicweb.net"
+def items(path):
+    x = requests.get(H + path, headers=UA, timeout=60)
+    sub = re.findall(r'data-id="(\d+)" data-parentid="\d+" data-order="\d+" data-type="(\w+)" data-title="([^"]*)"', x.text)
+    print("##", path, x.status_code, len(sub)); return x, sub
+x, s = items("/filepro/documents/441858/")
+for i in s[:15]: print("  ", i)
+f = next((i for i in s if i[1] == "folder"), None)
+if f:
+    x, s2 = items(f"/filepro/documents/{f[0]}/")
+    for i in s2[:25]: print("    ", i)
+    d = next((i for i in s2 if i[1] == "document"), None)
+    if d:
+        for p in (f"/document/{d[0]}/", f"/filepro/document/{d[0]}/"):
+            y = requests.get(H + p, headers=UA, timeout=60); print("doc", p, y.status_code, y.headers.get("content-type"), len(y.content), y.text[:300] if "html" in (y.headers.get("content-type") or "") else "")
+for p in ("/Portal/MeetingTypeList.aspx", "/Portal/", "/Portal/MeetingSchedule.aspx"):
+    y = requests.get(H + p, headers=UA, timeout=60)
+    print("##", p, y.status_code, y.url, len(y.text))
+    for l in sorted(set(re.findall(r'href="([^"]+)"', y.text)))[:60]:
+        if re.search(r"Meeting|Agenda|document", l, re.I): print("   ", l)
