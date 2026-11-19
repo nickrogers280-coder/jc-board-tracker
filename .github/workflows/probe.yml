@@ -1,0 +1,27 @@
+name: probe
+on: workflow_dispatch
+jobs:
+  p:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache/restore@v4
+        with:
+          path: raw
+          key: raw-none
+          restore-keys: raw-
+      - run: |
+          set +e
+          python3 - <<'PY'
+          import json,re
+          c=json.load(open("raw/agenda_text_cache.json"))
+          act=[k for k in c if "action" in k]
+          print(len(c),"texts;",len(act),"action")
+          for k in act:
+              t=c[k]
+              for cn in ("P22-145","P22-146","P22 -145","22-145"):
+                  i=t.find(cn)
+                  if i>=0: print("==",k,cn); print(t[max(0,i-200):i+1600]); break
+          for k in act[:3]+[a for a in act if "zoning" in a][:2]:
+              print("#####",k); print(c[k][:3000])
+          PY

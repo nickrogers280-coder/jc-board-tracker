@@ -299,11 +299,11 @@ def pull_traded(db, S, cases, budget=250):
             db["traded_seen"][u] = ""
             continue
         price = deal.get("salePrice")
-        bits = [deal.get("assetType"), deal.get("transactionType"), f"${price:,.0f}" if price else None, deal.get("parties")]
+        bits = [deal.get("assetType"), deal.get("transactionType"), (f"${float(price):,.0f}" if str(price).replace(".", "", 1).isdigit() else str(price)) if price else None, deal.get("parties")]
         aid = "traded:" + str(deal.get("id") or u)
         db["articles"][aid] = {"src": "traded", "title": deal.get("articleTitle") or deal.get("title") or u,
                                "date": (deal.get("closingDate") or deal.get("publishedAt") or "")[:10] or None, "url": u,
-                               "blurb": " · ".join(b for b in bits if b), "cases": ids}
+                               "blurb": " · ".join(str(b) for b in bits if b), "cases": ids}
         db["traded_seen"][u] = aid
         time.sleep(0.6)
     print(f"  Traded: read {done} deal pages")
