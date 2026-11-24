@@ -154,6 +154,7 @@ jobs:
           if [ -f data/portfolio.json ]; then cp data/portfolio.json _site/data/portfolio.json; fi
           if [ -f data/boundaries.json ]; then cp data/boundaries.json _site/data/boundaries.json; fi
           if [ -d data/detail ]; then cp -r data/detail _site/data/detail; fi
+          if [ -d files ]; then cp -r files _site/files; fi
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

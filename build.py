@@ -368,6 +368,9 @@ for c in cases_raw["cases"]:
         "status_history": history.get(c["id"], []),
         **({"archived": True, "archive_url": c.get("archive_url")} if c.get("archived") else {}),
     }
+    # Documents from outside the city portal (court filings, state records, maps), cited in data/overrides.json.
+    for x in _ov.get("extra_docs") or []:
+        rec["docs"].append({"name": x["name"], "note": x.get("note", ""), "added": x.get("added", ""), "url": x["url"], "outside": True, "current": True})
     dd = p.get("DEED_DATE")
     if isinstance(dd, (int, float)) and dd:
         rec["last_sale_date"] = datetime.utcfromtimestamp(dd / 1000).strftime("%Y-%m-%d")

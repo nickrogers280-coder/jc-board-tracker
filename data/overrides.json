@@ -17,7 +17,39 @@
    "0906_6001_9",
    "0906_6001_13"
   ],
-  "source": "Council Res. 26-130 and the public notice: Block 6901 Lots 15, 16, 17, 18.01; Block 5903 Lot 21; Block 6001 Lots 2-9, 13"
+  "source": "Council Res. 26-130 and the public notice: Block 6901 Lots 15, 16, 17, 18.01; Block 5903 Lot 21; Block 6001 Lots 2-9, 13",
+  "extra_docs": [
+   {
+    "name": "Satellite map of the study area and application lots",
+    "added": "2026-11-23",
+    "url": "files/176-palisade/176-palisade__study-area-satellite-map.jpg",
+    "note": "Map made for this tracker: Esri imagery, NJ parcels"
+   },
+   {
+    "name": "176 Palisades Holdings LLC: NJ certificate of formation (Yan & Margarita Moshe)",
+    "added": "2025-10-31",
+    "url": "files/176-palisade/176-palisade__176-palisades-holdings-llc-certificate-of-formation.pdf",
+    "note": "NJ Division of Revenue, entity 0451364738"
+   },
+   {
+    "name": "City of Jersey City v. Hudson Regional Health (HUD-L-1020-26): order denying injunction",
+    "added": "2026-03-17",
+    "url": "files/176-palisade/176-palisade__city-v-hrh-order-denying-injunction-2026-03-17.pdf",
+    "note": "Court filing (Hudson County Superior Court)"
+   },
+   {
+    "name": "City of Jersey City v. Hudson Regional Health (HUD-L-1020-26): verified complaint",
+    "added": "2026-03-14",
+    "url": "files/176-palisade/176-palisade__city-v-hrh-verified-complaint-2026-03-14.pdf",
+    "note": "Court filing (Hudson County Superior Court)"
+   },
+   {
+    "name": "Hudson Regional Health letter to City Planning asking for a redevelopment plan",
+    "added": "2025-10-13",
+    "url": "files/176-palisade/176-palisade__hrh-letter-to-city-planning-2025-10-13.pdf",
+    "note": "Published by Hudson County View"
+   }
+  ]
  },
  "P2025-0268": {
   "pins": [
@@ -53,7 +85,39 @@
     "pct": null
    }
   ],
-  "owners_source": "NJ certificate of formation, filed Oct 31, 2025 (members/managers)"
+  "owners_source": "NJ certificate of formation, filed Oct 31, 2025 (members/managers)",
+  "extra_docs": [
+   {
+    "name": "Satellite map of the study area and application lots",
+    "added": "2026-11-23",
+    "url": "files/176-palisade/176-palisade__study-area-satellite-map.jpg",
+    "note": "Map made for this tracker: Esri imagery, NJ parcels"
+   },
+   {
+    "name": "176 Palisades Holdings LLC: NJ certificate of formation (Yan & Margarita Moshe)",
+    "added": "2025-10-31",
+    "url": "files/176-palisade/176-palisade__176-palisades-holdings-llc-certificate-of-formation.pdf",
+    "note": "NJ Division of Revenue, entity 0451364738"
+   },
+   {
+    "name": "City of Jersey City v. Hudson Regional Health (HUD-L-1020-26): order denying injunction",
+    "added": "2026-03-17",
+    "url": "files/176-palisade/176-palisade__city-v-hrh-order-denying-injunction-2026-03-17.pdf",
+    "note": "Court filing (Hudson County Superior Court)"
+   },
+   {
+    "name": "City of Jersey City v. Hudson Regional Health (HUD-L-1020-26): verified complaint",
+    "added": "2026-03-14",
+    "url": "files/176-palisade/176-palisade__city-v-hrh-verified-complaint-2026-03-14.pdf",
+    "note": "Court filing (Hudson County Superior Court)"
+   },
+   {
+    "name": "Hudson Regional Health letter to City Planning asking for a redevelopment plan",
+    "added": "2025-10-13",
+    "url": "files/176-palisade/176-palisade__hrh-letter-to-city-planning-2025-10-13.pdf",
+    "note": "Published by Hudson County View"
+   }
+  ]
  },
  "Z2026-0014": {
   "pins": [
@@ -125,6 +189,38 @@
     "pct": null
    }
   ],
-  "owners_source": "NJ certificate of formation, filed Oct 31, 2025 (members/managers)"
+  "owners_source": "NJ certificate of formation, filed Oct 31, 2025 (members/managers)",
+  "extra_docs": [
+   {
+    "name": "Satellite map of the study area and application lots",
+    "added": "2026-11-23",
+    "url": "files/176-palisade/176-palisade__study-area-satellite-map.jpg",
+    "note": "Map made for this tracker: Esri imagery, NJ parcels"
+   },
+   {
+    "name": "176 Palisades Holdings LLC: NJ certificate of formation (Yan & Margarita Moshe)",
+    "added": "2025-10-31",
+    "url": "files/176-palisade/176-palisade__176-palisades-holdings-llc-certificate-of-formation.pdf",
+    "note": "NJ Division of Revenue, entity 0451364738"
+   },
+   {
+    "name": "City of Jersey City v. Hudson Regional Health (HUD-L-1020-26): order denying injunction",
+    "added": "2026-03-17",
+    "url": "files/176-palisade/176-palisade__city-v-hrh-order-denying-injunction-2026-03-17.pdf",
+    "note": "Court filing (Hudson County Superior Court)"
+   },
+   {
+    "name": "City of Jersey City v. Hudson Regional Health (HUD-L-1020-26): verified complaint",
+    "added": "2026-03-14",
+    "url": "files/176-palisade/176-palisade__city-v-hrh-verified-complaint-2026-03-14.pdf",
+    "note": "Court filing (Hudson County Superior Court)"
+   },
+   {
+    "name": "Hudson Regional Health letter to City Planning asking for a redevelopment plan",
+    "added": "2025-10-13",
+    "url": "files/176-palisade/176-palisade__hrh-letter-to-city-planning-2025-10-13.pdf",
+    "note": "Published by Hudson County View"
+   }
+  ]
  }
 }
