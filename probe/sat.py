@@ -107,7 +107,7 @@ rows.append(("T", "", "Study area + application lots (22)", "", f"{allac:.2f}"))
 c1, c2, c3 = 92, 300, 70
 lh = 22
 tw = c1 + c2 + c3 + 36
-th = 46 + lh * len(rows) + 14
+th = 46 + lh * len(rows) + 6 * sum(1 for r_ in rows if r_[0] == "S") + 4 * sum(1 for r_ in rows if r_[0] == "T") + 22
 x0, y0b = W - tw - 16, H - th - 40
 d.rounded_rectangle((x0, y0b, x0 + tw, y0b + th), 8, fill=(0, 0, 0, 200))
 d.text((x0 + 14, y0b + 10), "Lot acreage (from NJ parcel map)", font=F, fill=(255, 255, 255))
