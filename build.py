@@ -504,7 +504,8 @@ def site_addr(addr):
 
 def lot_keys(r):
     pins = [p for p in (r.get("parcel_pins") or [r.get("pams_pin")]) if p]
-    return {"_".join(p.split("_")[:3]) for p in pins} if len(pins) <= 12 else set()
+    # Assemblages and study areas (up to 30 lots) link to every filing on their lots; district-wide rezonings don't.
+    return {"_".join(p.split("_")[:3]) for p in pins} if len(pins) <= 30 else set()
 
 
 parent = {}
