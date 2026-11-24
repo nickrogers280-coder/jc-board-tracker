@@ -1,18 +1,10 @@
-import requests, json
-pins = ["0906_6901_15","0906_6901_16","0906_6901_17","0906_6901_18.01","0906_5903_21","0906_6001_2","0906_6001_3","0906_6001_4","0906_6001_5","0906_6001_6","0906_6001_7","0906_6001_8","0906_6001_9","0906_6001_13"]
-r = requests.post("https://services2.arcgis.com/XVOqAjTOJ5P6ngMu/arcgis/rest/services/Parcels_Composite_NJ_WM/FeatureServer/0/query",
-    data={"where": "PAMS_PIN IN (" + ",".join(f"'{p}'" for p in pins) + ")", "outFields": "PAMS_PIN,CALC_ACRE,PROP_LOC,LAND_DESC,PROP_CLASS,LAND_VAL,IMPRVT_VAL", "returnGeometry": "true", "outSR": "3424", "f": "json"}, timeout=90)
-tot = 0
-for f in r.json().get("features", []):
-    a = f["attributes"]
-    # planar area in sq ft (NJ State Plane ft) from rings, shoelace
-    area = 0
-    for ring in (f.get("geometry") or {}).get("rings", []):
-        s = 0
-        for (x1, y1), (x2, y2) in zip(ring, ring[1:]):
-            s += x1 * y2 - x2 * y1
-        area += s / 2
-    area = abs(area)
-    tot += area
-    print("ROW", a["PAMS_PIN"], a.get("PROP_LOC"), "calc_acre", a.get("CALC_ACRE"), "geom_acres", round(area / 43560, 3), a.get("LAND_DESC"), a.get("PROP_CLASS"), a.get("LAND_VAL"), a.get("IMPRVT_VAL"))
-print("ROW TOTAL geom acres", round(tot / 43560, 2), "sqft", round(tot))
+import requests, os
+UA = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36"}
+os.makedirs("out", exist_ok=True)
+for name, u in [("city-v-hrh-verified-complaint.pdf", "https://betterblocksnj.org/wp-content/uploads/2026/03/christ-hospital-complain.pdf"),
+                ("city-v-hrh-injunction-denied.pdf", "https://betterblocksnj.org/wp-content/uploads/2026/03/christ-hospital-injunction-denied.pdf"),
+                ("hrh-letter-to-jc-planning-2025-10-13.pdf", "https://hudsoncountyview.com/wp-content/uploads/2025/10/HRH-to-JC-planning-10-13-25.pdf")]:
+    r = requests.get(u, headers=UA, timeout=90)
+    print("GOT", name, r.status_code, r.headers.get("content-type"), len(r.content))
+    if r.ok and r.content[:4] == b"%PDF":
+        open("out/" + name, "wb").write(r.content)
