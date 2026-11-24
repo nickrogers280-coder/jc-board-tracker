@@ -11392,6 +11392,13 @@
 "size": 1821744,
 "tag": "documents-2025"
 },
+"3350f2e8-2ed2-4900-bd79-7bf56e1babcf": {
+"asset": "P2026-0124__3350f2e8__Checklist-GDA_Checklist_current-2026-09-11_v1.pdf",
+"case": "P2026-0124",
+"kind": "application",
+"size": 374289,
+"tag": "documents-2026"
+},
 "3356b925-ea12-4f47-b338-ba14aa2eaabd": {
 "asset": "P2024-0216__3356b925__Resolution_-_Memorialized_-HS8_P19-153_final_site_plan_approval_03-10-2020-2024-11-25_v1.pdf",
 "case": "P2024-0216",
@@ -17513,6 +17520,13 @@
 "size": 834700,
 "tag": "documents-2023"
 },
+"4f933d54-7fbe-47e7-9682-fc10c027b6e8": {
+"asset": "P2026-0026__4f933d54__13-Bostwick_Ave-JC-SITE-PLAN.pdf",
+"case": "P2026-0026",
+"kind": "plans",
+"size": 6228040,
+"tag": "documents-2026"
+},
 "4f944422-6543-46ec-9bc7-5c618c2c95c9": {
 "asset": "P2024-0196__4f944422__Affidavit_of_Ownership_-Affidavit_of_Ownership_10.9.24-2024-10-09_v1.pdf",
 "case": "P2024-0196",
@@ -20262,6 +20276,13 @@
 "kind": "traffic",
 "size": 2833629,
 "tag": "documents-2025-2"
+},
+"5c859a93-e4bf-4a01-afed-2c1fb34d86a9": {
+"asset": "Z2026-0045__5c859a93__Traffic_Assessment_Report-TrafficPrkngRpt_64-74SackettStJC_111826-KLEIN_v1.pdf",
+"case": "Z2026-0045",
+"kind": "traffic",
+"size": 3002355,
+"tag": "documents-2026"
 },
 "5c9d3453-5ba0-45ac-ae42-8ea6e1fe2b36": {
 "asset": "P2026-0025__5c9d3453__129_Yale_St-SAPP-0526-1510.pdf",
@@ -23684,6 +23705,13 @@
 "size": 145287,
 "tag": "documents-2023"
 },
+"6c33275c-23b5-4c34-a541-ab858411e511": {
+"asset": "P2026-0124__6c33275c__Survey-Survey-2026-09-18_v1.pdf",
+"case": "P2026-0124",
+"kind": "survey",
+"size": 723636,
+"tag": "documents-2026"
+},
 "6c357e13-8641-44db-869c-df304b2dcadd": {
 "asset": "P2024-0233__6c357e13__Affidavit_of_Performance-affidavit_of_performance_V2-2025-03-11_v1.pdf",
 "case": "P2024-0233",
@@ -25642,12 +25670,6 @@
 "size": 876788,
 "tag": "documents-2024-2"
 },
-"74a167ca-f4aa-4dcb-b4c5-0e2ad2de8174": {
-"asset": "P2026-0026__74a167ca__Architectural_Plans-21028_-_HERNANDEZ_-_13_BOSTWICK_AVE.-_ZONING_WITH_RENDERING_-_FULL_SET_1_-2026-06-29_v1.pdf",
-"case": "P2026-0026",
-"kind": "plans",
-"size": 13048092
-},
 "74a74786-8c31-48c7-8c57-c953f24db897": {
 "asset": "P2024-0203__74a74786__Survey-Survey_for_475_Newark_Ave._JC-2025-06-06_v1.pdf",
 "case": "P2024-0203",
@@ -26738,6 +26760,13 @@
 "size": 198965,
 "tag": "documents-2025-3"
 },
+"793d5e66-27c9-4863-b5a7-8278f77351ff": {
+"asset": "Z2026-0045__793d5e66__Other-FEQuetzal_Sackett_ZBA_Memorandum_2026-1119_v1.pdf",
+"case": "Z2026-0045",
+"kind": "affordable",
+"size": 4689157,
+"tag": "documents-2026"
+},
 "793e0a7b-d2f0-4350-aca1-63e0701872ea": {
 "asset": "P2025-0144__793e0a7b__Green_Area_Ratio_GAR_table-05_-_GAR_Worksheet-2025-07-22_v1.pdf",
 "case": "P2025-0144",
@@ -27627,13 +27656,6 @@
 "kind": "resolution",
 "size": 1550045,
 "tag": "documents-2024"
-},
-"7cfdaeec-bbb1-4f20-82a3-ae4e16e74745": {
-"asset": "P2026-0124__7cfdaeec__Cover_Letter-Cover_Letter_Filing_Application-2026-07-31_v1.pdf",
-"case": "P2026-0124",
-"kind": "application",
-"size": 95973,
-"tag": "documents-2026"
 },
 "7d0ba8e5-e240-4795-b451-227df97ec6e2": {
 "asset": "P2026-0038__7d0ba8e5__Property_Tax_Certificate-Tax_Status-_784-88_West_Side_and_445_Fairmount-2026-03-16_v1.pdf",
@@ -28776,12 +28798,6 @@
 "size": 621281,
 "tag": "documents-2024-2"
 },
-"8222da48-89fd-47df-b912-121f06701990": {
-"asset": "P2026-0124__8222da48__Forestry_Plan_Response_230-238_Culver_Ave.pdf",
-"case": "P2026-0124",
-"kind": "plans",
-"size": 674152
-},
 "822bc619-ab1b-40bf-9a45-1324f1138ea0": {
 "asset": "P2024-0165__822bc619__Survey-Corrected_Survey_10-2024_-_223_Nunda-2024-10-02_v1.pdf",
 "case": "P2024-0165",
@@ -29738,12 +29754,6 @@
 "kind": "other:other 01b hlw letter v1",
 "size": 30995,
 "tag": "documents-2026"
-},
-"86598e8f-558e-4d2e-9d71-89fdda5fb7e4": {
-"asset": "P2026-0124__86598e8f__Survey-Survey-2026-07-31_v1.pdf",
-"case": "P2026-0124",
-"kind": "survey",
-"size": 723636
 },
 "8659cf96-4de8-4adc-a41c-ec05e6e7c788": {
 "asset": "P2024-0069__8659cf96__Architectural_Plans-24-0621_31_Monitor_Street_ZD-2024-07-01_v1.pdf",
@@ -31358,6 +31368,13 @@
 "kind": "other:reso 2024 0038 174 martin luther king drive b 25001 l 66 & 6",
 "size": 262681,
 "tag": "documents-2024-3"
+},
+"8d1d4de0-8b16-4b0f-b9c2-0ea4458b2a2c": {
+"asset": "P2026-0124__8d1d4de0__Civil_Engineering_Plans-2026-09-25_Site_Plan_Set-2026-10-08_v1.pdf",
+"case": "P2026-0124",
+"kind": "plans",
+"size": 27987804,
+"tag": "documents-2026"
 },
 "8d1f9d57-a648-455d-95fc-1ec0fc22fd73": {
 "asset": "P23-083__8d1f9d57__206_Van_Vorst_St_-_00_Initial_Submission_Letter_Subdivision-206-VAN_VORST-ST-2023-09-15_v1.pdf",
@@ -38430,6 +38447,13 @@
 "kind": "notice",
 "size": 1934232,
 "tag": "documents-2025-3"
+},
+"af4d4d17-dcd7-434d-a10a-e098fa5f7d6e": {
+"asset": "P2026-0124__af4d4d17__Civil_Change_Memo-2026-09-25_JC_Planning-2026-10-08_v1.pdf",
+"case": "P2026-0124",
+"kind": "other:civil change memo jc planning v1",
+"size": 55305,
+"tag": "documents-2026"
 },
 "af589db8-56d1-4113-a5c8-5233cbf01e0e": {
 "asset": "P2024-0096__af589db8__10_Ownership_disclosure_form-96-102_Cottage_10_disclosure-2024-12-16_v1.pdf",
@@ -51647,6 +51671,13 @@
 "size": 869981,
 "tag": "documents-2025-3"
 },
+"e875a360-9159-4394-a57d-a6fae2b0eb54": {
+"asset": "P2026-0026__e875a360__13-17_BOSTWICK_AVENUE-jc-SOIL-EROSION.pdf",
+"case": "P2026-0026",
+"kind": "other:13 17 bostwick avenue jc soil erosion",
+"size": 2281922,
+"tag": "documents-2026"
+},
 "e8864fac-9ab3-49e3-a0cc-02cfcde4987d": {
 "asset": "P2023-0074__e8864fac__GDA_Checklist_p2023-0074_v1.pdf",
 "case": "P2023-0074",
@@ -52603,6 +52634,13 @@
 "size": 7518158,
 "tag": "documents-2025-2"
 },
+"edd8bc15-85fb-4599-862b-b5fb6bfa43c1": {
+"asset": "P2026-0187__edd8bc15__RESO_P2025-0141_421_NEW_YORK_AVE_B_1705_L_8.PDF",
+"case": "P2026-0187",
+"kind": "other:reso p2025 0141 421 new york ave b 1705 l 8",
+"size": 275707,
+"tag": "documents-2026"
+},
 "ede85a5d-4733-4515-9a2b-5c7822003c16": {
 "asset": "P2024-0099__ede85a5d__RESO_P2024-0099_565_Communipaw_Ave_SP_B_18603_L_17.01.pdf",
 "case": "P2024-0099",
@@ -53176,6 +53214,13 @@
 "kind": "other:other gda w variance list 42 cottage v1",
 "size": 1326687,
 "tag": "documents-2023"
+},
+"f0cbaddd-8456-42cd-a134-26b26b703f87": {
+"asset": "P2026-0026__f0cbaddd__13-Bostwick_Ave-JC-drainage-TANK.pdf",
+"case": "P2026-0026",
+"kind": "stormwater",
+"size": 4852543,
+"tag": "documents-2026"
 },
 "f0cd4491-a5e9-4fe7-9e7f-c53eae17ccfd": {
 "asset": "P2024-0194__f0cd4491__P2024-0194_-_402_Central_Ave_-_Plan_Review_Response.pdf",
