@@ -1,0 +1,130 @@
+{
+ "_about": "Hand-entered corrections for cases whose filings name more lots or parties than the portal records. Each entry cites its source.",
+ "P2026-0156": {
+  "pins": [
+   "0906_6901_15",
+   "0906_6901_16",
+   "0906_6901_17",
+   "0906_6901_18.01",
+   "0906_5903_21",
+   "0906_6001_2",
+   "0906_6001_3",
+   "0906_6001_4",
+   "0906_6001_5",
+   "0906_6001_6",
+   "0906_6001_7",
+   "0906_6001_8",
+   "0906_6001_9",
+   "0906_6001_13"
+  ],
+  "source": "Council Res. 26-130 and the public notice: Block 6901 Lots 15, 16, 17, 18.01; Block 5903 Lot 21; Block 6001 Lots 2-9, 13"
+ },
+ "P2025-0268": {
+  "pins": [
+   "0906_6901_3",
+   "0906_6901_4",
+   "0906_6901_15",
+   "0906_6901_16",
+   "0906_6901_17",
+   "0906_6901_18.01",
+   "0906_5903_21",
+   "0906_6001_3",
+   "0906_6001_4",
+   "0906_6001_5",
+   "0906_6001_9",
+   "0906_6001_13",
+   "0906_6001_33",
+   "0906_5803_19",
+   "0906_5803_20",
+   "0906_5803_21",
+   "0906_5803_22",
+   "0906_5803_23"
+  ],
+  "source": "City completeness checklist, Jan 20, 2026 (lots with ownership affidavits, missing affidavits and missing surveys)",
+  "applicant": "176 Palisades Holdings LLC",
+  "applicant_source": "the NJ certificate of formation (entity 0451364738) and the city's completeness checklist",
+  "owners": [
+   {
+    "name": "Yan Moshe",
+    "pct": null
+   },
+   {
+    "name": "Margarita Moshe",
+    "pct": null
+   }
+  ],
+  "owners_source": "NJ certificate of formation, filed Oct 31, 2025 (members/managers)"
+ },
+ "Z2026-0014": {
+  "pins": [
+   "0906_6901_3",
+   "0906_6901_4",
+   "0906_6901_15",
+   "0906_6901_16",
+   "0906_6901_17",
+   "0906_6901_18.01",
+   "0906_5903_21",
+   "0906_6001_3",
+   "0906_6001_4",
+   "0906_6001_5",
+   "0906_6001_9",
+   "0906_6001_13",
+   "0906_6001_33",
+   "0906_5803_19",
+   "0906_5803_20",
+   "0906_5803_21",
+   "0906_5803_22",
+   "0906_5803_23"
+  ],
+  "source": "Re-filing of P2025-0268",
+  "applicant": "176 Palisades Holdings LLC",
+  "applicant_source": "the NJ certificate of formation (entity 0451364738) and the city's completeness checklist",
+  "owners": [
+   {
+    "name": "Yan Moshe",
+    "pct": null
+   },
+   {
+    "name": "Margarita Moshe",
+    "pct": null
+   }
+  ],
+  "owners_source": "NJ certificate of formation, filed Oct 31, 2025 (members/managers)"
+ },
+ "Z2026-0019": {
+  "pins": [
+   "0906_6901_3",
+   "0906_6901_4",
+   "0906_6901_15",
+   "0906_6901_16",
+   "0906_6901_17",
+   "0906_6901_18.01",
+   "0906_5903_21",
+   "0906_6001_3",
+   "0906_6001_4",
+   "0906_6001_5",
+   "0906_6001_9",
+   "0906_6001_13",
+   "0906_6001_33",
+   "0906_5803_19",
+   "0906_5803_20",
+   "0906_5803_21",
+   "0906_5803_22",
+   "0906_5803_23"
+  ],
+  "source": "Re-filing of P2025-0268 (city email, Feb 6, 2026)",
+  "applicant": "176 Palisades Holdings LLC",
+  "applicant_source": "the NJ certificate of formation (entity 0451364738) and the city's completeness checklist",
+  "owners": [
+   {
+    "name": "Yan Moshe",
+    "pct": null
+   },
+   {
+    "name": "Margarita Moshe",
+    "pct": null
+   }
+  ],
+  "owners_source": "NJ certificate of formation, filed Oct 31, 2025 (members/managers)"
+ }
+}

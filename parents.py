@@ -23,7 +23,7 @@ BRANDS = [
     (r"\bBROOKFIELD\b|\bBSREP\b", "Brookfield"), (r"\bHUDSON EXCHANGE\b", "Hudson Exchange (Panepinto / Ironstate)"),
     (r"\bLINCOLN EQUITIES\b", "Lincoln Equities"), (r"\bWOODMONT\b", "Woodmont Properties"), (r"\bGARDEN HOMES\b", "Garden Homes"),
     (r"\bMACK REAL ESTATE\b", "Mack Real Estate"),
-    (r"\bTHIRD GATE\b", "Third Gate Capital"), (r"\bMILL CREEK RESIDENTIAL\b", "Mill Creek Residential"),
+    (r"\bYAN MOSHE\b|HUDSON REGIONAL", "Hudson Regional Health (Yan Moshe)"), (r"\bTHIRD GATE\b", "Third Gate Capital"), (r"\bMILL CREEK RESIDENTIAL\b", "Mill Creek Residential"),
     (r"AVALONBAY|\bAVALON BAY\b", "AvalonBay"), (r"\bQUALITY PROPERTY\b", "Quality Property"),
 ]
 _BRANDS = [(re.compile(rx, re.I), name) for rx, name in BRANDS if name]

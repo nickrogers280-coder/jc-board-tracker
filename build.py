@@ -13,6 +13,7 @@ from docs_mirror import current_versions
 from fetch import prior_refs
 import applicants as APPL
 import parents as PARENTS
+OVERRIDES = json.loads((Path(__file__).resolve().parent / "data/overrides.json").read_text()) if (Path(__file__).resolve().parent / "data/overrides.json").exists() else {}
 
 ROOT = Path(__file__).parent
 def _raw(name, legacy):
@@ -292,6 +293,9 @@ for c in cases_raw["cases"]:
     if not applicant:
         applicant, app_src = desc_applicant(c.get("desc")), "the application description"
     attorney = norm_party(ag.get("att", "")) or (filings.get("attorney") or "")
+    _ov = OVERRIDES.get(c["id"]) or {}
+    if _ov.get("applicant"):  # hand-entered from a cited source (data/overrides.json)
+        applicant, app_src = _ov["applicant"], _ov.get("applicant_source") or "a hand-entered correction"
     _cl = PARENTS.clean_applicant(applicant, attorney)
     if _cl["name"] != applicant:
         if not _cl["name"] and not attorney and re.search(r"\bEsq", applicant or "", re.I):
@@ -330,7 +334,8 @@ for c in cases_raw["cases"]:
         "applicant_doc": filings.get("doc") if applicant and app_src.startswith("the ") and app_src != "the application description" else None,
         "attorney": attorney,
         "care_of": _cl["care_of"],
-        "owners": PARENTS.owners_clean(filings.get("owners")),
+        "owners": PARENTS.owners_clean(_ov.get("owners") or filings.get("owners")),
+        **({"owners_source": _ov["owners_source"]} if _ov.get("owners_source") else {}),
         "hearings": hearings,
         "agenda_last": ag.get("last", ""),
         "desc": re.sub(r"\s+", " ", c.get("desc") or "").strip(),
@@ -509,7 +514,7 @@ def _union(a, b):
     parent[_find(a)] = _find(b)
 
 for r in out:
-    if r["kind"] == "plan" and len(r.get("parcel_pins") or []) > 12:
+    if r["kind"] == "plan" and len(r.get("parcel_pins") or []) > 20:  # district-wide rezonings, not one site
         continue
     keys = ["L:" + k for k in lot_keys(r)]
     ak = site_addr(r.get("address"))

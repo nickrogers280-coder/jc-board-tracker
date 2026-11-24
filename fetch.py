@@ -774,9 +774,11 @@ def main():
     # Every lot in each application: portal locations + lots named in the description/agenda + the tax
     # record's "additional lots". Only lots that exist on the state parcel map are kept.
     lot_cache = {}
+    _ovp = ROOT / "data/overrides.json"
+    OVR = json.loads(_ovp.read_text()) if _ovp.exists() else {}
     for c in cases:
         main = c["pin"] or ""
-        cand = [main] + (c.get("loc_pins") or [])
+        cand = [main] + (c.get("loc_pins") or []) + ((OVR.get(c["id"]) or {}).get("pins") or [])
         cand += text_pins(c.get("desc"), main) + text_pins((ag.get(c["id"]) or {}).get("bl", "") and "Block " + ag[c["id"]]["bl"], main)
         add = ((c.get("parcel") or {}).get("ADD_LOTS1") or "").strip()
         if add and main.count("_") >= 2:
