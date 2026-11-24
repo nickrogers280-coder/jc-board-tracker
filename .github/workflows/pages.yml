@@ -12,6 +12,7 @@ permissions:
   contents: write
   pages: write
   id-token: write
+  actions: read  # deploy-pages reads the uploaded site artifact's metadata
 
 # Data runs (schedule, manual) queue on their own; a code push only republishes the page and never bumps a waiting data run.
 concurrency:
