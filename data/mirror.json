@@ -23387,6 +23387,13 @@
 "size": 4232953,
 "tag": "documents-2025"
 },
+"6abbc368-c3d6-4f05-83cb-289e78f8bc67": {
+"asset": "P2026-0106__6abbc368__790_OCEAN_AVE_-_REVIEW_LETTER_-_PDF.pdf",
+"case": "P2026-0106",
+"kind": "jcmua",
+"size": 138970,
+"tag": "documents-2026"
+},
 "6abf08a9-ea4b-4294-9f5f-85c781dab1d9": {
 "asset": "Z2024-0010__6abf08a9__5-9-24_JCBOA_Z2024-0010_329_Sip_Avenue.pdf",
 "case": "Z2024-0010",
@@ -32541,6 +32548,13 @@
 "size": 11052351,
 "tag": "documents-2025-2"
 },
+"927a7acb-9080-431e-ad64-0799da3980ce": {
+"asset": "Z2026-0032__927a7acb__261125_324_Webster_Ave_Z2026-0032_.pdf",
+"case": "Z2026-0032",
+"kind": "jcmua",
+"size": 212686,
+"tag": "documents-2026"
+},
 "927cefe3-d4d7-4d84-9dcb-945c4a6ecb4d": {
 "asset": "Z2025-0025__927cefe3__10_Ownership_disclosure_form-10_Disclosure_3-2025_-_3411_JFK_Extension-2025-03-13_v1.pdf",
 "case": "Z2025-0025",
@@ -38147,6 +38161,13 @@
 "case": "P2026-0085",
 "kind": "application",
 "size": 882363
+},
+"adbd5d11-6de1-4fd5-a0ba-a283e826fb5c": {
+"asset": "P2026-0026__adbd5d11__ARCH._13_BOSTWICK_AVE.-_ZONING_WITH_RENDERING_-_FULL_SET.pdf",
+"case": "P2026-0026",
+"kind": "rendering",
+"size": 13677150,
+"tag": "documents-2026"
 },
 "adc32683-8318-409f-93f4-d14203e6db82": {
 "asset": "P2024-0185__adc32683__Fee_calcluation_worksheet_P2024-0185.pdf",
